@@ -27,6 +27,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TTSS.Infra.OpenTelemetry", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TTSS.Infra.OpenTelemetry.Tests", "tests\TTSS.Infra.OpenTelemetry.Tests\TTSS.Infra.OpenTelemetry.Tests.csproj", "{5DD06DC7-B362-4687-AC4D-EC3A2C26EA24}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TTSS.Infra.Redis", "TTSS.Infra.Redis\TTSS.Infra.Redis.csproj", "{370AC40C-313B-4F65-A1EB-3C79722F68CC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TTSS.Infra.Redis.Tests", "tests\TTSS.Infra.Redis.Tests\TTSS.Infra.Redis.Tests.csproj", "{74E1C447-9E2A-47DE-915F-3B3D10AB7B8B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -77,6 +81,14 @@ Global
 		{5DD06DC7-B362-4687-AC4D-EC3A2C26EA24}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5DD06DC7-B362-4687-AC4D-EC3A2C26EA24}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5DD06DC7-B362-4687-AC4D-EC3A2C26EA24}.Release|Any CPU.Build.0 = Release|Any CPU
+		{370AC40C-313B-4F65-A1EB-3C79722F68CC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{370AC40C-313B-4F65-A1EB-3C79722F68CC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{370AC40C-313B-4F65-A1EB-3C79722F68CC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{370AC40C-313B-4F65-A1EB-3C79722F68CC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{74E1C447-9E2A-47DE-915F-3B3D10AB7B8B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{74E1C447-9E2A-47DE-915F-3B3D10AB7B8B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{74E1C447-9E2A-47DE-915F-3B3D10AB7B8B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{74E1C447-9E2A-47DE-915F-3B3D10AB7B8B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -86,6 +98,7 @@ Global
 		{C1827A89-35CC-424E-BB9D-F75381FBB583} = {3FB8EC49-9B19-457C-AFA3-B5E25E290D55}
 		{33FFFDF1-DC6D-48DF-98FE-CA8359769110} = {3FB8EC49-9B19-457C-AFA3-B5E25E290D55}
 		{5DD06DC7-B362-4687-AC4D-EC3A2C26EA24} = {3FB8EC49-9B19-457C-AFA3-B5E25E290D55}
+		{74E1C447-9E2A-47DE-915F-3B3D10AB7B8B} = {3FB8EC49-9B19-457C-AFA3-B5E25E290D55}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {4C7536CF-5DA1-45F5-A439-A8DB5467B639}
