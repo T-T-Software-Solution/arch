@@ -1,0 +1,162 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1" MembersFormat="NameAndType">
+  <Comment CommentText="Loggings">
+    <Position X="13.004" Y="0.5" Height="0.291" Width="3.267" />
+  </Comment>
+  <Comment CommentText="Database">
+    <Position X="0.5" Y="0.5" Height="0.291" Width="8.527" />
+  </Comment>
+  <Comment CommentText="Repositories">
+    <Position X="0.5" Y="1.023" Height="0.291" Width="3.031" />
+  </Comment>
+  <Comment CommentText="Data paging">
+    <Position X="3.771" Y="1.021" Height="0.291" Width="5.246" />
+  </Comment>
+  <Comment CommentText="Services">
+    <Position X="16.768" Y="0.5" Height="0.291" Width="3.208" />
+  </Comment>
+  <Comment CommentText="Securities">
+    <Position X="9.5" Y="0.5" Height="0.291" Width="3.005" />
+  </Comment>
+  <Class Name="TTSS.Core.Data.InMemoryPagingResult&lt;TEntity&gt;" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="3.75" Y="1.75" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>AIAAAAAAAACYAIAAAAAAAAAAAAQQAAAAAABAAAAAQAQ=</HashCode>
+      <FileName>Data\InMemoryPagingResult.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="TTSS.Core.Data.InMemoryQueryResult&lt;TEntity&gt;" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="6.5" Y="1.75" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>AAABAAAAAAAIBBAAAAAAAAAAAAAAAAAEAAAAIAAAAAA=</HashCode>
+      <FileName>Data\InMemoryQueryResult.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="TTSS.Core.Data.InMemoryRepository&lt;TEntity, TKey&gt;">
+    <Position X="0.5" Y="3.5" Width="3" />
+    <Members>
+      <Field Name="_dataDict" Hidden="true" />
+      <Property Name="GetKey" Hidden="true" />
+      <Method Name="InMemoryRepository" Hidden="true" />
+    </Members>
+    <TypeIdentifier>
+      <HashCode>AAUAAAAACAAAAABAAAAIAAQAAAAAACgAAAAAAAAAIIA=</HashCode>
+      <FileName>Data\InMemoryRepository.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="TTSS.Core.Data.InMemoryRepository&lt;TEntity&gt;" Collapsed="true">
+    <Position X="0.5" Y="6.75" Width="3" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Data\InMemoryRepository.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="TTSS.Core.Data.ModuleInitializer">
+    <Position X="3.75" Y="3.5" Width="5.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAIAAAAAAAAAAAAA=</HashCode>
+      <FileName>Data\ModuleInitializer.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TTSS.Core.Securities.JsonWebTokenDescriber" BaseTypeListCollapsed="true">
+    <Position X="9.5" Y="3.5" Width="3" />
+    <Members>
+      <Field Name="_dateTimeService" Hidden="true" />
+      <Method Name="JsonWebTokenDescriber" Hidden="true" />
+    </Members>
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAABAAgAAAAAAAAAAAAAAAAAAAAAAAAgAAA=</HashCode>
+      <FileName>Securities\JsonWebTokenDescriber.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="TTSS.Core.Securities.ModuleInitializer">
+    <Position X="9.5" Y="5" Width="3" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Securities\ModuleInitializer.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TTSS.Core.Services.DateTimeService" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="16.75" Y="1.25" Width="3.25" />
+    <TypeIdentifier>
+      <HashCode>AAAwAAAAAAAAAAAAAAAAAAAEAAABAIEAKAAEEAEAAAA=</HashCode>
+      <FileName>Services\DateTimeService.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="TTSS.Core.Services.ModuleInitializer">
+    <Position X="16.75" Y="2" Width="3.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Services\ModuleInitializer.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TTSS.Core.Loggings.ActivityExtensions">
+    <Position X="13" Y="3.25" Width="3.25" />
+    <TypeIdentifier>
+      <HashCode>CgAAAAAAAAAAAAAAAAAAAAAAIQABAAAAAAAAAAAAAgA=</HashCode>
+      <FileName>Loggings\ActivityExtensions.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TTSS.Core.Loggings.ActivityFactory" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="13" Y="1.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAABAAAAAAAAAAAgAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Loggings\ActivityFactory.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="TTSS.Core.Loggings.ActivityFactoryExtensions">
+    <Position X="13" Y="2" Width="3.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Loggings\ActivityFactoryExtensions.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TTSS.Core.Loggings.ActivityLogger" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="14.75" Y="1.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>IAAEAAAQQCBCAAFAAAAAAAACIBoEAAAAAgABAEAAAAA=</HashCode>
+      <FileName>Loggings\ActivityLogger.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="TTSS.Core.Loggings.ModuleInitializer">
+    <Position X="13" Y="5.5" Width="3.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Loggings\ModuleInitializer.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TTSS.Core.Securities.JsonWebTokenDescriptor">
+    <Position X="9.5" Y="1.25" Width="3" />
+    <Members>
+      <Property Name="CurrentTime" Hidden="true" />
+    </Members>
+    <TypeIdentifier>
+      <HashCode>AAAAIAAAAAAAAAAAAAgAAAAAEAAAACAAACAAgAAAAAA=</HashCode>
+      <FileName>Securities\JsonWebTokenDescriptor.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Interface Name="TTSS.Core.Data.IInMemoryRepository&lt;TEntity, TKey&gt;" Collapsed="true">
+    <Position X="0.5" Y="1.5" Width="3" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Data\IInMemoryRepository.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="TTSS.Core.Data.IInMemoryRepository&lt;TEntity&gt;" Collapsed="true">
+    <Position X="0.5" Y="2.25" Width="3" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Data\IInMemoryRepository.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

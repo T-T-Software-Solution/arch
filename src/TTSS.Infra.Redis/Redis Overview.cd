@@ -1,0 +1,82 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1" MembersFormat="NameAndType">
+  <Comment CommentText="Database">
+    <Position X="0.5" Y="0.5" Height="0.291" Width="6.756" />
+  </Comment>
+  <Comment CommentText="Repositories">
+    <Position X="0.5" Y="1.023" Height="0.291" Width="6.75" />
+  </Comment>
+  <Class Name="TTSS.Infra.Data.Redis.ModuleInitializer">
+    <Position X="8.75" Y="0.5" Width="3.5" />
+    <Members>
+      <Method Name="ValidateAndExtractParameters" Hidden="true" />
+    </Members>
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAQAAAAAAAAAAAAAAAQAAggAAAAAAAAAAAQAA=</HashCode>
+      <FileName>Redis\ModuleInitializer.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TTSS.Infra.Data.Redis.RedisCacheBase&lt;TEntity&gt;" BaseTypeListCollapsed="true">
+    <Position X="3.75" Y="4.5" Width="3.5" />
+    <Members>
+      <Field Name="_keyPrefix" Hidden="true" />
+      <Field Name="_multiplexer" Hidden="true" />
+      <Method Name="GetCacheBehavior" Hidden="true" />
+      <Method Name="GetKey" Hidden="true" />
+      <Method Name="RedisCacheBase" Hidden="true" />
+    </Members>
+    <TypeIdentifier>
+      <HashCode>AAAAAAAEAKCSAAAgCAAAAAQAAAAAAAgAAAAAIIACAIA=</HashCode>
+      <FileName>Redis\RedisCacheBase.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="TTSS.Infra.Data.Redis.RedisConnectionStoreBuilder">
+    <Position X="8.75" Y="2.5" Width="5" />
+    <Members>
+      <Field Name="_connectionStore" Hidden="true" />
+      <Field Name="_currentConnectionString" Hidden="true" />
+      <Method Name="RedisConnectionStoreBuilder" Hidden="true" />
+    </Members>
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAACAAAAAAAAAQAgIAAAAAAAAQAAAA=</HashCode>
+      <FileName>Redis\RedisConnectionStoreBuilder.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TTSS.Infra.Data.Redis.RedisRepositoryCache&lt;TEntity&gt;">
+    <Position X="0.5" Y="3.75" Width="3" />
+    <Members>
+      <Field Name="_keyPrefix" Hidden="true" />
+      <Field Name="_multiplexer" Hidden="true" />
+      <Field Name="CounterId" Hidden="true" />
+      <Method Name="RedisRepositoryCache" Hidden="true" />
+    </Members>
+    <TypeIdentifier>
+      <HashCode>AAAAAAgMAKCAAAQgCAAAAAQAAAAAICAAAAAAIAICKIA=</HashCode>
+      <FileName>Redis\RedisRepositoryCache.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="TTSS.Infra.Data.Redis.RedisRepositoryCache" Collapsed="true">
+    <Position X="0.5" Y="2.5" Width="3" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Redis\RedisRepositoryCache.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Interface Name="TTSS.Infra.Data.Redis.IRedisCache&lt;TEntity&gt;">
+    <Position X="3.75" Y="1.5" Width="3.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAASAAAAAAAAAAAAAAAAAAgAAAAAIIACAIA=</HashCode>
+      <FileName>Redis\IRedisCache.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="TTSS.Infra.Data.Redis.IRedisRepositoryCache&lt;TEntity&gt;" Collapsed="true">
+    <Position X="0.5" Y="1.5" Width="3" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Redis\IRedisRepositoryCache.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

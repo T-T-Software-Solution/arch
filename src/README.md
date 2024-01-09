@@ -1,0 +1,1 @@
+T-T Software Solution is a framework for building distributed, scalable, fault-tolerant realtime computation systems that process data streams and is easy to set up and operate.
