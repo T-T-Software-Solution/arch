@@ -1,0 +1,103 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1" MembersFormat="NameAndType">
+  <Comment CommentText="Database">
+    <Position X="0.5" Y="0.5" Height="0.291" Width="8.266" />
+  </Comment>
+  <Comment CommentText="Repositories">
+    <Position X="0.5" Y="1.023" Height="0.291" Width="3.031" />
+  </Comment>
+  <Comment CommentText="Data paging">
+    <Position X="3.771" Y="1.021" Height="0.291" Width="4.985" />
+  </Comment>
+  <Comment CommentText="Entities &amp; Contexts">
+    <Position X="3.75" Y="3.5" Height="0.291" Width="1.773" />
+  </Comment>
+  <Class Name="TTSS.Infra.Data.MongoDB.Models.MongoDbDocumentBase" BaseTypeListCollapsed="true">
+    <Position X="3.75" Y="4.25" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>MongoDB\Models\MongoDbDocumentBase.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="TTSS.Infra.Data.MongoDB.ModuleInitializer">
+    <Position X="9.25" Y="0.5" Width="3.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAgAAAAAAAAAAAAAAQAAAAAgAAAAAAAAAAAAAA=</HashCode>
+      <FileName>MongoDB\ModuleInitializer.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TTSS.Infra.Data.MongoDB.MongoDbConnectionStoreBuilder">
+    <Position X="9.25" Y="2.25" Width="5.25" />
+    <Members>
+      <Field Name="_connectionStore" Hidden="true" />
+      <Field Name="_currentConnectionString" Hidden="true" />
+      <Field Name="_currentDatabaseName" Hidden="true" />
+    </Members>
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAgCAAAAAAAAAQAgIAAAAAAAAQAAAA=</HashCode>
+      <FileName>MongoDB\MongoDbConnectionStoreBuilder.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TTSS.Infra.Data.MongoDB.MongoDbPagingResult&lt;TEntity&gt;" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="3.75" Y="1.75" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>AIAAAAAAAACQAIAAAAAAQAAAAAQQAAAAAABAIAAAQAQ=</HashCode>
+      <FileName>MongoDB\MongoDbPagingResult.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="TTSS.Infra.Data.MongoDB.MongoDbQueryResult&lt;T&gt;" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="6.5" Y="1.75" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAABAAAAAAAABBAAAAAAQAAAAAAAAAAEAAAAIAAAAAA=</HashCode>
+      <FileName>MongoDB\MongoDbQueryResult.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="TTSS.Infra.Data.MongoDB.MongoDbRepository&lt;TEntity, TKey&gt;">
+    <Position X="0.5" Y="3.5" Width="3" />
+    <Members>
+      <Field Name="_idField" Hidden="true" />
+      <Field Name="Collection" Hidden="true" />
+      <Field Name="CollectionName" Hidden="true" />
+      <Method Name="GetEntityFilter" Hidden="true" />
+      <Method Name="MongoDbRepository" Hidden="true" />
+    </Members>
+    <TypeIdentifier>
+      <HashCode>AAEgQAAACAAgQABAAAAIAAAAAAAAACgAAAAAABAEIIA=</HashCode>
+      <FileName>MongoDB\MongoDbRepository.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="TTSS.Infra.Data.MongoDB.MongoDbRepository&lt;TEntity&gt;" Collapsed="true">
+    <Position X="0.5" Y="7.25" Width="3" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>MongoDB\MongoDbRepository.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Interface Name="TTSS.Infra.Data.MongoDB.IMongoDbContext" Collapsed="true">
+    <Position X="3.75" Y="5.5" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>MongoDB\IMongoDbContext.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="TTSS.Infra.Data.MongoDB.IMongoDbRepository&lt;TEntity, TKey&gt;" Collapsed="true">
+    <Position X="0.5" Y="1.5" Width="3" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>MongoDB\IMongoDbRepository.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="TTSS.Infra.Data.MongoDB.IMongoDbRepository&lt;TEntity&gt;" Collapsed="true">
+    <Position X="0.5" Y="2.25" Width="3" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>MongoDB\IMongoDbRepository.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

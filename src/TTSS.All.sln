@@ -19,6 +19,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TTSS.Core.AspNetCore", "TTS
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TTSS.Core.gRPC", "TTSS.Core.gRPC\TTSS.Core.gRPC.csproj", "{0B112EE8-1CB1-4ACC-A137-915D943CEC3A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TTSS.Infra.MongoDB", "TTSS.Infra.MongoDB\TTSS.Infra.MongoDB.csproj", "{4AF5223C-5FA8-4A1D-875F-BED9BCDA8CDE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TTSS.Infra.MongoDB.Tests", "tests\TTSS.Infra.MongoDB.Tests\TTSS.Infra.MongoDB.Tests.csproj", "{33FFFDF1-DC6D-48DF-98FE-CA8359769110}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -53,6 +57,14 @@ Global
 		{0B112EE8-1CB1-4ACC-A137-915D943CEC3A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0B112EE8-1CB1-4ACC-A137-915D943CEC3A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0B112EE8-1CB1-4ACC-A137-915D943CEC3A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4AF5223C-5FA8-4A1D-875F-BED9BCDA8CDE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4AF5223C-5FA8-4A1D-875F-BED9BCDA8CDE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4AF5223C-5FA8-4A1D-875F-BED9BCDA8CDE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4AF5223C-5FA8-4A1D-875F-BED9BCDA8CDE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{33FFFDF1-DC6D-48DF-98FE-CA8359769110}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{33FFFDF1-DC6D-48DF-98FE-CA8359769110}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{33FFFDF1-DC6D-48DF-98FE-CA8359769110}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{33FFFDF1-DC6D-48DF-98FE-CA8359769110}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -60,6 +72,7 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{6E08C414-B742-49F4-8512-5114EB45009A} = {3FB8EC49-9B19-457C-AFA3-B5E25E290D55}
 		{C1827A89-35CC-424E-BB9D-F75381FBB583} = {3FB8EC49-9B19-457C-AFA3-B5E25E290D55}
+		{33FFFDF1-DC6D-48DF-98FE-CA8359769110} = {3FB8EC49-9B19-457C-AFA3-B5E25E290D55}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {4C7536CF-5DA1-45F5-A439-A8DB5467B639}
