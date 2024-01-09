@@ -27,10 +27,7 @@
   <ItemGroup>
     <PackageReference Include="Azure.Monitor.OpenTelemetry.AspNetCore" Version="1.0.0" />
     <PackageReference Include="OpenTelemetry.Exporter.OpenTelemetryProtocol" Version="1.7.0" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\TTSS.Core\TTSS.Core.csproj" />
+    <PackageReference Include="TTSS.Core" Version="1.0.0" />
   </ItemGroup>
 
 </Project>

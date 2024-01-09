@@ -27,10 +27,7 @@
   <ItemGroup>
     <PackageReference Include="Flurl.Http" Version="4.0.1" />
     <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="7.2.0" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\TTSS.Core.Abstractions\TTSS.Core.Abstractions.csproj" />
+    <PackageReference Include="TTSS.Core.Abstractions" Version="1.0.0" />
   </ItemGroup>
 
 </Project>

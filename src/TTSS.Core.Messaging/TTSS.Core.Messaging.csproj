@@ -26,10 +26,7 @@
 
   <ItemGroup>
     <PackageReference Include="MediatR" Version="12.2.0" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\TTSS.Core.Abstractions\TTSS.Core.Abstractions.csproj" />
+    <PackageReference Include="TTSS.Core.Abstractions" Version="1.0.0" />
   </ItemGroup>
 
 </Project>
