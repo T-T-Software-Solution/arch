@@ -1,0 +1,354 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1" MembersFormat="NameAndType">
+  <Comment CommentText="Database">
+    <Position X="0.5" Y="0.5" Height="0.291" Width="13.048" />
+  </Comment>
+  <Comment CommentText="Securities">
+    <Position X="16.25" Y="0.5" Height="0.291" Width="2.776" />
+  </Comment>
+  <Comment CommentText="Loggings">
+    <Position X="19.49" Y="0.5" Height="0.291" Width="2.507" />
+  </Comment>
+  <Comment CommentText="Services">
+    <Position X="22.509" Y="0.5" Height="0.291" Width="3.5" />
+  </Comment>
+  <Comment CommentText="Configurations">
+    <Position X="14" Y="0.5" Height="0.291" Width="1.767" />
+  </Comment>
+  <Comment CommentText="Queries">
+    <Position X="7.515" Y="2.734" Height="0.291" Width="3.737" />
+  </Comment>
+  <Comment CommentText="Commands">
+    <Position X="4.25" Y="2.75" Height="0.291" Width="3.017" />
+  </Comment>
+  <Comment CommentText="Data paging">
+    <Position X="0.5" Y="10" Height="0.291" Width="6.256" />
+  </Comment>
+  <Comment CommentText="Entities">
+    <Position X="12" Y="1" Height="0.291" Width="1.535" />
+  </Comment>
+  <Comment CommentText="Repositories">
+    <Position X="0.5" Y="1" Height="0.291" Width="11.093" />
+  </Comment>
+  <Comment CommentText="Main">
+    <Position X="0.5" Y="2.75" Height="0.291" Width="2.767" />
+  </Comment>
+  <Comment CommentText="Models">
+    <Position X="14" Y="6.25" Height="0.291" Width="1.767" />
+  </Comment>
+  <Class Name="TTSS.Core.Data.Models.PagingData&lt;TEntity&gt;">
+    <Position X="4.5" Y="12.75" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAABAAAAEAAAAQUAAAAAAAAAAAAkAACAAI=</HashCode>
+      <FileName>Data\Models\PagingData.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TTSS.Core.Data.PagingResult&lt;TEntity&gt;">
+    <Position X="0.5" Y="12.75" Width="3.75" />
+    <Members>
+      <Field Name="_hasComputeParameters" Hidden="true" />
+      <Field Name="_hasNextPage" Hidden="true" />
+      <Field Name="_hasPreviousPage" Hidden="true" />
+      <Field Name="_nextPage" Hidden="true" />
+      <Field Name="_pageCount" Hidden="true" />
+      <Field Name="_pageSize" Hidden="true" />
+      <Field Name="_previousPage" Hidden="true" />
+      <Field Name="_result" Hidden="true" />
+      <Field Name="_totalCount" Hidden="true" />
+      <Field Name="_totalCountFn" Hidden="true" />
+      <Method Name="ComputeParameters" Hidden="true" />
+      <Method Name="PagingResult" Hidden="true" />
+    </Members>
+    <TypeIdentifier>
+      <HashCode>AAAAAAAEAAARBAACAEEAAAKUAiwAAAAAAAAAgAACABY=</HashCode>
+      <FileName>Data\PagingResult.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TTSS.Core.Data.QueryResultExtensions">
+    <Position X="7.5" Y="8" Width="3.75" />
+    <TypeIdentifier>
+      <HashCode>AAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIAAAAAA=</HashCode>
+      <FileName>Data\QueryResultExtensions.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TTSS.Core.Services.FactoryBase">
+    <Position X="22.5" Y="4" Width="3.5" />
+    <Members>
+      <Field Name="_serviceProvider" Hidden="true" />
+      <Method Name="FactoryBase" Hidden="true" />
+    </Members>
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAgAAAAAAAAAAAAAAAAAAAAAAAAAAABAAA=</HashCode>
+      <FileName>Services\FactoryBase.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Interface Name="TTSS.Core.Data.IAsyncQueryRepository&lt;TEntity, TKey&gt;">
+    <Position X="7.5" Y="5" Width="3.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIAAAAAA=</HashCode>
+      <FileName>Data\IAsyncQueryRepository.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="TTSS.Core.Data.IDbModel&lt;TKey&gt;">
+    <Position X="12" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Data\IDbModel.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="TTSS.Core.Data.IDeletableRepository&lt;TEntity, TKey&gt;">
+    <Position X="4.25" Y="8" Width="3" />
+    <InheritanceLine Type="TTSS.Core.Data.IRepositoryBase" ManuallyRouted="true" FixedToPoint="true">
+      <Path>
+        <Point X="5.5" Y="2.062" />
+        <Point X="5.5" Y="2.302" />
+        <Point X="3.872" Y="2.302" />
+        <Point X="3.872" Y="8.5" />
+        <Point X="4.25" Y="8.5" />
+      </Path>
+    </InheritanceLine>
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAAAAAAAAAAIA=</HashCode>
+      <FileName>Data\IDeletableRepository.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="TTSS.Core.Data.IInsertBulkRepository&lt;TEntity&gt;">
+    <Position X="4.25" Y="6.5" Width="3" />
+    <InheritanceLine Type="TTSS.Core.Data.IRepositoryBase" ManuallyRouted="true" FixedToPoint="true">
+      <Path>
+        <Point X="5.5" Y="2.062" />
+        <Point X="5.5" Y="2.302" />
+        <Point X="3.872" Y="2.302" />
+        <Point X="3.872" Y="6.938" />
+        <Point X="4.25" Y="6.938" />
+      </Path>
+    </InheritanceLine>
+    <TypeIdentifier>
+      <HashCode>AAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Data\IInsertBulkRepository.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="TTSS.Core.Data.IOperationalRepository&lt;TEntity, TKey&gt;">
+    <Position X="4.25" Y="3.25" Width="3" />
+    <InheritanceLine Type="TTSS.Core.Data.IRepositoryBase" ManuallyRouted="true" FixedToPoint="true">
+      <Path>
+        <Point X="5.5" Y="2.062" />
+        <Point X="5.5" Y="2.302" />
+        <Point X="3.872" Y="2.302" />
+        <Point X="3.872" Y="3.75" />
+        <Point X="4.25" Y="3.75" />
+      </Path>
+    </InheritanceLine>
+    <TypeIdentifier>
+      <HashCode>AAAAAAAACAAAAAAAAAAAAAAAAAAAAAgAAAAAAAAAAAA=</HashCode>
+      <FileName>Data\IOperationalRepository.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="TTSS.Core.Data.IPagingRepositoryResult&lt;TEntity&gt;">
+    <Position X="0.5" Y="10.5" Width="3.75" />
+    <TypeIdentifier>
+      <HashCode>AIAAAAAAAACQAAAAAAAAAAAAAAAQAAAAAABAAAAAQAA=</HashCode>
+      <FileName>Data\IPagingRepositoryResult.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="TTSS.Core.Data.IQueryableRepository&lt;TEntity&gt;">
+    <Position X="7.5" Y="6.5" Width="3.75" />
+    <InheritanceLine Type="TTSS.Core.Data.IRepositoryBase" FixedToPoint="true">
+      <Path>
+        <Point X="5.5" Y="2.062" />
+        <Point X="5.5" Y="2.302" />
+        <Point X="11.625" Y="2.302" />
+        <Point X="11.625" Y="6.938" />
+        <Point X="11.25" Y="6.938" />
+      </Path>
+    </InheritanceLine>
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgAAAAAAAAAAAA=</HashCode>
+      <FileName>Data\IQueryableRepository.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="TTSS.Core.Data.IQueryRepository&lt;TEntity, TKey&gt;">
+    <Position X="7.5" Y="3.25" Width="3.75" />
+    <InheritanceLine Type="TTSS.Core.Data.IRepositoryBase" FixedToPoint="true">
+      <Path>
+        <Point X="5.5" Y="2.062" />
+        <Point X="5.5" Y="2.302" />
+        <Point X="11.625" Y="2.302" />
+        <Point X="11.625" Y="3.688" />
+        <Point X="11.25" Y="3.688" />
+      </Path>
+    </InheritanceLine>
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAIAA=</HashCode>
+      <FileName>Data\IQueryRepository.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="TTSS.Core.Data.IQueryResult&lt;TEntity&gt;" Collapsed="true">
+    <Position X="4.5" Y="10.5" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAABAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAIAAAAAA=</HashCode>
+      <FileName>Data\IQueryResult.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="TTSS.Core.Data.IUpsertRepository&lt;TEntity, TKey&gt;">
+    <Position X="4.25" Y="5" Width="3" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAIAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Data\IUpsertRepository.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="TTSS.Core.Configurations.IOptionsValidator">
+    <Position X="14" Y="2.5" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Configurations\IOptionsValidator.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="TTSS.Core.Loggings.IActivity">
+    <Position X="19.5" Y="2.25" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>IAAEAAAQQAAAAAFAAAAAAAACAAoEAAAAAgABAAAAAAA=</HashCode>
+      <FileName>Loggings\IActivity.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="TTSS.Core.Loggings.IActivityFactory">
+    <Position X="19.5" Y="1" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Loggings\IActivityFactory.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="TTSS.Core.Securities.ITokenAcknowledgment">
+    <Position X="16.25" Y="1" Width="2.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAAAAAAA=</HashCode>
+      <FileName>Securities\ITokenAcknowledgment.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="TTSS.Core.Securities.ITokenDescriber">
+    <Position X="16.25" Y="4.25" Width="2.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAgAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Securities\ITokenDescriber.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="TTSS.Core.Securities.ITokenDescriptor">
+    <Position X="16.25" Y="2.25" Width="2.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAIAAAAAAAAAAAAAgAAAAAEAAAACAAACAAAAAAAAA=</HashCode>
+      <FileName>Securities\ITokenDescriptor.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="TTSS.Core.Services.IDateTimeService">
+    <Position X="22.5" Y="1" Width="3.5" />
+    <Members>
+      <Field Name="DefaultCultureName" Hidden="true" />
+    </Members>
+    <TypeIdentifier>
+      <HashCode>AAAwAAAAAAAAAAAACAAAAAAEAAABAAEAIAAAAAEAAAA=</HashCode>
+      <FileName>Services\IDateTimeService.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="TTSS.Core.Data.IRepositoryCache&lt;TEntity, TKey&gt;" HideInheritanceLine="true">
+    <Position X="0.5" Y="6" Width="2.75" />
+    <InheritanceLine Type="TTSS.Core.Data.IRepositoryBase" FixedToPoint="true">
+      <Path>
+        <Point X="5.5" Y="2.062" />
+        <Point X="5.5" Y="2.302" />
+        <Point X="0.26" Y="2.302" />
+        <Point X="0.26" Y="6.5" />
+        <Point X="0.5" Y="6.5" />
+      </Path>
+    </InheritanceLine>
+    <TypeIdentifier>
+      <HashCode>AAAAAAgIAAAAAAAAAAAAAAAAAAAAACAAAAAAIAICIIA=</HashCode>
+      <FileName>Data\IRepositoryCache.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="TTSS.Core.Configurations.IValidator">
+    <Position X="14" Y="1" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Configurations\IValidator.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="TTSS.Core.Models.IHaveNonce">
+    <Position X="14" Y="6.75" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAA=</HashCode>
+      <FileName>Models\IHaveNonce.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="TTSS.Core.Models.IResponse">
+    <Position X="14" Y="8.75" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIAAAAAA=</HashCode>
+      <FileName>Models\IResponse.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="TTSS.Core.Models.IResponse&lt;TData&gt;">
+    <Position X="14" Y="10.25" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAA=</HashCode>
+      <FileName>Models\IResponse.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="TTSS.Core.Data.IRepository&lt;TEntity, TKey&gt;" Collapsed="true" HideInheritanceLine="true">
+    <Position X="0.5" Y="3.25" Width="2.75" />
+    <InheritanceLine Type="TTSS.Core.Data.IRepositoryBase" FixedToPoint="true">
+      <Path>
+        <Point X="5.5" Y="2.062" />
+        <Point X="5.5" Y="2.302" />
+        <Point X="0.26" Y="2.302" />
+        <Point X="0.26" Y="4.062" />
+        <Point X="0.5" Y="4.062" />
+      </Path>
+    </InheritanceLine>
+    <InheritanceLine Type="TTSS.Core.Data.IOperationalRepository&lt;TEntity, TKey&gt;" IsHidden="true" />
+    <InheritanceLine Type="TTSS.Core.Data.IQueryRepository&lt;TEntity, TKey&gt;" IsHidden="true" />
+    <InheritanceLine Type="TTSS.Core.Data.IQueryableRepository&lt;TEntity&gt;" IsHidden="true" />
+    <InheritanceLine Type="TTSS.Core.Data.IDeletableRepository&lt;TEntity, TKey&gt;" IsHidden="true" />
+    <InheritanceLine Type="TTSS.Core.Data.IUpsertRepository&lt;TEntity, TKey&gt;" IsHidden="true" />
+    <InheritanceLine Type="TTSS.Core.Data.IInsertBulkRepository&lt;TEntity&gt;" IsHidden="true" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Data\IRepository.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="TTSS.Core.Data.IRepository&lt;TEntity&gt;" Collapsed="true">
+    <Position X="0.5" Y="5" Width="2.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Data\IRepository.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="TTSS.Core.Data.IRepositoryBase" Collapsed="true">
+    <Position X="4.75" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Data\IRepositoryBase.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="TTSS.Core.Data.IDbModel" Collapsed="true">
+    <Position X="12" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Data\IDbModel.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="TTSS.Core.Models.IRequest" Collapsed="true">
+    <Position X="14" Y="8" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Models\IRequest.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="TTSS.Core.Data.IRepositoryCache&lt;TEntity&gt;" Collapsed="true">
+    <Position X="0.5" Y="9" Width="2.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Data\IRepositoryCache.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>
