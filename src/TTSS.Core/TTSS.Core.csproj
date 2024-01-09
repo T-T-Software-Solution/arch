@@ -1,0 +1,20 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <RootNamespace>TTSS.Core</RootNamespace>
+    <GenerateDocumentationFile>True</GenerateDocumentationFile>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Flurl.Http" Version="3.2.4" />
+    <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.33.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\TTSS.Core.Abstractions\TTSS.Core.Abstractions.csproj" />
+  </ItemGroup>
+
+</Project>
