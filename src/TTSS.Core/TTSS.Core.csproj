@@ -6,7 +6,23 @@
     <Nullable>enable</Nullable>
     <RootNamespace>TTSS.Core</RootNamespace>
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
+    <Authors>T-T-Software-Solution</Authors>
+    <Company>T-T-Software-Solution</Company>
+    <Version>1.0.0</Version>
+    <Description>Defines the primary functionality of the TTSS framework for integration into .NET projects.</Description>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageProjectUrl>https://github.com/T-T-Software-Solution/arch</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/T-T-Software-Solution/arch.git</RepositoryUrl> 
+    <RepositoryType>git</RepositoryType> 
   </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="..\README.md">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Flurl.Http" Version="4.0.0" />

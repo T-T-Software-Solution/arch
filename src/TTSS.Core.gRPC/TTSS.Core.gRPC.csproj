@@ -6,7 +6,23 @@
     <Nullable>enable</Nullable>
     <RootNamespace>TTSS.Core</RootNamespace>
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
+    <Authors>T-T-Software-Solution</Authors>
+    <Company>T-T-Software-Solution</Company>
+    <Version>1.0.0</Version>
+    <Description>Provides ASP.NET gRPC integration support for the TTSS framework.</Description>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageProjectUrl>https://github.com/T-T-Software-Solution/arch</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/T-T-Software-Solution/arch.git</RepositoryUrl> 
+    <RepositoryType>git</RepositoryType> 
   </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="..\README.md">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Grpc.AspNetCore.Server" Version="2.60.0" />
