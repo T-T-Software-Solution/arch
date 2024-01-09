@@ -144,8 +144,10 @@ public abstract class RepositoryCacheCommonTestCases<TInjectionStrategy, TEntity
             })
             .ToList();
         var tasks = insertData.Select(it => Sut.SetAsync(it.Id, it.Data));
-        Task.WaitAll(tasks.ToArray());
-        tasks.All(it => it.Result).Should().BeTrue();
+        foreach (var task in tasks)
+        {
+            (await task).Should().BeTrue();
+        }
 
         var ids = insertData.Select(it => it.Id);
         (await Sut.DeleteManyAsync(ids)).Should().BeTrue();
@@ -220,16 +222,18 @@ public abstract class RepositoryCacheWithExpiryTestsBase<TInjectionStrategy, TEn
             .Select(it => new { Id = it, Data = Fixture.Create<TEntity>() })
             .ToList();
         var tasks = insertData.Select(it => Sut.SetAsync(it.Id, it.Data));
-        Task.WaitAll(tasks.ToArray());
-        tasks.All(it => it.Result).Should().BeTrue();
+        foreach (var task in tasks)
+        {
+            (await task).Should().BeTrue();
+        }
 
         await Config.WaitUntilExpired;
 
         var actualTasks = insertData.Select(it => Sut.GetByIdAsync(it.Id));
-        Task.WaitAll(actualTasks.ToArray());
-        actualTasks
-            .Select(it => it.Result)
-            .Should().AllSatisfy(it => it.Should().BeNull());
+        foreach (var task in actualTasks)
+        {
+            (await task).Should().BeNull();
+        }
     }
 
     [Fact(Skip = "TBD, conflict with other tests.")]

@@ -9,8 +9,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Flurl.Http" Version="3.2.4" />
-    <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.33.0" />
+    <PackageReference Include="Flurl.Http" Version="4.0.0" />
+    <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="7.0.3" />
   </ItemGroup>
 
   <ItemGroup>
