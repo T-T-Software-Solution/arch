@@ -5,9 +5,15 @@ VisualStudioVersion = 17.8.34330.188
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TTSS.Core.Abstractions", "TTSS.Core.Abstractions\TTSS.Core.Abstractions.csproj", "{A0C457AB-85FD-4F69-9FA8-43FAFB54AA89}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TTSS.Core", "TTSS.Core\TTSS.Core.csproj", "{C8D9B821-8451-4C0D-8647-C53EE8A6F28A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TTSS.Core", "TTSS.Core\TTSS.Core.csproj", "{C8D9B821-8451-4C0D-8647-C53EE8A6F28A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TTSS.Core.Messaging", "TTSS.Core.Messaging\TTSS.Core.Messaging.csproj", "{1CE14286-AD39-4EC6-979D-C6CA21006534}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TTSS.Core.Messaging", "TTSS.Core.Messaging\TTSS.Core.Messaging.csproj", "{1CE14286-AD39-4EC6-979D-C6CA21006534}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{3FB8EC49-9B19-457C-AFA3-B5E25E290D55}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TTSS.Tests", "tests\TTSS.Tests\TTSS.Tests.csproj", "{6E08C414-B742-49F4-8512-5114EB45009A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TTSS.Core.Tests", "tests\TTSS.Core.Tests\TTSS.Core.Tests.csproj", "{C1827A89-35CC-424E-BB9D-F75381FBB583}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -27,9 +33,21 @@ Global
 		{1CE14286-AD39-4EC6-979D-C6CA21006534}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1CE14286-AD39-4EC6-979D-C6CA21006534}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1CE14286-AD39-4EC6-979D-C6CA21006534}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6E08C414-B742-49F4-8512-5114EB45009A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6E08C414-B742-49F4-8512-5114EB45009A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6E08C414-B742-49F4-8512-5114EB45009A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6E08C414-B742-49F4-8512-5114EB45009A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C1827A89-35CC-424E-BB9D-F75381FBB583}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C1827A89-35CC-424E-BB9D-F75381FBB583}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C1827A89-35CC-424E-BB9D-F75381FBB583}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C1827A89-35CC-424E-BB9D-F75381FBB583}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{6E08C414-B742-49F4-8512-5114EB45009A} = {3FB8EC49-9B19-457C-AFA3-B5E25E290D55}
+		{C1827A89-35CC-424E-BB9D-F75381FBB583} = {3FB8EC49-9B19-457C-AFA3-B5E25E290D55}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {4C7536CF-5DA1-45F5-A439-A8DB5467B639}
