@@ -23,6 +23,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TTSS.Infra.MongoDB", "TTSS.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TTSS.Infra.MongoDB.Tests", "tests\TTSS.Infra.MongoDB.Tests\TTSS.Infra.MongoDB.Tests.csproj", "{33FFFDF1-DC6D-48DF-98FE-CA8359769110}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TTSS.Infra.OpenTelemetry", "TTSS.Infra.OpenTelemetry\TTSS.Infra.OpenTelemetry.csproj", "{3DA96473-2CFA-45D2-8760-9C62618A30CF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TTSS.Infra.OpenTelemetry.Tests", "tests\TTSS.Infra.OpenTelemetry.Tests\TTSS.Infra.OpenTelemetry.Tests.csproj", "{5DD06DC7-B362-4687-AC4D-EC3A2C26EA24}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -65,6 +69,14 @@ Global
 		{33FFFDF1-DC6D-48DF-98FE-CA8359769110}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{33FFFDF1-DC6D-48DF-98FE-CA8359769110}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{33FFFDF1-DC6D-48DF-98FE-CA8359769110}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3DA96473-2CFA-45D2-8760-9C62618A30CF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3DA96473-2CFA-45D2-8760-9C62618A30CF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3DA96473-2CFA-45D2-8760-9C62618A30CF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3DA96473-2CFA-45D2-8760-9C62618A30CF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5DD06DC7-B362-4687-AC4D-EC3A2C26EA24}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5DD06DC7-B362-4687-AC4D-EC3A2C26EA24}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5DD06DC7-B362-4687-AC4D-EC3A2C26EA24}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5DD06DC7-B362-4687-AC4D-EC3A2C26EA24}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -73,6 +85,7 @@ Global
 		{6E08C414-B742-49F4-8512-5114EB45009A} = {3FB8EC49-9B19-457C-AFA3-B5E25E290D55}
 		{C1827A89-35CC-424E-BB9D-F75381FBB583} = {3FB8EC49-9B19-457C-AFA3-B5E25E290D55}
 		{33FFFDF1-DC6D-48DF-98FE-CA8359769110} = {3FB8EC49-9B19-457C-AFA3-B5E25E290D55}
+		{5DD06DC7-B362-4687-AC4D-EC3A2C26EA24} = {3FB8EC49-9B19-457C-AFA3-B5E25E290D55}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {4C7536CF-5DA1-45F5-A439-A8DB5467B639}
