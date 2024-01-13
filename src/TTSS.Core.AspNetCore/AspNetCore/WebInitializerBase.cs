@@ -75,7 +75,6 @@ public abstract class WebInitializerBase
     {
     }
 
-
     /// <summary>
     /// Configures the <see cref="IApplicationBuilder"/> to specify how the application will respond to HTTP requests.
     /// </summary>
@@ -89,6 +88,14 @@ public abstract class WebInitializerBase
     /// </summary>
     /// <param name="builder">The route builder</param>
     public virtual void ConfigureRoutes(IEndpointRouteBuilder builder)
+    {
+    }
+
+    /// <summary>
+    /// Registers monitoring into the <see cref="IServiceCollection"/>.
+    /// </summary>
+    /// <param name="services">The service collection</param>
+    public virtual void RegisterSystemMonitorings(IServiceCollection services)
     {
     }
 

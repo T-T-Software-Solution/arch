@@ -14,10 +14,10 @@ internal sealed class ActivityLogger : IActivity
 
     #region Properties
 
+    public Activity? Activity => _activity.Value;
     public string? RootId => _activity.Value?.RootId;
     public string? ParentId => _activity.Value?.ParentId;
     public string? CurrentId => _activity.Value?.Id;
-    internal Activity? Activity => _activity.Value;
     internal string CallerName { get; }
     internal string LogCategory { get; }
 
@@ -46,6 +46,12 @@ internal sealed class ActivityLogger : IActivity
     #endregion
 
     #region Methods
+
+    public IActivity SetStatus(ActivityStatusCode code, string? description = null)
+    {
+        _activity.Value?.SetStatus(code, description);
+        return this;
+    }
 
     public IActivity AddTag(string key, string? value)
     {

@@ -27,6 +27,23 @@ public static class IResponseExtensions
         => ToActionResult(await response);
 
     /// <summary>
+    /// Converts a <see cref="IHttpResponse"/> to an <see cref="IActionResult"/>.
+    /// </summary>
+    /// <param name="response">The response to convert</param>
+    /// <returns>The converted response</returns>
+    public static async Task<IActionResult> ToActionResultAsync(this Task<IHttpResponse> response)
+        => ToActionResult(await response);
+
+    /// <summary>
+    /// Converts a <see cref="IHttpResponse{TData}"/> to an <see cref="IActionResult"/>.
+    /// </summary>
+    /// <typeparam name="TData">The type of the response data</typeparam>
+    /// <param name="response">The response to convert</param>
+    /// <returns>The converted response</returns>
+    public static async Task<IActionResult> ToActionResultAsync<TData>(this Task<IHttpResponse<TData>> response)
+        => ToActionResult(await response);
+
+    /// <summary>
     /// Converts a <see cref="IResponse"/> to an <see cref="IActionResult"/>.
     /// </summary>
     /// <param name="response">The response to convert</param>
