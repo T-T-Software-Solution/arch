@@ -25,6 +25,7 @@ public static class WebApplicationBuilderExtensions
         await initializer.PreBuildAsync();
         initializer.RegisterOptions(target.Services);
         initializer.RegisterServices(target.Services);
+        initializer.RegisterSystemMonitorings(target.Services);
         initializer.RegisterDatabases(target.Services);
 
         var app = target.Build();

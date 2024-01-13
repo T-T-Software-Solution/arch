@@ -1,4 +1,6 @@
-﻿namespace TTSS.Core.Loggings;
+﻿using System.Diagnostics;
+
+namespace TTSS.Core.Loggings;
 
 /// <summary>
 /// Activity represents operation with context to be used for logging.
@@ -6,6 +8,11 @@
 public interface IActivity : IDisposable
 {
     #region Properties
+
+    /// <summary>
+    /// Activity represents operation with context to be used for logging.
+    /// </summary>
+    public Activity? Activity { get; }
 
     /// <summary>
     /// The root activity id.
@@ -25,6 +32,18 @@ public interface IActivity : IDisposable
     #endregion
 
     #region Methods
+
+    /// <summary>
+    /// Sets the status code and description on the current activity object.
+    /// </summary>
+    /// <param name="code">The status code</param>
+    /// <param name="description">The error status description</param>
+    /// <returns><see langword="this" /> for convenient chaining.</returns>
+    /// <remarks>
+    /// When passing code value different than ActivityStatusCode.Error, the Activity.StatusDescription will reset to null value.
+    /// The description parameter will be respected only when passing ActivityStatusCode.Error value.
+    /// </remarks>
+    IActivity SetStatus(ActivityStatusCode code, string? description = null);
 
     /// <summary>
     /// Update the Activity to have a tag with an additional key and value.
