@@ -22,6 +22,27 @@ public abstract class CommonTestCases : IoCTestBase
         Mock.Verify(it => it.ExecuteAsync(It.IsAny<AsyncTwoWayInternal>(), It.IsAny<CancellationToken>()), Times.Never);
     }
 
+    [Fact]
+    public async Task Send_OneWayWithNull_TheSystemMustNotThrowAnException()
+    {
+        var sut = ServiceProvider.GetRequiredService<IMessagingHub>();
+        OneWay request = null;
+        await sut.SendAsync(request);
+        Mock.Verify(it => it.Execute(It.IsAny<OneWay>()), Times.Never);
+        Mock.Verify(it => it.ExecuteAsync(It.IsAny<It.IsAnyType>(), It.IsAny<CancellationToken>()), Times.Never);
+    }
+
+    [Fact]
+    public async Task Send_TwoWayWithNull_TheSystemMustNotThrowAnException()
+    {
+        var sut = ServiceProvider.GetRequiredService<IMessagingHub>();
+        TwoWay request = null;
+        var actual = await sut.SendAsync(request);
+        actual.Should().BeNull();
+        Mock.Verify(it => it.Execute(It.IsAny<TwoWay>()), Times.Never);
+        Mock.Verify(it => it.ExecuteAsync(It.IsAny<It.IsAnyType>(), It.IsAny<CancellationToken>()), Times.Never);
+    }
+
     #region One-way requests
 
     [Fact]
