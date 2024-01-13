@@ -37,6 +37,8 @@ internal sealed class MessagingHub : IMessagingHub
     public Task PublishAsync<TPublication>(TPublication publication, CancellationToken cancellationToken = default)
         where TPublication : IPublication
     {
+        if (publication is null) return Task.CompletedTask;
+
         using var scope = ServiceProvider.CreateScope();
         var mediator = scope.ServiceProvider.GetRequiredService<MediatR.IMediator>();
         return mediator.Publish(publication, cancellationToken);
@@ -50,6 +52,8 @@ internal sealed class MessagingHub : IMessagingHub
     /// <returns>A task that represents the send operation. The task result contains the type erased handler response</returns>
     public async Task SendAsync(IRequesting request, CancellationToken cancellationToken = default)
     {
+        if (request is null) return;
+
         using var scope = ServiceProvider.CreateScope();
         var mediator = scope.ServiceProvider.GetRequiredService<MediatR.IMediator>();
         await mediator.Send(request, cancellationToken);
@@ -64,6 +68,8 @@ internal sealed class MessagingHub : IMessagingHub
     /// <returns>A task that represents the send operation. The task result contains the handler response</returns>
     public async Task<TResponse> SendAsync<TResponse>(IRequesting<TResponse> request, CancellationToken cancellationToken = default)
     {
+        if (request is null) return default!;
+
         using var scope = ServiceProvider.CreateScope();
         var mediator = scope.ServiceProvider.GetRequiredService<MediatR.IMediator>();
         return await mediator.Send(request, cancellationToken);
