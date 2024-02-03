@@ -8,7 +8,7 @@
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
     <Authors>T-T-Software-Solution</Authors>
     <Company>T-T-Software-Solution</Company>
-    <Version>1.0.1</Version>
+    <Version>1.0.2</Version>
     <Description>Enhances the TTSS framework with messaging patterns.</Description>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
@@ -26,7 +26,7 @@
 
   <ItemGroup>
     <PackageReference Include="MediatR" Version="12.2.0" />
-    <PackageReference Include="TTSS.Core.Abstractions" Version="1.0.1" />
+    <PackageReference Include="TTSS.Core.Abstractions" Version="1.0.2" />
   </ItemGroup>
 
 </Project>
