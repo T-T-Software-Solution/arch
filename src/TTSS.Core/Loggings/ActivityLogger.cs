@@ -114,6 +114,16 @@ internal sealed class ActivityLogger : IActivity
         return this;
     }
 
+    public IActivity Log(LogLevel logLevel, EventId eventId, Exception? exception, string? message, params object?[] args)
+    {
+        var logger = _logger.Value;
+        if (logger.IsEnabled(logLevel))
+        {
+            logger.Log(logLevel, eventId, exception, message, args);
+        }
+        return this;
+    }
+
     public void Dispose()
         => _activity.Value?.Dispose();
 

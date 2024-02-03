@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using Microsoft.Extensions.Logging;
+using System.Diagnostics;
 
 namespace TTSS.Core.Loggings;
 
@@ -114,6 +115,16 @@ public interface IActivity : IDisposable
     /// <param name="message">Format string of the log message</param>
     /// <param name="args">An object array that contains zero or more objects to format</param>
     IActivity Log(Microsoft.Extensions.Logging.LogLevel logLevel, Exception? exception, string? message, params object?[] args);
+
+    /// <summary>
+    /// Formats and writes a log message at the specified log level.
+    /// </summary>
+    /// <param name="logLevel">Entry will be written on this level</param>
+    /// <param name="eventId">The event id associated with the log</param>
+    /// <param name="exception">The exception to log</param>
+    /// <param name="message">Format string of the log message</param>
+    /// <param name="args">An object array that contains zero or more objects to format</param>
+    IActivity Log(LogLevel logLevel, EventId eventId, Exception? exception, string? message, params object?[] args);
 
     #endregion
 }
