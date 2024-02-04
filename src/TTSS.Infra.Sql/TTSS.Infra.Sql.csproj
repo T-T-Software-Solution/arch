@@ -8,7 +8,7 @@
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
     <Authors>T-T-Software-Solution</Authors>
     <Company>T-T-Software-Solution</Company>
-    <Version>1.0.2</Version>
+    <Version>1.0.3</Version>
     <Description>Integrates SQL database support into the TTSS framework.</Description>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
@@ -28,7 +28,7 @@
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.1" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.1" />
     <PackageReference Include="System.Linq.Async.Queryable" Version="6.0.1" />
-    <PackageReference Include="TTSS.Core.Abstractions" Version="1.0.2" />
+    <PackageReference Include="TTSS.Core.Abstractions" Version="1.0.3" />
   </ItemGroup>
 
 </Project>
