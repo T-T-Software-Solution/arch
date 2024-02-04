@@ -16,6 +16,13 @@ public class SqlRepository<TEntity, TKey> : ISqlRepository<TEntity, TKey>
     where TEntity : class, IDbModel<TKey>
     where TKey : notnull
 {
+    #region Fields
+
+    private DbSet<TEntity> _collection;
+    private List<string> _includePropertyPaths = new();
+
+    #endregion
+
     #region Properties
 
     /// <summary>
@@ -26,7 +33,18 @@ public class SqlRepository<TEntity, TKey> : ISqlRepository<TEntity, TKey>
     /// <summary>
     /// Entity framework core DbSet.
     /// </summary>
-    protected internal DbSet<TEntity> Collection { get; }
+    protected internal DbSet<TEntity> Collection
+    {
+        get
+        {
+            IQueryable<TEntity> qry = _collection;
+            foreach (var path in _includePropertyPaths)
+            {
+                qry = qry.Include(path);
+            }
+            return (DbSet<TEntity>)qry;
+        }
+    }
 
     #endregion
 
@@ -42,7 +60,7 @@ public class SqlRepository<TEntity, TKey> : ISqlRepository<TEntity, TKey>
     {
         var collection = connectionStore.GetCollection<TEntity>(dbContextFactory);
         DbContext = collection.dbContext ?? throw new ArgumentOutOfRangeException(nameof(collection.dbContext));
-        Collection = collection.collection ?? throw new ArgumentOutOfRangeException(nameof(collection.collection));
+        _collection = collection.collection ?? throw new ArgumentOutOfRangeException(nameof(collection.collection));
     }
 
     #endregion
@@ -275,6 +293,25 @@ public class SqlRepository<TEntity, TKey> : ISqlRepository<TEntity, TKey>
     #endregion
 
     #region ISqlRepositorySpecific members
+
+    /// <summary>
+    /// Specifies related entities to include in the query results. The navigation property to be included is specified starting with the type of entity being queried (<typeparamref name="TEntity" />).
+    /// </summary>
+    /// <remarks>
+    /// See <see href="https://aka.ms/efcore-docs-load-related-data">Loading related entities</see> for more information and examples.
+    /// </remarks>
+    /// <typeparam name="TProperty">The type of the related entity to be included</typeparam>
+    /// <param name="navigationPropertyPath">
+    /// A lambda expression representing the navigation property to be included (<c>t => t.Property1</c>).
+    /// </param>
+    public ISqlRepositorySpecific<TEntity> Include<TProperty>(Expression<Func<TEntity, TProperty>> navigationPropertyPath) where TProperty : class
+    {
+        if (navigationPropertyPath.Body is MemberExpression expression && false == _includePropertyPaths.Contains(expression.Member.Name))
+        {
+            _includePropertyPaths.Add(expression.Member.Name);
+        }
+        return this;
+    }
 
     /// <summary>
     /// Load a reference property.
