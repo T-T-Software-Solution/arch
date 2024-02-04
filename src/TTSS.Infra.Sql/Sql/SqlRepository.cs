@@ -18,7 +18,6 @@ public class SqlRepository<TEntity, TKey> : ISqlRepository<TEntity, TKey>
 {
     #region Fields
 
-    private DbSet<TEntity> _collection;
     private List<string> _includePropertyPaths = new();
 
     #endregion
@@ -33,16 +32,21 @@ public class SqlRepository<TEntity, TKey> : ISqlRepository<TEntity, TKey>
     /// <summary>
     /// Entity framework core DbSet.
     /// </summary>
-    protected internal DbSet<TEntity> Collection
+    protected internal DbSet<TEntity> Collection { get; }
+
+    /// <summary>
+    /// Provides functionality to evaluate queries against a specific data source wherein the type of the data is known.
+    /// </summary>
+    protected internal IQueryable<TEntity> Queryable
     {
         get
         {
-            IQueryable<TEntity> qry = _collection;
+            IQueryable<TEntity> query = Collection;
             foreach (var path in _includePropertyPaths)
             {
-                qry = qry.Include(path);
+                query = query.Include(path);
             }
-            return (DbSet<TEntity>)qry;
+            return query;
         }
     }
 
@@ -60,7 +64,7 @@ public class SqlRepository<TEntity, TKey> : ISqlRepository<TEntity, TKey>
     {
         var collection = connectionStore.GetCollection<TEntity>(dbContextFactory);
         DbContext = collection.dbContext ?? throw new ArgumentOutOfRangeException(nameof(collection.dbContext));
-        _collection = collection.collection ?? throw new ArgumentOutOfRangeException(nameof(collection.collection));
+        Collection = collection.collection ?? throw new ArgumentOutOfRangeException(nameof(collection.collection));
     }
 
     #endregion
@@ -73,8 +77,8 @@ public class SqlRepository<TEntity, TKey> : ISqlRepository<TEntity, TKey>
     /// <param name="key">Target entity key</param>
     /// <param name="cancellationToken">Cancellation token</param>
     /// <returns>The entity</returns>
-    public async Task<TEntity?> GetByIdAsync(TKey key, CancellationToken cancellationToken = default)
-        => await Collection.FindAsync(new object?[] { key }, cancellationToken: cancellationToken);
+    public Task<TEntity?> GetByIdAsync(TKey key, CancellationToken cancellationToken = default)
+        => Queryable.FirstOrDefaultAsync(it => it.Id.Equals(key), cancellationToken);
 
     /// <summary>
     /// Get all data.
@@ -82,7 +86,7 @@ public class SqlRepository<TEntity, TKey> : ISqlRepository<TEntity, TKey>
     /// <param name="cancellationToken">Cancellation token</param>
     /// <returns>The entities</returns>
     public IEnumerable<TEntity> Get(CancellationToken cancellationToken = default)
-        => new SqlQueryResult<TEntity>(Collection, cancellationToken);
+        => new SqlQueryResult<TEntity>(Queryable, cancellationToken);
 
     /// <summary>
     /// Get data by filter.
@@ -91,7 +95,7 @@ public class SqlRepository<TEntity, TKey> : ISqlRepository<TEntity, TKey>
     /// <param name="cancellationToken">Cancellation token</param>
     /// <returns>The entities</returns>
     public IEnumerable<TEntity> Get(Expression<Func<TEntity, bool>> filter, CancellationToken cancellationToken = default)
-        => new SqlQueryResult<TEntity>(Collection.Where(filter), cancellationToken);
+        => new SqlQueryResult<TEntity>(Queryable.Where(filter), cancellationToken);
 
     /// <summary>
     /// Convert to queryable.
@@ -99,7 +103,7 @@ public class SqlRepository<TEntity, TKey> : ISqlRepository<TEntity, TKey>
     /// <param name="cancellationToken">Cancellation token</param>
     /// <returns>Queryable</returns>
     public IQueryable<TEntity> Query(CancellationToken cancellationToken = default)
-        => Collection;
+        => Queryable;
 
     /// <summary>
     /// Insert an entity.
@@ -361,7 +365,7 @@ public class SqlRepository<TEntity, TKey> : ISqlRepository<TEntity, TKey>
     /// <param name="cancellationToken">Cancellation token</param>
     /// <returns>Entities</returns>
     public IAsyncEnumerable<TEntity> GetAsync(CancellationToken cancellationToken = default)
-        => Collection.AsAsyncEnumerable();
+        => Queryable.AsAsyncEnumerable();
 
     /// <summary>
     /// Get entities.
@@ -370,7 +374,7 @@ public class SqlRepository<TEntity, TKey> : ISqlRepository<TEntity, TKey>
     /// <param name="cancellationToken">Cancellation token</param>
     /// <returns>Entities</returns>
     public IAsyncEnumerable<TEntity> GetAsync(Expression<Func<TEntity, bool>> filter, CancellationToken cancellationToken = default)
-        => Collection.Where(filter).AsAsyncEnumerable();
+        => Queryable.Where(filter).AsAsyncEnumerable();
 
     #endregion
 
