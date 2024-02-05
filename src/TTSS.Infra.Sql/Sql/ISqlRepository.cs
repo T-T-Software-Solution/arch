@@ -13,9 +13,7 @@ public interface ISqlRepository<TEntity, TKey> : IRepository<TEntity, TKey>,
     IDisposable,
     IAsyncDisposable
     where TEntity : IDbModel<TKey>
-    where TKey : notnull
-{
-}
+    where TKey : notnull;
 
 /// <summary>
 /// Contract for repository with string primary key.
@@ -26,6 +24,4 @@ public interface ISqlRepository<TEntity> : IRepository<TEntity>,
     IAsyncQueryRepository<TEntity, string>,
     IDisposable,
     IAsyncDisposable
-    where TEntity : IDbModel<string>
-{
-}
+    where TEntity : IDbModel<string>;

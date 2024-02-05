@@ -88,8 +88,8 @@ public class ManualTests : CommonTestCases
         await InsertAndValidate(studentData, studentSut, 1);
     }
 
-    private static async Task InsertAndValidate<T>(T data, MongoDbRepository<T> sut, int expectedCount)
-        where T : IDbModel<string>
+    private static async Task InsertAndValidate<TEntity>(TEntity data, MongoDbRepository<TEntity> sut, int expectedCount)
+        where TEntity : IDbModel<string>
     {
         await sut.InsertAsync(data);
         var actual = await sut.GetByIdAsync(data.Id);

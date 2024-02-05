@@ -56,9 +56,10 @@ public interface IActivity : IDisposable
     /// <summary>
     /// Update the Activity to have a tag with an additional key and value.
     /// </summary>
+    /// <typeparam name="TValue">The type of the value</typeparam>
     /// <param name="key">The tag key name</param>
     /// <param name="value">The tag value mapped to the input key</param>
-    IActivity AddTag<T>(string key, T? value);
+    IActivity AddTag<TValue>(string key, TValue? value);
 
     /// <summary>
     /// Add or update the Activity tag with the input key and value.

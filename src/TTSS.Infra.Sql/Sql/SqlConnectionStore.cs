@@ -10,7 +10,7 @@ public sealed class SqlConnectionStore
 {
     #region Fields
 
-    private readonly Dictionary<string, SqlConnection> _connections = new();
+    private readonly Dictionary<string, SqlConnection> _connections = [];
 
     #endregion
 
@@ -19,15 +19,15 @@ public sealed class SqlConnectionStore
     internal void Add(SqlConnection connection)
         => _connections.Add(connection.TypeName, connection);
 
-    internal (DbSet<T>? collection, DbContext? dbContext) GetCollection<T>(SqlDbContextFactory dbContextFactory)
-        where T : class
+    internal (DbSet<TEntity>? collection, DbContext? dbContext) GetCollection<TEntity>(SqlDbContextFactory dbContextFactory)
+        where TEntity : class
     {
-        var typeName = typeof(T).Name;
+        var typeName = typeof(TEntity).Name;
         if (!_connections.TryGetValue(typeName, out var connection))
             throw new ArgumentOutOfRangeException($"Collection '{typeName}' not found.");
 
         var dbContext = dbContextFactory.GetDbContext(connection.DbContextDataType);
-        var collection = dbContext.Set<T>();
+        var collection = dbContext.Set<TEntity>();
         dbContext.Database.OpenConnection();
         dbContext.Database.EnsureCreated();
         return (collection, dbContext);

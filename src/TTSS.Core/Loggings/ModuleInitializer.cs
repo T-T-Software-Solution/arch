@@ -13,8 +13,5 @@ public static class ModuleInitializer
     /// <param name="target">The service collection</param>
     /// <returns>The service collection</returns>
     public static IServiceCollection RegisterActivityFactory(this IServiceCollection target)
-    {
-        target.AddTransient<IActivityFactory, ActivityFactory>();
-        return target;
-    }
+        => target.AddTransient<IActivityFactory, ActivityFactory>();
 }

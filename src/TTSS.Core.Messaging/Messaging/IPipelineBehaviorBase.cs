@@ -6,6 +6,4 @@
 /// <typeparam name="TRequest">Request type</typeparam>
 /// <typeparam name="TResponse">Response type</typeparam>
 public interface IPipelineBehaviorBase<in TRequest, TResponse> : MediatR.IPipelineBehavior<TRequest, TResponse>
-    where TRequest : notnull
-{
-}
+    where TRequest : notnull;

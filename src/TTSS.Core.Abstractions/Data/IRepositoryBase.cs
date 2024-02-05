@@ -3,6 +3,4 @@
 /// <summary>
 /// Root contract for all repositories.
 /// </summary>
-public interface IRepositoryBase
-{
-}
+public interface IRepositoryBase;

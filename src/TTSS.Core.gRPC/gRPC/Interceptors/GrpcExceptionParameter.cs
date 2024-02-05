@@ -4,7 +4,8 @@ using TTSS.Core.Loggings;
 
 namespace TTSS.Core.gRPC.Interceptors;
 
-internal sealed class GrpcExceptionParameter<TRequest> where TRequest : class
+internal sealed class GrpcExceptionParameter<TRequest>(TRequest request, ServerCallContext context, IActivity? activity)
+    where TRequest : class
 {
     #region Fields
 
@@ -15,22 +16,10 @@ internal sealed class GrpcExceptionParameter<TRequest> where TRequest : class
     #region Properties
 
     public string RequestJson => _requestJson ??= JsonSerializer.Serialize(Request);
-    public TRequest Request { get; }
-    public IActivity? Activity { get; }
-    public string CorrelationId { get; }
-    public ServerCallContext Context { get; }
-
-    #endregion
-
-    #region Constructors
-
-    public GrpcExceptionParameter(TRequest request, ServerCallContext context, IActivity? activity)
-    {
-        Request = request ?? throw new ArgumentNullException(nameof(request));
-        Activity = activity ?? throw new ArgumentNullException(nameof(activity));
-        Context = context ?? throw new ArgumentNullException(nameof(context));
-        CorrelationId = activity?.RootId ?? activity?.ParentId ?? activity?.CurrentId ?? "Unknown";
-    }
+    public TRequest Request { get; } = request ?? throw new ArgumentNullException(nameof(request));
+    public IActivity? Activity { get; } = activity ?? throw new ArgumentNullException(nameof(activity));
+    public string CorrelationId { get; } = activity?.RootId ?? activity?.ParentId ?? activity?.CurrentId ?? "Unknown";
+    public ServerCallContext Context { get; } = context ?? throw new ArgumentNullException(nameof(context));
 
     #endregion
 }

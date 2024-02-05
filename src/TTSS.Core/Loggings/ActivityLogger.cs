@@ -59,7 +59,7 @@ internal sealed class ActivityLogger : IActivity
         return this;
     }
 
-    public IActivity AddTag<T>(string key, T? value)
+    public IActivity AddTag<TValue>(string key, TValue? value)
     {
         _activity.Value?.AddTag(key, value);
         return this;
@@ -109,7 +109,9 @@ internal sealed class ActivityLogger : IActivity
         var logger = _logger.Value;
         if (logger.IsEnabled(logLevel))
         {
+#pragma warning disable CA2254 // Template should be a static expression
             logger.Log(logLevel, exception, message, args);
+#pragma warning restore CA2254 // Template should be a static expression
         }
         return this;
     }
@@ -119,7 +121,9 @@ internal sealed class ActivityLogger : IActivity
         var logger = _logger.Value;
         if (logger.IsEnabled(logLevel))
         {
+#pragma warning disable CA2254 // Template should be a static expression
             logger.Log(logLevel, eventId, exception, message, args);
+#pragma warning restore CA2254 // Template should be a static expression
         }
         return this;
     }

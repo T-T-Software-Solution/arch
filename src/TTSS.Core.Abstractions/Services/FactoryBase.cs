@@ -5,23 +5,16 @@ namespace TTSS.Core.Services;
 /// <summary>
 /// Service provider based factory.
 /// </summary>
-public abstract class FactoryBase
+/// <remarks>
+/// Initialize an instance of <see cref="FactoryBase"/>.
+/// </remarks>
+/// <param name="serviceProvider">The service provider</param>
+/// <exception cref="ArgumentNullException">The service provider is required</exception>
+public abstract class FactoryBase(Lazy<IServiceProvider> serviceProvider)
 {
-    #region Fields
+    #region Properties
 
-    private readonly Lazy<IServiceProvider> _serviceProvider;
-
-    #endregion
-
-    #region Constructors
-
-    /// <summary>
-    /// Initialize an instance of <see cref="FactoryBase"/>.
-    /// </summary>
-    /// <param name="serviceProvider">The service provider</param>
-    /// <exception cref="ArgumentNullException">The service provider is required</exception>
-    public FactoryBase(Lazy<IServiceProvider> serviceProvider)
-        => _serviceProvider = serviceProvider ?? throw new ArgumentNullException(nameof(serviceProvider));
+    private Lazy<IServiceProvider> ServiceProvider => serviceProvider ?? throw new ArgumentNullException(nameof(serviceProvider));
 
     #endregion
 
@@ -33,7 +26,7 @@ public abstract class FactoryBase
     /// <typeparam name="TService">Service type</typeparam>
     /// <returns>The service</returns>
     protected TService? GetOrCreate<TService>()
-        => _serviceProvider.Value.GetService<TService>();
+        => ServiceProvider.Value.GetService<TService>();
 
     /// <summary>
     /// Get or create service.
@@ -41,7 +34,7 @@ public abstract class FactoryBase
     /// <param name="serviceType">Service type</param>
     /// <returns>The service</returns>
     protected object? GetOrCreate(Type serviceType)
-        => _serviceProvider.Value.GetService(serviceType);
+        => ServiceProvider.Value.GetService(serviceType);
 
     #endregion
 }

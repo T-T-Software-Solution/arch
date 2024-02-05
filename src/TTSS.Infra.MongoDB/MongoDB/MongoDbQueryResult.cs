@@ -4,12 +4,12 @@ using TTSS.Core.Data;
 
 namespace TTSS.Infra.Data.MongoDB;
 
-internal sealed class MongoDbQueryResult<T> : IQueryResult<T>
+internal sealed class MongoDbQueryResult<TEntity>(IFindFluent<TEntity, TEntity> findResult, CancellationToken cancellationToken) : IQueryResult<TEntity>
 {
     #region Fields
 
-    private readonly IFindFluent<T, T> _findResult;
-    private readonly CancellationToken _cancellationToken;
+    private readonly IFindFluent<TEntity, TEntity> _findResult = findResult ?? throw new ArgumentNullException(nameof(findResult));
+    private readonly CancellationToken _cancellationToken = cancellationToken;
 
     #endregion
 
@@ -19,25 +19,15 @@ internal sealed class MongoDbQueryResult<T> : IQueryResult<T>
 
     #endregion
 
-    #region Constructors
-
-    public MongoDbQueryResult(IFindFluent<T, T> findResult, CancellationToken cancellationToken)
-    {
-        _findResult = findResult ?? throw new ArgumentNullException(nameof(findResult));
-        _cancellationToken = cancellationToken;
-    }
-
-    #endregion
-
     #region Methods
 
-    public async Task<IEnumerable<T>> GetAsync()
+    public async Task<IEnumerable<TEntity>> GetAsync()
         => await _findResult.ToListAsync(_cancellationToken);
 
-    public IPagingRepositoryResult<T> ToPaging(bool totalCount = false, int pageSize = 0)
-        => new MongoDbPagingResult<T>(_findResult, _cancellationToken, totalCount, pageSize);
+    public IPagingRepositoryResult<TEntity> ToPaging(bool totalCount = false, int pageSize = 0)
+        => new MongoDbPagingResult<TEntity>(_findResult, _cancellationToken, totalCount, pageSize);
 
-    public IEnumerator<T> GetEnumerator()
+    public IEnumerator<TEntity> GetEnumerator()
         => _findResult.ToEnumerable(_cancellationToken).GetEnumerator();
 
     IEnumerator IEnumerable.GetEnumerator()

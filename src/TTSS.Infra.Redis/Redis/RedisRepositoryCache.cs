@@ -8,9 +8,7 @@ namespace TTSS.Infra.Data.Redis;
 /// <summary>
 /// Base class for Redis repository cache.
 /// </summary>
-public abstract class RedisRepositoryCache
-{
-}
+public abstract class RedisRepositoryCache;
 
 /// <summary>
 /// Redis repository cache.
@@ -87,8 +85,8 @@ public class RedisRepositoryCache<TEntity> : RedisRepositoryCache,
     /// <param name="filterKeys">Filter keys</param>
     /// <param name="cancellationToken">Cancellation token</param>
     /// <returns>The entities</returns>
-    public Task<IEnumerable<TEntity?>> GetAsync(IEnumerable<string> filterKeys, CancellationToken cancellationToken = default)
-        => Execute(filterKeys, (k, db) => ConvertToEntity(db.StringGetAsync(k)), cancellationToken);
+    public Task<IEnumerable<TEntity>> GetAsync(IEnumerable<string> filterKeys, CancellationToken cancellationToken = default)
+        => Execute(filterKeys, (k, db) => ConvertToEntity(db.StringGetAsync(k)), cancellationToken)!;
 
     /// <summary>
     /// Upsert an entity.
@@ -226,7 +224,7 @@ public class RedisRepositoryCache<TEntity> : RedisRepositoryCache,
         if (value.IsNull) return default;
         if (string.IsNullOrWhiteSpace(value)) return value.ToString() as TEntity;
 
-        var isJsonFormat = value.StartsWith("{") && value.ToString().EndsWith("}");
+        var isJsonFormat = value.StartsWith("{") && value.ToString().EndsWith('}');
         if (false == isJsonFormat) return value.ToString() as TEntity;
         return Standard.Json.Deserialize<TEntity>(value.ToString());
     }

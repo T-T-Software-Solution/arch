@@ -21,7 +21,7 @@ public static class ActivityFactoryExtensions
         ActivityKind kind = ActivityKind.Internal)
         where TCategoryName : class
     {
-        if (target is null) throw new ArgumentNullException(nameof(target));
+        ArgumentNullException.ThrowIfNull(target);
         return target.CreateActivity(typeof(TCategoryName).Name, callerName, kind);
     }
 
@@ -38,7 +38,7 @@ public static class ActivityFactoryExtensions
         [CallerMemberName] string callerName = default!,
         ActivityKind kind = ActivityKind.Internal)
     {
-        if (target is null) throw new ArgumentNullException(nameof(target));
+        ArgumentNullException.ThrowIfNull(target);
         return target.CreateActivity(caller.GetType().Name, callerName, kind);
     }
 }

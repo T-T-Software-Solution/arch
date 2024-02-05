@@ -43,8 +43,9 @@ public static class ModuleInitializer
     public static SqlSetup AddDbContext<TDbContext>(this SqlSetup target)
         where TDbContext : DbContext
     {
-        var builder = target?.ConnectionStoreBuilder ?? throw new ArgumentNullException(nameof(target.ConnectionStoreBuilder));
-        var services = target?.ServiceCollection ?? throw new ArgumentNullException(nameof(target.ServiceCollection));
+        ArgumentNullException.ThrowIfNull(target);
+        var builder = target.ConnectionStoreBuilder ?? throw new ArgumentNullException(nameof(target), $"The {nameof(target.ConnectionStoreBuilder)} must not be null.");
+        var services = target.ServiceCollection ?? throw new ArgumentNullException(nameof(target), $"The {nameof(target.ServiceCollection)} must not be null.");
 
         builder.SetupDatabase<TDbContext>();
         services.AddDbContext<TDbContext>(builder => target.DatabaseContextConfig?.Invoke(builder));
@@ -78,7 +79,7 @@ public static class ModuleInitializer
             .Select(dbModel =>
             {
                 var dbModelContract = dbModel?.GetInterface(targetDbContractType.Name);
-                if (dbModelContract is null || !dbModelContract.IsGenericType) throw new ArgumentOutOfRangeException($"{nameof(dbModel)} must implement the IDbModel<T>.");
+                if (dbModelContract is null || !dbModelContract.IsGenericType) throw new ArgumentOutOfRangeException(nameof(dbModel), $"It must implement the IDbModel<TEntity>.");
                 var isKeyString = baseServiceType.GetGenericArguments().Length == 1;
                 if (isKeyString && dbModelContract.GenericTypeArguments.FirstOrDefault() != typeof(string)) return (null!, null!);
                 var types = isKeyString ? new[] { dbModel } : new[] { dbModel, dbModelContract.GenericTypeArguments.FirstOrDefault() };
