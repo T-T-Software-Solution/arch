@@ -131,8 +131,8 @@ public class JsonWebTokenDescriberTests : TestBase
         descriptor.ValidTo.Should().Be(expectedExp);
         var expectedClaims = new List<Claim>()
         {
-            new Claim(JwtRegisteredClaimNames.Iss, Issuer),
-            new Claim(JwtRegisteredClaimNames.Aud, Audience),
+            new(JwtRegisteredClaimNames.Iss, Issuer),
+            new(JwtRegisteredClaimNames.Aud, Audience),
         };
         foreach (var item in defaultClaims)
         {

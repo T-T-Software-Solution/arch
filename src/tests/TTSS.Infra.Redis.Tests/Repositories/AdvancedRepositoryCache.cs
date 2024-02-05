@@ -6,7 +6,7 @@ namespace TTSS.Infra.Data.Redis.Repositories;
 
 internal class AdvancedRepositoryCache : RedisRepositoryCache<AdvancedEntity>
 {
-    private IDateTimeService _dateTimeService;
+    private readonly IDateTimeService _dateTimeService;
 
     public AdvancedRepositoryCache(RedisConnectionStore connectionStore,
         IDateTimeService dateTimeService) : base(connectionStore)
