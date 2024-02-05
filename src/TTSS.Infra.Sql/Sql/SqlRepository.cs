@@ -308,7 +308,7 @@ public class SqlRepository<TEntity, TKey> : ISqlRepository<TEntity, TKey>
     /// <param name="navigationPropertyPath">
     /// A lambda expression representing the navigation property to be included (<c>t => t.Property1</c>).
     /// </param>
-    public ISqlRepositorySpecific<TEntity> Include<TProperty>(Expression<Func<TEntity, TProperty>> navigationPropertyPath) where TProperty : class
+    public ISqlRepositorySpecific<TEntity> Include<TProperty>(Expression<Func<TEntity, TProperty?>> navigationPropertyPath) where TProperty : class
     {
         if (navigationPropertyPath.Body is MemberExpression expression && false == _includePropertyPaths.Contains(expression.Member.Name))
         {

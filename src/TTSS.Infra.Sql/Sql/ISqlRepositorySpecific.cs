@@ -23,7 +23,7 @@ public interface ISqlRepositorySpecific<TEntity> : IRepositoryBase
     /// <param name="navigationPropertyPath">
     /// A lambda expression representing the navigation property to be included (<c>t => t.Property1</c>).
     /// </param>
-    ISqlRepositorySpecific<TEntity> Include<TProperty>(Expression<Func<TEntity, TProperty>> navigationPropertyPath) where TProperty : class;
+    ISqlRepositorySpecific<TEntity> Include<TProperty>(Expression<Func<TEntity, TProperty?>> navigationPropertyPath) where TProperty : class;
 
     /// <summary>
     /// Load a reference property.
