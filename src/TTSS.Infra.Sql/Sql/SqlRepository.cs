@@ -406,6 +406,14 @@ public class SqlRepository<TEntity, TKey> : ISqlRepository<TEntity, TKey>
 
     #endregion
 
+    /// <summary>
+    /// Filters the elements of an System.Linq.IQueryable based on a specified type.
+    /// </summary>
+    /// <typeparam name="TResult">The type to filter the elements of the sequence on</typeparam>
+    /// <returns>A collection that contains the elements from source that have type TResult</returns>
+    public IQueryable<TResult> OfType<TResult>()
+        => Collection.OfType<TResult>();
+
     private async Task<bool> SaveChangedAsync(CancellationToken cancellationToken)
         => await DbContext.SaveChangesAsync(cancellationToken) > 0;
 
