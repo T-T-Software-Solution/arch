@@ -3,6 +3,4 @@
 /// <summary>
 /// Marker interface to represent a publication message.
 /// </summary>
-public interface IPublication : MediatR.INotification
-{
-}
+public interface IPublication : MediatR.INotification;

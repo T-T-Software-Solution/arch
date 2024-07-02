@@ -4,7 +4,7 @@ using System.Security.Claims;
 namespace TTSS.Core.Models;
 
 /// <summary>
-/// Helper extensions for <see cref="System.Security.Claims.ClaimsPrincipal"/>.
+/// Helper extensions for <see cref="ClaimsPrincipal"/>.
 /// </summary>
 public static class ClaimsPrincipalExtensions
 {

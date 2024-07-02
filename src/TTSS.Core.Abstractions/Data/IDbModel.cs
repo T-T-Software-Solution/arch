@@ -3,9 +3,7 @@
 /// <summary>
 /// Contract for all database models.
 /// </summary>
-public interface IDbModel
-{
-}
+public interface IDbModel;
 
 /// <summary>
 /// Contract for all database models with a primary key.

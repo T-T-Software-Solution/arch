@@ -41,7 +41,7 @@ public static class ModuleInitializer
         where TEntity : RedisCacheBase<TEntity>
     {
         var targetType = typeof(RedisCacheBase<>);
-        var (builder, services, implementationType, _) = ValidateAndExtractParameters<TEntity>(target, targetType, "{TEntity} must be derieved from RedisCacheBase<T>.");
+        var (builder, services, implementationType, _) = ValidateAndExtractParameters<TEntity>(target, targetType, "{TEntity} must be derieved from RedisCacheBase<TEntity>.");
         services.AddSingleton(typeof(IRedisCache<>).MakeGenericType(implementationType), implementationType);
         builder.RegisterCollection(implementationType, behavior);
         return target;
@@ -58,7 +58,7 @@ public static class ModuleInitializer
         where TRepositoryCache : RedisRepositoryCache
     {
         var targetType = typeof(RedisRepositoryCache<>);
-        var (builder, services, implementationType, entityTypes) = ValidateAndExtractParameters<TRepositoryCache>(target, targetType, "{TRepositoryCache} must be derieved from RedisRepositoryCacheBase<T>.");
+        var (builder, services, implementationType, entityTypes) = ValidateAndExtractParameters<TRepositoryCache>(target, targetType, "{TRepositoryCache} must be derieved from RedisRepositoryCacheBase<TEntity>.");
         var generalType = typeof(IRepositoryCache<>).MakeGenericType(entityTypes);
         var specificType = typeof(IRedisRepositoryCache<>).MakeGenericType(entityTypes);
         services.AddSingleton(generalType, implementationType);
@@ -80,8 +80,9 @@ public static class ModuleInitializer
     private static (RedisConnectionStoreBuilder builder, IServiceCollection services, Type implementationType, Type[] entityTypes)
         ValidateAndExtractParameters<TParameter>(RedisSetup setup, Type targetType, string errorMessage)
     {
-        var builder = setup?.ConnectionStoreBuilder ?? throw new ArgumentNullException(nameof(setup.ConnectionStoreBuilder));
-        var services = setup?.ServiceCollection ?? throw new ArgumentNullException(nameof(setup.ServiceCollection));
+        ArgumentNullException.ThrowIfNull(setup);
+        var builder = setup.ConnectionStoreBuilder ?? throw new ArgumentNullException(nameof(setup), $"The {nameof(setup.ConnectionStoreBuilder)} must not be null.");
+        var services = setup.ServiceCollection ?? throw new ArgumentNullException(nameof(setup), $"The {nameof(setup.ServiceCollection)} must not be null.");
 
         var implementationType = typeof(TParameter);
 

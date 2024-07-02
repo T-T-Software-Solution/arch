@@ -7,23 +7,16 @@ namespace TTSS.Core.gRPC.Interceptors;
 /// <summary>
 /// Interceptor for logging exceptions.
 /// </summary>
-public class GrpcExceptionLogInterceptor : Interceptor
+/// <remarks>
+/// Initializes a new instance of the <see cref="GrpcExceptionLogInterceptor"/> class.
+/// </remarks>
+/// <param name="activityFactory">The activity factory</param>
+/// <exception cref="ArgumentNullException">The activity factory is required</exception>
+public class GrpcExceptionLogInterceptor(IActivityFactory activityFactory) : Interceptor
 {
     #region Fields
 
-    private readonly IActivityFactory _activityFactory;
-
-    #endregion
-
-    #region Constructors
-
-    /// <summary>
-    /// Initializes a new instance of the <see cref="GrpcExceptionLogInterceptor"/> class.
-    /// </summary>
-    /// <param name="activityFactory">The activity factory</param>
-    /// <exception cref="ArgumentNullException">The activity factory is required</exception>
-    public GrpcExceptionLogInterceptor(IActivityFactory activityFactory)
-        => _activityFactory = activityFactory ?? throw new ArgumentNullException(nameof(activityFactory));
+    private readonly IActivityFactory _activityFactory = activityFactory ?? throw new ArgumentNullException(nameof(activityFactory));
 
     #endregion
 

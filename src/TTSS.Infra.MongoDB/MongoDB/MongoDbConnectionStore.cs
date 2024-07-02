@@ -13,7 +13,7 @@ public sealed class MongoDbConnectionStore
     #region Fields
 
     private ConcurrentDictionary<string, MongoClient> _clients = null!;
-    private readonly Dictionary<string, MongoDbConnection> _connections = new();
+    private readonly Dictionary<string, MongoDbConnection> _connections = [];
 
     #endregion
 
@@ -22,9 +22,9 @@ public sealed class MongoDbConnectionStore
     internal void Add(MongoDbConnection connection)
         => _connections.TryAdd(connection.TypeName, connection);
 
-    internal (string? collectionName, IMongoCollection<T>? collection) GetCollection<T>()
+    internal (string? collectionName, IMongoCollection<TEntity>? collection) GetCollection<TEntity>()
     {
-        var typeName = typeof(T).Name;
+        var typeName = typeof(TEntity).Name;
         if (!_connections.TryGetValue(typeName, out var connection))
             throw new ArgumentOutOfRangeException($"Collection '{typeName}' not found.");
 
@@ -32,9 +32,9 @@ public sealed class MongoDbConnectionStore
         if (!_clients?.TryGetValue(connection.ConnectionString, out client) ?? false)
             throw new ArgumentOutOfRangeException($"Database '{connection.DatabaseName}' not found.");
 
-        if (!BsonClassMap.IsClassMapRegistered(typeof(T)))
+        if (!BsonClassMap.IsClassMapRegistered(typeof(TEntity)))
         {
-            BsonClassMap.TryRegisterClassMap<T>(it =>
+            BsonClassMap.TryRegisterClassMap<TEntity>(it =>
             {
                 it.AutoMap();
                 it.SetIsRootClass(!connection.IsChild);
@@ -42,8 +42,8 @@ public sealed class MongoDbConnectionStore
         }
 
         var database = client?.GetDatabase(connection.DatabaseName);
-        var collection = database?.GetCollection<T>(connection.CollectionName);
-        return (connection.CollectionName, connection.NoDiscriminator ? collection : collection?.OfType<T>());
+        var collection = database?.GetCollection<TEntity>(connection.CollectionName);
+        return (connection.CollectionName, connection.NoDiscriminator ? collection : collection?.OfType<TEntity>());
     }
 
     internal MongoDbConnectionStore Build()

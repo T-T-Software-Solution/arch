@@ -42,8 +42,9 @@ public static class ModuleInitializer
     public static MongoDbSetup AddDbContext<TMongoDbContext>(this MongoDbSetup target)
         where TMongoDbContext : IMongoDbContext
     {
-        var builder = target?.ConnectionStoreBuilder ?? throw new ArgumentNullException(nameof(target.ConnectionStoreBuilder));
-        var services = target?.ServiceCollection ?? throw new ArgumentNullException(nameof(target.ServiceCollection));
+        ArgumentNullException.ThrowIfNull(target);
+        var builder = target.ConnectionStoreBuilder ?? throw new ArgumentNullException(nameof(target), $"The {nameof(target.ConnectionStoreBuilder)} must not be null.");
+        var services = target.ServiceCollection ?? throw new ArgumentNullException(nameof(target), $"The {nameof(target.ServiceCollection)} must not be null.");
 
         var dbContextType = typeof(TMongoDbContext);
         registerRepository(dbContextType, typeof(MongoDbRepository<>), typeof(IRepository<>), typeof(IMongoDbRepository<>), typeof(MongoDbRepository<>));
@@ -66,8 +67,8 @@ public static class ModuleInitializer
                 .Where(it => it.PropertyType.BaseType is not null
                     && it.PropertyType.BaseType.IsGenericType
                     && targetPropertyType == it.PropertyType.BaseType.GetGenericTypeDefinition())
-                .Select(dbModel => dbModel.PropertyType.BaseType?.GenericTypeArguments ?? Array.Empty<Type>())
-                .Where(it => it.Any())
+                .Select(dbModel => dbModel.PropertyType.BaseType?.GenericTypeArguments ?? [])
+                .Where(it => it.Length != 0)
                 .Select(it =>
                 {
                     var services = new Type[]

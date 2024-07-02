@@ -13,15 +13,11 @@ public interface IRepository<TEntity, TKey> : IRepositoryBase,
     IUpsertRepository<TEntity, TKey>,
     IInsertBulkRepository<TEntity>
     where TEntity : IDbModel<TKey>
-    where TKey : notnull
-{
-}
+    where TKey : notnull;
 
 /// <summary>
 /// Contract for repository with string primary key.
 /// </summary>
 /// <typeparam name="TEntity">Entity type</typeparam>
 public interface IRepository<TEntity> : IRepository<TEntity, string>
-    where TEntity : IDbModel<string>
-{
-}
+    where TEntity : IDbModel<string>;

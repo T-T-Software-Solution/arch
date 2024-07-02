@@ -34,7 +34,7 @@ public class SqlConnectionStoreBuilder
     /// <exception cref="ArgumentOutOfRangeException">The data type must be a subclass of DbContext</exception>
     public SqlConnectionStoreBuilder SetupDatabase(Type type)
     {
-        if (!type.IsSubclassOf(typeof(DbContext))) throw new ArgumentOutOfRangeException($"{nameof(type)} must be a subclass of DbContext.");
+        if (!type.IsSubclassOf(typeof(DbContext))) throw new ArgumentOutOfRangeException(nameof(type), "It must be a subclass of DbContext.");
         _dbContextDataType = type;
         return this;
     }
@@ -56,7 +56,7 @@ public class SqlConnectionStoreBuilder
     public SqlConnectionStoreBuilder RegisterCollection(Type? entityType)
     {
         if (false == (entityType?.IsAssignableTo(typeof(IDbModel)) ?? false))
-            throw new ArgumentOutOfRangeException($"{nameof(entityType)} must implement IDbModel");
+            throw new ArgumentOutOfRangeException(nameof(entityType), "It must implement IDbModel.");
 
         var connection = new SqlConnection(entityType, _dbContextDataType);
         _connectionStore.Add(connection);

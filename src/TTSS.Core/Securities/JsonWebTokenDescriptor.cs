@@ -27,7 +27,7 @@ public class JsonWebTokenDescriptor : ITokenDescriptor
     /// <summary>
     /// User claims.
     /// </summary>
-    public IEnumerable<Claim> Claims { get; init; } = Enumerable.Empty<Claim>();
+    public IEnumerable<Claim> Claims { get; init; } = [];
 
     /// <summary>
     /// State of the token.

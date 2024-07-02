@@ -51,9 +51,9 @@ public class MongoDbRepository<TEntity, TKey> : IMongoDbRepository<TEntity, TKey
     public MongoDbRepository(MongoDbConnectionStore connectionStore, Expression<Func<TEntity, TKey>>? idField = default)
     {
         idField ??= it => it.Id;
-        var collection = connectionStore.GetCollection<TEntity>();
-        Collection = collection.collection ?? throw new ArgumentOutOfRangeException(nameof(collection.collection));
-        CollectionName = collection.collectionName ?? throw new ArgumentOutOfRangeException(nameof(collection.collectionName));
+        var (collectionName, collection) = connectionStore.GetCollection<TEntity>();
+        Collection = collection ?? throw new ArgumentOutOfRangeException(nameof(connectionStore), $"The {nameof(collection)} must not be null.");
+        CollectionName = collectionName ?? throw new ArgumentOutOfRangeException(nameof(connectionStore), $"The {nameof(collectionName)} must not be null.");
         _idField = idField ?? throw new ArgumentNullException(nameof(idField));
     }
 
@@ -202,7 +202,7 @@ public class MongoDbRepository<TEntity, TKey> : IMongoDbRepository<TEntity, TKey
         var batch = entities.Take(BatchSize).ToList();
         entities = entities.Skip(BatchSize).ToList();
 
-        while (batch.Any())
+        while (batch.Count != 0)
         {
             var startRequestDateTime = DateTime.Now;
 
@@ -250,20 +250,10 @@ public class MongoDbRepository<TEntity, TKey> : IMongoDbRepository<TEntity, TKey
 /// MongoDb implementation of <see cref="IRepository{TEntity}"/>.
 /// </summary>
 /// <typeparam name="TEntity">Entity type</typeparam>
-public class MongoDbRepository<TEntity> : MongoDbRepository<TEntity, string>,
+/// <remarks>
+/// Initialize an instance of <see cref="MongoDbRepository{T}"/>.
+/// </remarks>
+/// <param name="connectionStore">The connection store</param>
+public class MongoDbRepository<TEntity>(MongoDbConnectionStore connectionStore) : MongoDbRepository<TEntity, string>(connectionStore, it => it.Id),
     IMongoDbRepository<TEntity>
-    where TEntity : IDbModel<string>
-{
-    #region Constructors
-
-    /// <summary>
-    /// Initialize an instance of <see cref="MongoDbRepository{T}"/>.
-    /// </summary>
-    /// <param name="connectionStore">The connection store</param>
-    public MongoDbRepository(MongoDbConnectionStore connectionStore)
-        : base(connectionStore, it => it.Id)
-    {
-    }
-
-    #endregion
-}
+    where TEntity : IDbModel<string>;

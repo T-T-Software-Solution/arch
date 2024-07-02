@@ -9,7 +9,7 @@ public abstract class WebInitializerBase
 {
     #region Fields
 
-    private readonly List<IValidator> _registeredOptionsValidators = new();
+    private readonly List<IValidator> _registeredOptionsValidators = [];
 
     #endregion
 

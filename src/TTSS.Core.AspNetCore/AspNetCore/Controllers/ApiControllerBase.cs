@@ -7,6 +7,4 @@ namespace TTSS.Core.AspNetCore.Controllers;
 /// </summary>
 [ApiController]
 [Route("api/[controller]")]
-public abstract class ApiControllerBase : ControllerBase
-{
-}
+public abstract class ApiControllerBase : ControllerBase;

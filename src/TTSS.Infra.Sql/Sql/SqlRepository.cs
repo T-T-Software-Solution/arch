@@ -18,7 +18,7 @@ public class SqlRepository<TEntity, TKey> : ISqlRepository<TEntity, TKey>
 {
     #region Fields
 
-    private List<string> _includePropertyPaths = new();
+    private readonly List<string> _includePropertyPaths = [];
 
     #endregion
 
@@ -62,9 +62,9 @@ public class SqlRepository<TEntity, TKey> : ISqlRepository<TEntity, TKey>
     /// <exception cref="ArgumentOutOfRangeException">All parameters are required</exception>
     public SqlRepository(SqlConnectionStore connectionStore, SqlDbContextFactory dbContextFactory)
     {
-        var collection = connectionStore.GetCollection<TEntity>(dbContextFactory);
-        DbContext = collection.dbContext ?? throw new ArgumentOutOfRangeException(nameof(collection.dbContext));
-        Collection = collection.collection ?? throw new ArgumentOutOfRangeException(nameof(collection.collection));
+        var (collection, dbContext) = connectionStore.GetCollection<TEntity>(dbContextFactory);
+        DbContext = dbContext ?? throw new ArgumentOutOfRangeException(nameof(connectionStore), $"The {nameof(dbContext)} must not be null.");
+        Collection = collection ?? throw new ArgumentOutOfRangeException(nameof(connectionStore), $"The {nameof(collection)} must not be null.");
     }
 
     #endregion
@@ -308,7 +308,7 @@ public class SqlRepository<TEntity, TKey> : ISqlRepository<TEntity, TKey>
     /// <param name="navigationPropertyPath">
     /// A lambda expression representing the navigation property to be included (<c>t => t.Property1</c>).
     /// </param>
-    public ISqlRepositorySpecific<TEntity> Include<TProperty>(Expression<Func<TEntity, TProperty>> navigationPropertyPath) where TProperty : class
+    public ISqlRepositorySpecific<TEntity> Include<TProperty>(Expression<Func<TEntity, TProperty?>> navigationPropertyPath) where TProperty : class
     {
         if (navigationPropertyPath.Body is MemberExpression expression && false == _includePropertyPaths.Contains(expression.Member.Name))
         {
@@ -406,6 +406,14 @@ public class SqlRepository<TEntity, TKey> : ISqlRepository<TEntity, TKey>
 
     #endregion
 
+    /// <summary>
+    /// Filters the elements of an System.Linq.IQueryable based on a specified type.
+    /// </summary>
+    /// <typeparam name="TResult">The type to filter the elements of the sequence on</typeparam>
+    /// <returns>A collection that contains the elements from source that have type TResult</returns>
+    public IQueryable<TResult> OfType<TResult>()
+        => Collection.OfType<TResult>();
+
     private async Task<bool> SaveChangedAsync(CancellationToken cancellationToken)
         => await DbContext.SaveChangesAsync(cancellationToken) > 0;
 
@@ -422,21 +430,11 @@ public class SqlRepository<TEntity, TKey> : ISqlRepository<TEntity, TKey>
 /// SQL implementation of <see cref="IRepository{TEntity}"/>.
 /// </summary>
 /// <typeparam name="TEntity">Entity type</typeparam>
-public class SqlRepository<TEntity> : SqlRepository<TEntity, string>,
+/// <remarks>
+/// Initializes a new instance of the <see cref="SqlRepository{TEntity}"/> class.
+/// </remarks>
+/// <param name="connectionStore">The connection store</param>
+/// <param name="dbContextFactory">The DbContext factory</param>
+public class SqlRepository<TEntity>(SqlConnectionStore connectionStore, SqlDbContextFactory dbContextFactory) : SqlRepository<TEntity, string>(connectionStore, dbContextFactory),
     ISqlRepository<TEntity>
-    where TEntity : class, IDbModel<string>
-{
-    #region Constructors
-
-    /// <summary>
-    /// Initializes a new instance of the <see cref="SqlRepository{TEntity}"/> class.
-    /// </summary>
-    /// <param name="connectionStore">The connection store</param>
-    /// <param name="dbContextFactory">The DbContext factory</param>
-    public SqlRepository(SqlConnectionStore connectionStore, SqlDbContextFactory dbContextFactory)
-        : base(connectionStore, dbContextFactory)
-    {
-    }
-
-    #endregion
-}
+    where TEntity : class, IDbModel<string>;

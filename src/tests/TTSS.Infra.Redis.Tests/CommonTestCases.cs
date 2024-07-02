@@ -5,7 +5,6 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using TTSS.Infra.Data.Redis.Caching;
 using TTSS.Tests;
-using Xunit.Abstractions;
 
 namespace TTSS.Infra.Data.Redis;
 

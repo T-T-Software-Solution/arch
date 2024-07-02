@@ -7,6 +7,4 @@ namespace TTSS.Infra.Data.Redis;
 /// </summary>
 /// <typeparam name="TEntity">Entity type</typeparam>
 public interface IRedisRepositoryCache<TEntity> : IRepositoryCache<TEntity>
-    where TEntity : class
-{
-}
+    where TEntity : class;

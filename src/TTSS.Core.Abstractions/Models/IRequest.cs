@@ -3,6 +3,4 @@
 /// <summary>
 /// Contract for a request.
 /// </summary>
-public interface IRequest
-{
-}
+public interface IRequest;
