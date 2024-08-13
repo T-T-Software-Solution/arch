@@ -66,10 +66,12 @@ public class SqlConnectionStoreBuilder
     /// <summary>
     /// Build the connection store.
     /// </summary>
+    /// <param name="interceptors">The database interceptors</param>
     /// <returns>The <see cref="SqlConnectionStore"/> instance</returns>
-    public SqlConnectionStore Build()
+    public SqlConnectionStore Build(params IDbInterceptor[] interceptors)
     {
         var store = _connectionStore;
+        store.SetInterceptors(interceptors);
         _connectionStore = new();
         return store;
     }

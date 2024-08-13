@@ -82,7 +82,7 @@ public static class ModuleInitializer
                 if (dbModelContract is null || !dbModelContract.IsGenericType) throw new ArgumentOutOfRangeException(nameof(dbModel), $"It must implement the IDbModel<TEntity>.");
                 var isKeyString = baseServiceType.GetGenericArguments().Length == 1;
                 if (isKeyString && dbModelContract.GenericTypeArguments.FirstOrDefault() != typeof(string)) return (null!, null!);
-                var types = isKeyString ? new[] { dbModel } : new[] { dbModel, dbModelContract.GenericTypeArguments.FirstOrDefault() };
+                var types = isKeyString ? [dbModel] : new[] { dbModel, dbModelContract.GenericTypeArguments.FirstOrDefault() };
                 var services = new Type[]
                 {
                     baseServiceType.MakeGenericType(types!),
@@ -97,8 +97,16 @@ public static class ModuleInitializer
     /// </summary>
     /// <param name="target">The SQL setup</param>
     public static void Build(this SqlSetup target)
+        => Build(target, []);
+
+    /// <summary>
+    /// Complete SQL setup.
+    /// </summary>
+    /// <param name="target">The SQL setup</param>
+    /// <param name="interceptors">The database interceptors</param>
+    public static void Build(this SqlSetup target, params IDbInterceptor[] interceptors)
     {
-        var store = target.ConnectionStoreBuilder.Build();
+        var store = target.ConnectionStoreBuilder.Build(interceptors);
         target.ServiceCollection.AddSingleton<SqlConnectionStore>(store);
     }
 }

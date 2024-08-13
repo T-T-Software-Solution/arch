@@ -6,6 +6,7 @@ using Microsoft.Extensions.DependencyInjection;
 using TTSS.Core.Data;
 using TTSS.Infra.Data.Sql.DbContexte;
 using TTSS.Infra.Data.Sql.DbModels;
+using TTSS.Infra.Data.Sql.Interceptors;
 using TTSS.Infra.Data.Sql.Models;
 using TTSS.Tests;
 
@@ -13,6 +14,7 @@ namespace TTSS.Infra.Data.Sql;
 
 public abstract class CommonTestCases : IoCTestBase, IDisposable
 {
+    public abstract bool IsManual { get; }
     public abstract void Dispose();
 
     #region Resolve
@@ -24,6 +26,8 @@ public abstract class CommonTestCases : IoCTestBase, IDisposable
         ServiceProvider.GetRequiredService<IRepository<Banana>>().Should().NotBeNull();
         ServiceProvider.GetRequiredService<IRepository<Student>>().Should().NotBeNull();
         ServiceProvider.GetRequiredService<IRepository<Teacher>>().Should().NotBeNull();
+        ServiceProvider.GetRequiredService<IRepository<Astronaut>>().Should().NotBeNull();
+        ServiceProvider.GetRequiredService<IRepository<Spaceship>>().Should().NotBeNull();
     }
 
     [Fact]
@@ -34,6 +38,8 @@ public abstract class CommonTestCases : IoCTestBase, IDisposable
         ServiceProvider.GetRequiredService<IRepository<Student, string>>().Should().NotBeNull();
         ServiceProvider.GetRequiredService<IRepository<Teacher, string>>().Should().NotBeNull();
         ServiceProvider.GetRequiredService<IRepository<Principal, int>>().Should().NotBeNull();
+        ServiceProvider.GetRequiredService<IRepository<Astronaut, string>>().Should().NotBeNull();
+        ServiceProvider.GetRequiredService<IRepository<Spaceship, string>>().Should().NotBeNull();
     }
 
     [Fact]
@@ -43,6 +49,8 @@ public abstract class CommonTestCases : IoCTestBase, IDisposable
         ServiceProvider.GetRequiredService<ISqlRepository<Banana>>().Should().NotBeNull();
         ServiceProvider.GetRequiredService<ISqlRepository<Student>>().Should().NotBeNull();
         ServiceProvider.GetRequiredService<ISqlRepository<Teacher>>().Should().NotBeNull();
+        ServiceProvider.GetRequiredService<ISqlRepository<Astronaut>>().Should().NotBeNull();
+        ServiceProvider.GetRequiredService<ISqlRepository<Spaceship>>().Should().NotBeNull();
     }
 
     [Fact]
@@ -53,6 +61,8 @@ public abstract class CommonTestCases : IoCTestBase, IDisposable
         ServiceProvider.GetRequiredService<ISqlRepository<Student, string>>().Should().NotBeNull();
         ServiceProvider.GetRequiredService<ISqlRepository<Teacher, string>>().Should().NotBeNull();
         ServiceProvider.GetRequiredService<ISqlRepository<Principal, int>>().Should().NotBeNull();
+        ServiceProvider.GetRequiredService<ISqlRepository<Astronaut, string>>().Should().NotBeNull();
+        ServiceProvider.GetRequiredService<ISqlRepository<Spaceship, string>>().Should().NotBeNull();
     }
 
     [Fact]
@@ -62,6 +72,8 @@ public abstract class CommonTestCases : IoCTestBase, IDisposable
         ServiceProvider.GetService<ISqlRepositorySpecific<Banana>>().Should().BeNull();
         ServiceProvider.GetService<ISqlRepositorySpecific<Student>>().Should().BeNull();
         ServiceProvider.GetService<ISqlRepositorySpecific<Teacher>>().Should().BeNull();
+        ServiceProvider.GetService<ISqlRepositorySpecific<Astronaut>>().Should().BeNull();
+        ServiceProvider.GetService<ISqlRepositorySpecific<Spaceship>>().Should().BeNull();
     }
 
     [Fact]
@@ -71,6 +83,8 @@ public abstract class CommonTestCases : IoCTestBase, IDisposable
         ServiceProvider.GetService<SqlRepository<Banana>>().Should().BeNull();
         ServiceProvider.GetService<SqlRepository<Student>>().Should().BeNull();
         ServiceProvider.GetService<SqlRepository<Teacher>>().Should().BeNull();
+        ServiceProvider.GetService<SqlRepository<Astronaut>>().Should().BeNull();
+        ServiceProvider.GetService<SqlRepository<Spaceship>>().Should().BeNull();
     }
 
     [Fact]
@@ -81,6 +95,8 @@ public abstract class CommonTestCases : IoCTestBase, IDisposable
         ServiceProvider.GetService<SqlRepository<Student, string>>().Should().BeNull();
         ServiceProvider.GetService<SqlRepository<Teacher, string>>().Should().BeNull();
         ServiceProvider.GetService<SqlRepository<Principal, int>>().Should().BeNull();
+        ServiceProvider.GetService<SqlRepository<Astronaut, string>>().Should().BeNull();
+        ServiceProvider.GetService<SqlRepository<Spaceship, string>>().Should().BeNull();
     }
 
     #endregion
@@ -122,10 +138,10 @@ public abstract class CommonTestCases : IoCTestBase, IDisposable
         var appleRepo = ServiceProvider.GetRequiredService<IRepository<Apple>>();
         var appleList = new[]
         {
-                Fixture.Create<Apple>(),
-                Fixture.Create<Apple>(),
-                Fixture.Create<Apple>(),
-            };
+            Fixture.Create<Apple>(),
+            Fixture.Create<Apple>(),
+            Fixture.Create<Apple>(),
+        };
         foreach (var item in appleList)
         {
             await appleRepo.InsertAsync(item);
@@ -134,12 +150,12 @@ public abstract class CommonTestCases : IoCTestBase, IDisposable
         var bananaRepo = ServiceProvider.GetRequiredService<IRepository<Banana>>();
         var bananaList = new[]
         {
-                Fixture.Create<Banana>(),
-                Fixture.Create<Banana>(),
-                Fixture.Create<Banana>(),
-                Fixture.Create<Banana>(),
-                Fixture.Create<Banana>(),
-            };
+            Fixture.Create<Banana>(),
+            Fixture.Create<Banana>(),
+            Fixture.Create<Banana>(),
+            Fixture.Create<Banana>(),
+            Fixture.Create<Banana>(),
+        };
         foreach (var item in bananaList)
         {
             await bananaRepo.InsertAsync(item);
@@ -209,6 +225,24 @@ public abstract class CommonTestCases : IoCTestBase, IDisposable
         };
         await action.Should().ThrowAsync<InvalidOperationException>().WithMessage("*same key*");
         sut.Get().Should().HaveCount(1).And.BeEquivalentTo(new[] { firstRecord });
+    }
+
+    [Fact(DisplayName = "เพิ่มข้อมูลที่มี interceptor ระบบสามารถจับการบันทึกข้อมูลได้ถูกต้อง")]
+    public async Task Insert_With_DbSaveInterceptor_ThenTheInterceptorMustWorkAsExpected()
+    {
+        SetupInterceptors();
+
+        var astronaut = Fixture.Create<Astronaut>();
+        var astronautRepo = ServiceProvider.GetRequiredService<IRepository<Astronaut>>();
+        await astronautRepo.InsertAsync(astronaut);
+
+        var spaceship = Fixture.Create<Spaceship>();
+        var spaceshipRepo = ServiceProvider.GetRequiredService<IRepository<Spaceship>>();
+        await spaceshipRepo.InsertAsync(spaceship);
+
+        CreationEvents.Should().HaveCount(2);
+        CreationEvents.First().Should().BeEquivalentTo(astronaut);
+        CreationEvents.Last().Should().BeEquivalentTo(spaceship);
     }
 
     #region Key is a number
@@ -389,6 +423,59 @@ public abstract class CommonTestCases : IoCTestBase, IDisposable
         sut.Get().Should().HaveCount(1);
     }
 
+    [Fact(DisplayName = "อัพโดยใส่เดทข้อมูลที่มี Interceptor ถูกต้อง ระบบสามารถจับการอัพเดทข้อมูลได้ถูกต้อง")]
+    public async Task Update_WithDbInterceptor_ThenTheUpdateMustWorkAsExpected()
+    {
+        SetupInterceptors();
+        var astronautRepo = ServiceProvider.GetRequiredService<IRepository<Astronaut>>();
+        var astronaut = Fixture.Create<Astronaut>();
+        await astronautRepo.InsertAsync(astronaut);
+        var astronautOriginalName = astronaut.Name;
+        var astronautOriginalSize = astronaut.Size;
+        astronaut.Name = Fixture.Create<string>();
+        astronaut.Size = Fixture.Create<int>();
+        await astronautRepo.UpdateAsync(astronaut);
+
+        var spaceship = Fixture.Create<Spaceship>();
+        var spaceshipRepo = ServiceProvider.GetRequiredService<IRepository<Spaceship>>();
+        await spaceshipRepo.InsertAsync(spaceship);
+        var spaceshipOriginalPower = spaceship.Power;
+        spaceship.Power = Fixture.Create<double>();
+        await spaceshipRepo.UpdateAsync(spaceship);
+
+
+        UpdationEvents.Should().HaveCount(2);
+        UpdationEvents.First().Should().BeEquivalentTo((astronaut,
+            new List<PropertyUpdateInfo>
+            {
+                new PropertyUpdateInfo
+                {
+                    ColumnName = "Name",
+                    NewValue = astronaut.Name,
+                    OriginalValue = astronautOriginalName,
+                    Remark = "Name of the astronaut",
+                },
+                new PropertyUpdateInfo
+                {
+                    ColumnName = "Size",
+                    NewValue = astronaut.Size.ToString(),
+                    OriginalValue = astronautOriginalSize.ToString(),
+                    Remark = "Size of the astronaut",
+                }
+            }));
+        UpdationEvents.Last().Should().BeEquivalentTo((spaceship,
+           new List<PropertyUpdateInfo>
+           {
+                new PropertyUpdateInfo
+                {
+                    ColumnName = "Power",
+                    NewValue = spaceship.Power.ToString(),
+                    OriginalValue = spaceshipOriginalPower.ToString(),
+                    Remark = null,
+                },
+           }));
+    }
+
     #endregion
 
     #endregion
@@ -459,6 +546,19 @@ public abstract class CommonTestCases : IoCTestBase, IDisposable
         operationResult.Should().BeFalse();
 
         sut.Get().Should().HaveCount(3);
+    }
+
+    [Fact(DisplayName = "ลบข้อมูลที่มี Interceptor ถูกต้อง ระบบสามารถจับการลบรายการที่เลือกได้ถูกต้อง")]
+    public async Task Delete_AllDataValid_WithInterceptor_ThenTheInterceptorMustWorkAsExpected()
+    {
+        SetupInterceptors();
+        var astronautRepo = ServiceProvider.GetRequiredService<IRepository<Astronaut>>();
+        var astronaut = Fixture.Create<Astronaut>();
+        await astronautRepo.InsertAsync(astronaut);
+        await astronautRepo.DeleteAsync(astronaut.Id);
+
+        DeletionEvents.Should().HaveCount(1);
+        DeletionEvents.First().Should().BeEquivalentTo(astronaut);
     }
 
     #region Key is a number
@@ -693,4 +793,18 @@ public abstract class CommonTestCases : IoCTestBase, IDisposable
     }
 
     #endregion
+
+    private IEnumerable<object> CreationEvents => _creationEvents.Where(it => it.isManual == IsManual).Select(it => it.entity);
+    private IEnumerable<object> DeletionEvents => _deletionEvents.Where(it => it.isManual == IsManual).Select(it => it.entity);
+    private IEnumerable<(object, IEnumerable<PropertyUpdateInfo>)> UpdationEvents => _updationEvents.Where(it => it.isManual == IsManual).Select(it => (it.entity, it.infos));
+
+    private List<(object entity, bool isManual)> _creationEvents = [];
+    private List<(object entity, bool isManual)> _deletionEvents = [];
+    private List<(object entity, bool isManual, IEnumerable<PropertyUpdateInfo> infos)> _updationEvents = [];
+    protected void SetupInterceptors()
+    {
+        TestSqlInterceptorBase.OnCreating += (sndr, se) => _creationEvents.Add(se);
+        TestSqlInterceptorBase.OnDeleting += (sndr, se) => _deletionEvents.Add(se);
+        TestSqlInterceptorBase.OnUpdating += (sndr, se) => _updationEvents.Add(se);
+    }
 }
