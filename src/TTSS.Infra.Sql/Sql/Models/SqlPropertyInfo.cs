@@ -1,9 +1,9 @@
 ﻿namespace TTSS.Infra.Data.Sql.Models;
 
 /// <summary>
-/// Update information of entity.
+/// Property information.
 /// </summary>
-public sealed record PropertyUpdateInfo
+public record SqlPropertyInfo
 {
     /// <summary>
     /// The column name
@@ -11,14 +11,9 @@ public sealed record PropertyUpdateInfo
     public required string ColumnName { get; init; }
 
     /// <summary>
-    /// Before value changed
+    /// The original value
     /// </summary>
-    public string? OriginalValue { get; init; }
-
-    /// <summary>
-    /// After value changed
-    /// </summary>
-    public string? NewValue { get; init; }
+    public string? Value { get; init; }
 
     /// <summary>
     /// The comment of this column

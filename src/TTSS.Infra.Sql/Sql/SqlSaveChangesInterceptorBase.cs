@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using System.Reflection;
 using TTSS.Core.Data;
@@ -25,75 +26,96 @@ public abstract class SqlSaveChangesInterceptorBase : SaveChangesInterceptor, ID
         var entries = eventData.Context?.ChangeTracker?.Entries()
             .Where(it => it is not null && it.Entity is IDbModel)
             .Select(it => new { Entry = it, Entity = (IDbModel)it.Entity, }) ?? [];
-        foreach (var item in entries)
-        {
-            switch (item.Entry.State)
-            {
-                case EntityState.Added:
-                    {
-                        await OnCreateAsync(item.Entity, cancellationToken);
-                        break;
-                    }
-                case EntityState.Modified:
-                    {
-                        var entityType = item.Entity.GetType();
-                        var changedProperties = item.Entry.Properties
-                            .Where(it => it.IsModified)
-                            .Select(it => new PropertyUpdateInfo
-                            {
-                                ColumnName = it.Metadata.Name,
-                                NewValue = it.CurrentValue?.ToString(),
-                                OriginalValue = it.OriginalValue?.ToString(),
-                                Remark = entityType
-                                    .GetProperty(it.Metadata.Name)
-                                    ?.GetCustomAttribute<CommentAttribute>()
-                                    ?.Comment,
-                            })
-                            .Where(it => it.OriginalValue != it.NewValue)
-                            .Distinct()
-                            .ToList();
-                        await OnUpdateAsync(item.Entity, changedProperties, cancellationToken);
-                        break;
-                    }
-                case EntityState.Deleted:
-                    {
-                        await OnDeleteAsync(item.Entity, cancellationToken);
-                        break;
-                    }
-                default: break;
-            }
-        }
+
+        var creationQry = CreateGroup(it => it == EntityState.Added);
+        await ExecuteAsync(creationQry, OnCreateAsync);
+
+        var deletionQry = CreateGroup(it => it == EntityState.Deleted);
+        await ExecuteAsync(deletionQry, OnDeleteAsync);
+
+        var updateQry = entries
+            .Where(it => it.Entry.State == EntityState.Modified)
+            .GroupBy(it => it.Entity, selector => selector.Entry.Properties
+                .Where(it => it.IsModified)
+                .Select(it => ExtractUpdatePropertyInfo(it, selector.Entity))
+                .Where(it => it.Value != it.NewValue)
+                .Distinct()
+                .ToList());
+        await ExecuteAsync(updateQry, OnUpdateAsync);
+
 
         return await base.SavingChangesAsync(eventData, result, cancellationToken);
+        IEnumerable<IGrouping<IDbModel, IList<SqlPropertyInfo>>> CreateGroup(Func<EntityState, bool> filter)
+            => entries
+                .Where(it => filter(it.Entry.State))
+                .GroupBy(it => it.Entity, selector => selector.Entry.Properties
+                    .Select(it => ExtractPropertyInfo(it, selector.Entity))
+                    .Distinct()
+                    .ToList());
+        async Task ExecuteAsync<TProperty>(IEnumerable<IGrouping<IDbModel, IList<TProperty>>> qry, Func<IDbModel, IList<TProperty>, CancellationToken, Task> func) where TProperty : SqlPropertyInfo
+        {
+            foreach (var group in qry)
+            {
+                foreach (var item in group)
+                {
+                    await func(group.Key, item, cancellationToken);
+                }
+            }
+        }
+        SqlPropertyInfo ExtractPropertyInfo(PropertyEntry entry, IDbModel entity)
+            => new()
+            {
+                ColumnName = entry.Metadata.Name,
+                Value = entry.OriginalValue?.ToString(),
+                Remark = GetEntityComment(entity, entry.Metadata.Name),
+            };
+        SqlUpdatePropertyInfo ExtractUpdatePropertyInfo(PropertyEntry entry, IDbModel entity)
+            => new()
+            {
+                ColumnName = entry.Metadata.Name,
+                Value = entry.OriginalValue?.ToString(),
+                NewValue = entry.CurrentValue?.ToString(),
+                Remark = GetEntityComment(entity, entry.Metadata.Name),
+            };
+        string? GetEntityComment(IDbModel entity, string propertyName)
+        {
+            var entityType = entity.GetType();
+            return entityType
+                .GetProperty(propertyName)
+                ?.GetCustomAttribute<CommentAttribute>()
+                ?.Comment;
+        }
     }
 
     /// <summary>
     /// On create entity.
     /// </summary>
     /// <param name="entity">Target entity</param>
+    /// <param name="properties">Entity properties</param>
     /// <param name="cancellationToken">Cancellation token</param>
     /// <returns>true if the operation is successful; otherwise, false.</returns>
     /// <remarks>The false value will stop the operation.</remarks>
-    protected abstract Task OnCreateAsync(IDbModel entity, CancellationToken cancellationToken);
+    protected abstract Task OnCreateAsync(IDbModel entity, IEnumerable<SqlPropertyInfo> properties, CancellationToken cancellationToken);
 
     /// <summary>
     /// On update entity.
     /// </summary>
     /// <param name="entity">Target entity</param>
-    /// <param name="infos">Update information</param>
+    /// <param name="properties">Entity properties</param>
     /// <param name="cancellationToken">Cancellation token</param>
     /// <returns>true if the operation is successful; otherwise, false.</returns>
     /// <remarks>The false value will stop the operation.</remarks>
-    protected abstract Task OnUpdateAsync(IDbModel entity, IEnumerable<PropertyUpdateInfo> infos, CancellationToken cancellationToken);
+    protected abstract Task OnUpdateAsync(IDbModel entity, IEnumerable<SqlUpdatePropertyInfo> properties, CancellationToken cancellationToken);
 
     /// <summary>
     /// On delete entity.
     /// </summary>
     /// <param name="entity">Target entity</param>
+    /// <param name="properties">Entity properties</param>
     /// <param name="cancellationToken">Cancellation token</param>
     /// <returns>true if the operation is successful; otherwise, false.</returns>
     /// <remarks>The false value will stop the operation.</remarks>
-    protected abstract Task OnDeleteAsync(IDbModel entity, CancellationToken cancellationToken);
+    protected abstract Task OnDeleteAsync(IDbModel entity, IEnumerable<SqlPropertyInfo> properties, CancellationToken cancellationToken);
 
     #endregion
 }

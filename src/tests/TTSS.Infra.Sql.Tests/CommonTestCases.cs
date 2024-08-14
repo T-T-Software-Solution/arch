@@ -241,8 +241,46 @@ public abstract class CommonTestCases : IoCTestBase, IDisposable
         await spaceshipRepo.InsertAsync(spaceship);
 
         CreationEvents.Should().HaveCount(2);
-        CreationEvents.First().Should().BeEquivalentTo(astronaut);
-        CreationEvents.Last().Should().BeEquivalentTo(spaceship);
+        CreationEvents.First().entity.Should().BeEquivalentTo(astronaut);
+        CreationEvents.First().properties.Should().BeEquivalentTo([
+            new SqlPropertyInfo
+            {
+                ColumnName = "Id",
+                Value = astronaut.Id,
+                Remark = null,
+            },
+            new SqlPropertyInfo
+            {
+                ColumnName = "Name",
+                Value = astronaut.Name,
+                Remark = "Name of the astronaut",
+            },
+            new SqlPropertyInfo
+            {
+                ColumnName = "Size",
+                Value = astronaut.Size.ToString(),
+                Remark = "Size of the astronaut",
+            }]);
+        CreationEvents.Last().entity.Should().BeEquivalentTo(spaceship);
+        CreationEvents.Last().properties.Should().BeEquivalentTo([
+            new SqlPropertyInfo
+            {
+                ColumnName = "Id",
+                Value = spaceship.Id,
+                Remark = null,
+            },
+            new SqlPropertyInfo
+            {
+                ColumnName = "Name",
+                Value = spaceship.Name,
+                Remark = "Name of the spaceship",
+            },
+            new SqlPropertyInfo
+            {
+                ColumnName = "Power",
+                Value = spaceship.Power.ToString(),
+                Remark = null,
+            }]);
     }
 
     #region Key is a number
@@ -443,37 +481,32 @@ public abstract class CommonTestCases : IoCTestBase, IDisposable
         spaceship.Power = Fixture.Create<double>();
         await spaceshipRepo.UpdateAsync(spaceship);
 
-
         UpdationEvents.Should().HaveCount(2);
-        UpdationEvents.First().Should().BeEquivalentTo((astronaut,
-            new List<PropertyUpdateInfo>
-            {
-                new PropertyUpdateInfo
+        UpdationEvents.First().entity.Should().BeEquivalentTo(astronaut);
+        UpdationEvents.First().properties.Should().BeEquivalentTo([
+                new SqlUpdatePropertyInfo
                 {
                     ColumnName = "Name",
                     NewValue = astronaut.Name,
-                    OriginalValue = astronautOriginalName,
+                    Value = astronautOriginalName,
                     Remark = "Name of the astronaut",
                 },
-                new PropertyUpdateInfo
+                new SqlUpdatePropertyInfo
                 {
                     ColumnName = "Size",
                     NewValue = astronaut.Size.ToString(),
-                    OriginalValue = astronautOriginalSize.ToString(),
+                    Value = astronautOriginalSize.ToString(),
                     Remark = "Size of the astronaut",
-                }
-            }));
-        UpdationEvents.Last().Should().BeEquivalentTo((spaceship,
-           new List<PropertyUpdateInfo>
-           {
-                new PropertyUpdateInfo
+                }]);
+        UpdationEvents.Last().entity.Should().BeEquivalentTo(spaceship);
+        UpdationEvents.Last().properties.Should().BeEquivalentTo([
+                new SqlUpdatePropertyInfo
                 {
                     ColumnName = "Power",
                     NewValue = spaceship.Power.ToString(),
-                    OriginalValue = spaceshipOriginalPower.ToString(),
+                    Value = spaceshipOriginalPower.ToString(),
                     Remark = null,
-                },
-           }));
+                }]);
     }
 
     #endregion
@@ -558,7 +591,26 @@ public abstract class CommonTestCases : IoCTestBase, IDisposable
         await astronautRepo.DeleteAsync(astronaut.Id);
 
         DeletionEvents.Should().HaveCount(1);
-        DeletionEvents.First().Should().BeEquivalentTo(astronaut);
+        DeletionEvents.First().entity.Should().BeEquivalentTo(astronaut);
+        DeletionEvents.First().properties.Should().BeEquivalentTo([
+            new SqlPropertyInfo
+            {
+                ColumnName = "Id",
+                Value = astronaut.Id,
+                Remark = null,
+            },
+            new SqlPropertyInfo
+            {
+                ColumnName = "Name",
+                Value = astronaut.Name,
+                Remark = "Name of the astronaut",
+            },
+            new SqlPropertyInfo
+            {
+                ColumnName = "Size",
+                Value = astronaut.Size.ToString(),
+                Remark = "Size of the astronaut",
+            }]);
     }
 
     #region Key is a number
@@ -794,13 +846,13 @@ public abstract class CommonTestCases : IoCTestBase, IDisposable
 
     #endregion
 
-    private IEnumerable<object> CreationEvents => _creationEvents.Where(it => it.isManual == IsManual).Select(it => it.entity);
-    private IEnumerable<object> DeletionEvents => _deletionEvents.Where(it => it.isManual == IsManual).Select(it => it.entity);
-    private IEnumerable<(object, IEnumerable<PropertyUpdateInfo>)> UpdationEvents => _updationEvents.Where(it => it.isManual == IsManual).Select(it => (it.entity, it.infos));
+    private IEnumerable<(object entity, IEnumerable<SqlPropertyInfo> properties)> CreationEvents => _creationEvents.Where(it => it.isManual == IsManual).Select(it => (it.entity, it.properties));
+    private IEnumerable<(object entity, IEnumerable<SqlPropertyInfo> properties)> DeletionEvents => _deletionEvents.Where(it => it.isManual == IsManual).Select(it => (it.entity, it.properties));
+    private IEnumerable<(object entity, IEnumerable<SqlUpdatePropertyInfo> properties)> UpdationEvents => _updationEvents.Where(it => it.isManual == IsManual).Select(it => (it.entity, it.properties));
 
-    private List<(object entity, bool isManual)> _creationEvents = [];
-    private List<(object entity, bool isManual)> _deletionEvents = [];
-    private List<(object entity, bool isManual, IEnumerable<PropertyUpdateInfo> infos)> _updationEvents = [];
+    private readonly List<(object entity, bool isManual, IEnumerable<SqlPropertyInfo> properties)> _creationEvents = [];
+    private readonly List<(object entity, bool isManual, IEnumerable<SqlPropertyInfo> properties)> _deletionEvents = [];
+    private readonly List<(object entity, bool isManual, IEnumerable<SqlUpdatePropertyInfo> properties)> _updationEvents = [];
     protected void SetupInterceptors()
     {
         TestSqlInterceptorBase.OnCreating += (sndr, se) => _creationEvents.Add(se);

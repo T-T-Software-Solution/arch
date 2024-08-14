@@ -6,25 +6,25 @@ namespace TTSS.Infra.Data.Sql.Interceptors;
 internal abstract class TestSqlInterceptorBase : SqlSaveChangesInterceptorBase
 {
     public abstract bool IsManual { get; }
-    public static event EventHandler<(object entity, bool isManual)> OnCreating;
-    public static event EventHandler<(object entity, bool isManual)> OnDeleting;
-    public static event EventHandler<(object entity, bool isManual, IEnumerable<PropertyUpdateInfo> infos)> OnUpdating;
+    public static event EventHandler<(object entity, bool isManual, IEnumerable<SqlPropertyInfo> properties)> OnCreating;
+    public static event EventHandler<(object entity, bool isManual, IEnumerable<SqlPropertyInfo> properties)> OnDeleting;
+    public static event EventHandler<(object entity, bool isManual, IEnumerable<SqlUpdatePropertyInfo> properties)> OnUpdating;
 
-    protected override Task OnCreateAsync(IDbModel entity, CancellationToken cancellationToken)
+    protected override Task OnCreateAsync(IDbModel entity, IEnumerable<SqlPropertyInfo> properties, CancellationToken cancellationToken)
     {
-        OnCreating?.Invoke(this, (entity, IsManual));
+        OnCreating?.Invoke(this, (entity, IsManual, properties));
         return Task.CompletedTask;
     }
 
-    protected override Task OnDeleteAsync(IDbModel entity, CancellationToken cancellationToken)
+    protected override Task OnDeleteAsync(IDbModel entity, IEnumerable<SqlPropertyInfo> properties, CancellationToken cancellationToken)
     {
-        OnDeleting?.Invoke(this, (entity, IsManual));
+        OnDeleting?.Invoke(this, (entity, IsManual, properties));
         return Task.CompletedTask;
     }
 
-    protected override Task OnUpdateAsync(IDbModel entity, IEnumerable<PropertyUpdateInfo> infos, CancellationToken cancellationToken)
+    protected override Task OnUpdateAsync(IDbModel entity, IEnumerable<SqlUpdatePropertyInfo> properties, CancellationToken cancellationToken)
     {
-        OnUpdating?.Invoke(this, (entity, IsManual, infos));
+        OnUpdating?.Invoke(this, (entity, IsManual, properties));
         return Task.CompletedTask;
     }
 }
