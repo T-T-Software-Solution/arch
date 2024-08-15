@@ -12,6 +12,12 @@ namespace TTSS.Infra.Data.Sql;
 /// </summary>
 public abstract class SqlSaveChangesInterceptorBase : SaveChangesInterceptor, IDbInterceptor
 {
+    #region Fields
+
+    internal List<IAuditEntity> _auditEntities = new();
+
+    #endregion Fields
+
     #region Methods
 
     /// <summary>
@@ -24,8 +30,13 @@ public abstract class SqlSaveChangesInterceptorBase : SaveChangesInterceptor, ID
     public override async ValueTask<InterceptionResult<int>> SavingChangesAsync(DbContextEventData eventData, InterceptionResult<int> result, CancellationToken cancellationToken = default)
     {
         var entries = eventData.Context?.ChangeTracker?.Entries()
-            .Where(it => it is not null && it.Entity is IDbModel)
+            .Where(it => it is not null && it.Entity is IDbModel && it.Entity is not IAuditEntity)
             .Select(it => new { Entry = it, Entity = (IDbModel)it.Entity, }) ?? [];
+
+        if (false == entries.Any())
+        {
+            return await SavingChangesAsync();
+        }
 
         var creationQry = CreateGroup(it => it == EntityState.Added);
         await ExecuteAsync(creationQry, OnCreateAsync);
@@ -43,8 +54,16 @@ public abstract class SqlSaveChangesInterceptorBase : SaveChangesInterceptor, ID
                 .ToList());
         await ExecuteAsync(updateQry, OnUpdateAsync);
 
+        if (eventData.Context is IAuditRepository auditRepo)
+        {
+            _auditEntities.RemoveAll(it => eventData.Context!.Entry(it).State == EntityState.Unchanged);
+            await auditRepo.AddAuditEntityAsync(_auditEntities, cancellationToken);
+        }
 
-        return await base.SavingChangesAsync(eventData, result, cancellationToken);
+        return await SavingChangesAsync();
+
+        ValueTask<InterceptionResult<int>> SavingChangesAsync()
+            => base.SavingChangesAsync(eventData, result, cancellationToken);
         IEnumerable<IGrouping<IDbModel, IList<SqlPropertyInfo>>> CreateGroup(Func<EntityState, bool> filter)
             => entries
                 .Where(it => filter(it.Entry.State))
@@ -86,6 +105,13 @@ public abstract class SqlSaveChangesInterceptorBase : SaveChangesInterceptor, ID
                 ?.Comment;
         }
     }
+
+    /// <summary>
+    /// Add audit entity.
+    /// </summary>
+    /// <param name="entities">Audit entities</param>
+    protected virtual void AddAuditEntity(params IAuditEntity[] entities)
+        => _auditEntities.AddRange(entities?.Where(it => it is not null) ?? []);
 
     /// <summary>
     /// On create entity.

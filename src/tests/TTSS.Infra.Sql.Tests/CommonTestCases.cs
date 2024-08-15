@@ -28,6 +28,7 @@ public abstract class CommonTestCases : IoCTestBase, IDisposable
         ServiceProvider.GetRequiredService<IRepository<Teacher>>().Should().NotBeNull();
         ServiceProvider.GetRequiredService<IRepository<Astronaut>>().Should().NotBeNull();
         ServiceProvider.GetRequiredService<IRepository<Spaceship>>().Should().NotBeNull();
+        ServiceProvider.GetRequiredService<IRepository<AuditLog>>().Should().NotBeNull();
     }
 
     [Fact]
@@ -40,6 +41,7 @@ public abstract class CommonTestCases : IoCTestBase, IDisposable
         ServiceProvider.GetRequiredService<IRepository<Principal, int>>().Should().NotBeNull();
         ServiceProvider.GetRequiredService<IRepository<Astronaut, string>>().Should().NotBeNull();
         ServiceProvider.GetRequiredService<IRepository<Spaceship, string>>().Should().NotBeNull();
+        ServiceProvider.GetRequiredService<IRepository<AuditLog, string>>().Should().NotBeNull();
     }
 
     [Fact]
@@ -51,6 +53,7 @@ public abstract class CommonTestCases : IoCTestBase, IDisposable
         ServiceProvider.GetRequiredService<ISqlRepository<Teacher>>().Should().NotBeNull();
         ServiceProvider.GetRequiredService<ISqlRepository<Astronaut>>().Should().NotBeNull();
         ServiceProvider.GetRequiredService<ISqlRepository<Spaceship>>().Should().NotBeNull();
+        ServiceProvider.GetRequiredService<ISqlRepository<AuditLog>>().Should().NotBeNull();
     }
 
     [Fact]
@@ -63,6 +66,7 @@ public abstract class CommonTestCases : IoCTestBase, IDisposable
         ServiceProvider.GetRequiredService<ISqlRepository<Principal, int>>().Should().NotBeNull();
         ServiceProvider.GetRequiredService<ISqlRepository<Astronaut, string>>().Should().NotBeNull();
         ServiceProvider.GetRequiredService<ISqlRepository<Spaceship, string>>().Should().NotBeNull();
+        ServiceProvider.GetRequiredService<ISqlRepository<AuditLog, string>>().Should().NotBeNull();
     }
 
     [Fact]
@@ -74,6 +78,7 @@ public abstract class CommonTestCases : IoCTestBase, IDisposable
         ServiceProvider.GetService<ISqlRepositorySpecific<Teacher>>().Should().BeNull();
         ServiceProvider.GetService<ISqlRepositorySpecific<Astronaut>>().Should().BeNull();
         ServiceProvider.GetService<ISqlRepositorySpecific<Spaceship>>().Should().BeNull();
+        ServiceProvider.GetService<ISqlRepositorySpecific<AuditLog>>().Should().BeNull();
     }
 
     [Fact]
@@ -85,6 +90,7 @@ public abstract class CommonTestCases : IoCTestBase, IDisposable
         ServiceProvider.GetService<SqlRepository<Teacher>>().Should().BeNull();
         ServiceProvider.GetService<SqlRepository<Astronaut>>().Should().BeNull();
         ServiceProvider.GetService<SqlRepository<Spaceship>>().Should().BeNull();
+        ServiceProvider.GetService<SqlRepository<AuditLog>>().Should().BeNull();
     }
 
     [Fact]
@@ -97,6 +103,7 @@ public abstract class CommonTestCases : IoCTestBase, IDisposable
         ServiceProvider.GetService<SqlRepository<Principal, int>>().Should().BeNull();
         ServiceProvider.GetService<SqlRepository<Astronaut, string>>().Should().BeNull();
         ServiceProvider.GetService<SqlRepository<Spaceship, string>>().Should().BeNull();
+        ServiceProvider.GetService<SqlRepository<AuditLog, string>>().Should().BeNull();
     }
 
     #endregion
@@ -261,6 +268,7 @@ public abstract class CommonTestCases : IoCTestBase, IDisposable
                 Value = astronaut.Size.ToString(),
                 Remark = "Size of the astronaut",
             }]);
+
         CreationEvents.Last().entity.Should().BeEquivalentTo(spaceship);
         CreationEvents.Last().properties.Should().BeEquivalentTo([
             new SqlPropertyInfo
@@ -281,6 +289,10 @@ public abstract class CommonTestCases : IoCTestBase, IDisposable
                 Value = spaceship.Power.ToString(),
                 Remark = null,
             }]);
+
+        AuditEvents.Should().HaveCount(2);
+        ValidateAuditEvnet(0, "Create", nameof(Astronaut));
+        ValidateAuditEvnet(1, "Create", nameof(Spaceship));
     }
 
     #region Key is a number
@@ -507,6 +519,12 @@ public abstract class CommonTestCases : IoCTestBase, IDisposable
                     Value = spaceshipOriginalPower.ToString(),
                     Remark = null,
                 }]);
+
+        AuditEvents.Should().HaveCount(4);
+        ValidateAuditEvnet(0, "Create", nameof(Astronaut));
+        ValidateAuditEvnet(1, "Update", nameof(Astronaut));
+        ValidateAuditEvnet(2, "Create", nameof(Spaceship));
+        ValidateAuditEvnet(3, "Update", nameof(Spaceship));
     }
 
     #endregion
@@ -611,6 +629,10 @@ public abstract class CommonTestCases : IoCTestBase, IDisposable
                 Value = astronaut.Size.ToString(),
                 Remark = "Size of the astronaut",
             }]);
+
+        AuditEvents.Should().HaveCount(2);
+        ValidateAuditEvnet(0, "Create", nameof(Astronaut));
+        ValidateAuditEvnet(1, "Delete", nameof(Astronaut));
     }
 
     #region Key is a number
@@ -846,10 +868,12 @@ public abstract class CommonTestCases : IoCTestBase, IDisposable
 
     #endregion
 
+    private IEnumerable<AuditLog> AuditEvents => _auditEntities.Where(it => it.isManual == IsManual).Select(it => it.entity).Cast<AuditLog>();
     private IEnumerable<(object entity, IEnumerable<SqlPropertyInfo> properties)> CreationEvents => _creationEvents.Where(it => it.isManual == IsManual).Select(it => (it.entity, it.properties));
     private IEnumerable<(object entity, IEnumerable<SqlPropertyInfo> properties)> DeletionEvents => _deletionEvents.Where(it => it.isManual == IsManual).Select(it => (it.entity, it.properties));
     private IEnumerable<(object entity, IEnumerable<SqlUpdatePropertyInfo> properties)> UpdationEvents => _updationEvents.Where(it => it.isManual == IsManual).Select(it => (it.entity, it.properties));
 
+    private readonly List<(object entity, bool isManual)> _auditEntities = [];
     private readonly List<(object entity, bool isManual, IEnumerable<SqlPropertyInfo> properties)> _creationEvents = [];
     private readonly List<(object entity, bool isManual, IEnumerable<SqlPropertyInfo> properties)> _deletionEvents = [];
     private readonly List<(object entity, bool isManual, IEnumerable<SqlUpdatePropertyInfo> properties)> _updationEvents = [];
@@ -858,5 +882,14 @@ public abstract class CommonTestCases : IoCTestBase, IDisposable
         TestSqlInterceptorBase.OnCreating += (sndr, se) => _creationEvents.Add(se);
         TestSqlInterceptorBase.OnDeleting += (sndr, se) => _deletionEvents.Add(se);
         TestSqlInterceptorBase.OnUpdating += (sndr, se) => _updationEvents.Add(se);
+        TestSqlInterceptorBase.OnAuditEntityAdded += (sndr, se) => _auditEntities.Add(se);
+    }
+
+    private void ValidateAuditEvnet(int elementPosition, string expectedAction, string expectedMessage)
+    {
+        var target = AuditEvents.ToList()[elementPosition];
+        target.Id.Should().NotBeNullOrEmpty();
+        target.Action.Should().BeEquivalentTo(expectedAction);
+        target.Message.Should().BeEquivalentTo(expectedMessage);
     }
 }

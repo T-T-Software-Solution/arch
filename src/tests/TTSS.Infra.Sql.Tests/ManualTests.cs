@@ -26,6 +26,7 @@ public class ManualTests : CommonTestCases
             .SetupDatabase<SpaceDbContext>()
                 .RegisterCollection<Astronaut>()
                 .RegisterCollection<Spaceship>()
+                .RegisterCollection<AuditLog>()
             .Build(new TestSqlInterceptorManual());
 
         var lazyProvider = new Lazy<IServiceProvider>(() => services.BuildServiceProvider());
@@ -37,6 +38,7 @@ public class ManualTests : CommonTestCases
         var principal = new Lazy<SqlRepository<Principal, int>>(() => new SqlRepository<Principal, int>(store, contextFactory));
         var astronaut = new Lazy<SqlRepository<Astronaut>>(() => new SqlRepository<Astronaut>(store, contextFactory));
         var spaceship = new Lazy<SqlRepository<Spaceship>>(() => new SqlRepository<Spaceship>(store, contextFactory));
+        var audit = new Lazy<SqlRepository<AuditLog>>(() => new SqlRepository<AuditLog>(store, contextFactory));
 
         var connBuilder = new SqliteConnectionStringBuilder { DataSource = ":memory:" };
         _connection = new SqliteConnection(connBuilder.ConnectionString);
@@ -72,7 +74,11 @@ public class ManualTests : CommonTestCases
                 .AddScoped<IRepository<Spaceship>>(_ => spaceship.Value)
                 .AddScoped<IRepository<Spaceship, string>>(_ => spaceship.Value)
                 .AddScoped<ISqlRepository<Spaceship>>(_ => spaceship.Value)
-                .AddScoped<ISqlRepository<Spaceship, string>>(_ => spaceship.Value);
+                .AddScoped<ISqlRepository<Spaceship, string>>(_ => spaceship.Value)
+                .AddScoped<IRepository<AuditLog>>(_ => audit.Value)
+                .AddScoped<IRepository<AuditLog, string>>(_ => audit.Value)
+                .AddScoped<ISqlRepository<AuditLog>>(_ => audit.Value)
+                .AddScoped<ISqlRepository<AuditLog, string>>(_ => audit.Value);
     }
 
     public override void Dispose()
