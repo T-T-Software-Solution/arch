@@ -10,11 +10,11 @@ namespace TTSS.Infra.Data.Sql;
 /// <summary>
 /// SQL database interceptor base.
 /// </summary>
-public abstract class SqlSaveChangesInterceptorBase : SaveChangesInterceptor, IDbInterceptor
+public abstract class SqlSaveChangesInterceptorBase : SaveChangesInterceptor
 {
     #region Fields
 
-    internal List<IAuditEntity> _auditEntities = new();
+    internal List<IAuditEntity> _auditEntities = [];
 
     #endregion Fields
 
