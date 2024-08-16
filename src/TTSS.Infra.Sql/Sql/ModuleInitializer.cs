@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using TTSS.Core.Data;
+using TTSS.Infra.Data.Sql;
 using TTSS.Infra.Data.Sql.Models;
 
 namespace TTSS.Infra.Data.Sql;
@@ -97,16 +98,23 @@ public static class ModuleInitializer
     /// </summary>
     /// <param name="target">The SQL setup</param>
     public static void Build(this SqlSetup target)
-        => Build(target, []);
+        => Build(target, _ => { });
 
     /// <summary>
     /// Complete SQL setup.
     /// </summary>
     /// <param name="target">The SQL setup</param>
-    /// <param name="interceptors">The database interceptors</param>
-    public static void Build(this SqlSetup target, params IDbInterceptor[] interceptors)
+    /// <param name="config">The interceptor configuration</param>
+    public static void Build(this SqlSetup target, Action<SqlInterceptorBuilder> config)
     {
-        var store = target.ConnectionStoreBuilder.Build(interceptors);
+        var builder = SqlInterceptorBuilder.Default;
+        var store = target.ConnectionStoreBuilder.Build(builder);
         target.ServiceCollection.AddSingleton<SqlConnectionStore>(store);
+
+        config?.Invoke(builder);
+        foreach (var item in builder.InterceptorTypes)
+        {
+            target.ServiceCollection.AddKeyedScoped(item, store);
+        }
     }
 }

@@ -3,6 +3,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using System.Reflection;
 using TTSS.Core.Data;
+using TTSS.Core.Services;
+using TTSS.Infra.Data.Sql;
 using TTSS.Infra.Data.Sql.DbContexte;
 using TTSS.Infra.Data.Sql.Interceptors;
 
@@ -15,6 +17,9 @@ public class ManualTests : CommonTestCases
 
     protected override void RegisterServices(IServiceCollection services)
     {
+        var interceptorBuilder = SqlInterceptorBuilder.Default
+            .Register<TestSqlInterceptorManual>();
+
         var store = new SqlConnectionStoreBuilder()
             .SetupDatabase<FruitDbContext>()
                 .RegisterCollection<Apple>()
@@ -27,7 +32,7 @@ public class ManualTests : CommonTestCases
                 .RegisterCollection<Astronaut>()
                 .RegisterCollection<Spaceship>()
                 .RegisterCollection<AuditLog>()
-            .Build(new TestSqlInterceptorManual());
+            .Build(interceptorBuilder);
 
         var lazyProvider = new Lazy<IServiceProvider>(() => services.BuildServiceProvider());
         var contextFactory = new SqlDbContextFactory(lazyProvider);
@@ -44,8 +49,10 @@ public class ManualTests : CommonTestCases
         _connection = new SqliteConnection(connBuilder.ConnectionString);
         var assemblyName = Assembly.GetExecutingAssembly().FullName;
         services
+            .AddSingleton<IDateTimeService>(DateTimeService)
             .AddScoped<SqlDbContextFactory>(_ => contextFactory)
             .AddScoped<Lazy<IServiceProvider>>(_ => lazyProvider)
+            .AddInterceptors(store, interceptorBuilder)
             .AddDbContext<FruitDbContext>(it => it.UseSqlite(_connection, opt => opt.MigrationsAssembly(assemblyName)))
                 .AddScoped<IRepository<Apple>>(_ => apple.Value)
                 .AddScoped<IRepository<Apple, string>>(_ => apple.Value)

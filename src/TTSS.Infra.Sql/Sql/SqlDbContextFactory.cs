@@ -1,4 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Diagnostics;
+using Microsoft.Extensions.DependencyInjection;
 using TTSS.Core.Services;
 
 namespace TTSS.Infra.Data.Sql;
@@ -6,21 +8,12 @@ namespace TTSS.Infra.Data.Sql;
 /// <summary>
 /// SqlDbContext factory.
 /// </summary>
-public class SqlDbContextFactory : FactoryBase
+/// <remarks>
+/// Initialize an instance of <see cref="SqlDbContextFactory"/>.
+/// </remarks>
+/// <param name="serviceProvider">The service provider</param>
+public class SqlDbContextFactory(Lazy<IServiceProvider> serviceProvider) : FactoryBase(serviceProvider)
 {
-    #region Constructors
-
-    /// <summary>
-    /// Initialize an instance of <see cref="SqlDbContextFactory"/>.
-    /// </summary>
-    /// <param name="serviceProvider">The service provider</param>
-    public SqlDbContextFactory(Lazy<IServiceProvider> serviceProvider)
-        : base(serviceProvider)
-    {
-    }
-
-    #endregion
-
     #region Methods
 
     /// <summary>
@@ -36,6 +29,14 @@ public class SqlDbContextFactory : FactoryBase
 
         if (GetOrCreate(type) is DbContext ctx) return ctx;
         else throw new ArgumentOutOfRangeException($"{type.Name} isn't DbContext or forget to register.");
+    }
+
+    internal IEnumerable<IInterceptor> GetInterceptors(SqlConnectionStore store, SqlInterceptorBuilder builder)
+    {
+        foreach (var item in builder.InterceptorTypes)
+        {
+            yield return (IInterceptor)serviceProvider.Value.GetRequiredKeyedService(item, store);
+        }
     }
 
     #endregion

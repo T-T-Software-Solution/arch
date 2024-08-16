@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using System.Reflection;
+using TTSS.Core.Services;
 using TTSS.Infra.Data.Sql.DbContexte;
 using TTSS.Infra.Data.Sql.Interceptors;
 
@@ -18,11 +19,12 @@ public class IoCTests : CommonTestCases
         _connection = new SqliteConnection(connBuilder.ConnectionString);
 
         services
+            .AddSingleton<IDateTimeService>(DateTimeService)
             .SetupSqlDatabase(it => it.UseSqlite(_connection, opt => opt.MigrationsAssembly(Assembly.GetExecutingAssembly().FullName)))
                 .AddDbContext<FruitDbContext>()
                 .AddDbContext<SchoolDbContext>()
                 .AddDbContext<SpaceDbContext>()
-            .Build(new TestSqlInterceptorIoC());
+            .Build(cfg => cfg.Register<TestSqlInterceptorIoC>());
     }
 
     public override void Dispose()
