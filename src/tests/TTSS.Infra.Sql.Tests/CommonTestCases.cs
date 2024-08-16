@@ -934,7 +934,7 @@ public abstract class CommonTestCases : IoCTestBase, IDisposable
         target.Action.Should().BeEquivalentTo(expectedAction);
         target.Message.Should().BeEquivalentTo(expectedMessage);
     }
-    private void ValidateAuditRecord(IList<AuditLog> auditLogs, int elementPosition, string expectedAction, string expectedMessage)
+    private static void ValidateAuditRecord(IList<AuditLog> auditLogs, int elementPosition, string expectedAction, string expectedMessage)
     {
         var target = auditLogs[elementPosition];
         target.Id.Should().NotBeNullOrEmpty();

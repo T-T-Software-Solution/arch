@@ -18,14 +18,13 @@ public static class ModuleInitializer
     public static IServiceCollection RegisterMessagingModule(this IServiceCollection services, IEnumerable<Assembly> assemblies, params Type[] pipelines)
     {
         var target = typeof(IPipelineBehaviorBase<,>);
-        var qry = (pipelines ?? Array.Empty<Type>())
+        var qry = (pipelines ?? [])
             .Where(type => type.IsGenericType
                 && type.GetInterfaces().Any(it => it.IsGenericType && it.GetGenericTypeDefinition() == target))
-            .Union(new[]
-            {
+            .Union([
                 typeof(MediatR.Pipeline.RequestPreProcessorBehavior<,>),
                 typeof(MediatR.Pipeline.RequestPostProcessorBehavior<,>),
-            });
+                ]);
 
         services.AddSingleton<IMessagingHub>(sp => new MessagingHub(new Lazy<IServiceProvider>(sp)));
         services.AddMediatR(cfg =>

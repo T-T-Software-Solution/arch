@@ -4,12 +4,11 @@ using TTSS.Core.Data;
 
 namespace TTSS.Infra.Data.Sql;
 
-internal sealed class SqlQueryResult<TEntity> : IQueryResult<TEntity>
+internal sealed class SqlQueryResult<TEntity>(IQueryable<TEntity> findResult, CancellationToken cancellationToken) : IQueryResult<TEntity>
 {
     #region Fields
 
-    private readonly IQueryable<TEntity> _findResult;
-    private readonly CancellationToken _cancellationToken;
+    private readonly IQueryable<TEntity> _findResult = findResult ?? throw new ArgumentNullException(nameof(findResult));
 
     #endregion
 
@@ -19,20 +18,10 @@ internal sealed class SqlQueryResult<TEntity> : IQueryResult<TEntity>
 
     #endregion
 
-    #region Constructors
-
-    public SqlQueryResult(IQueryable<TEntity> findResult, CancellationToken cancellationToken)
-    {
-        _findResult = findResult ?? throw new ArgumentNullException(nameof(findResult));
-        _cancellationToken = cancellationToken;
-    }
-
-    #endregion
-
     #region Methods
 
     public async Task<IEnumerable<TEntity>> GetAsync()
-        => await _findResult.ToListAsync(_cancellationToken);
+        => await _findResult.ToListAsync(cancellationToken);
 
     public IPagingRepositoryResult<TEntity> ToPaging(bool totalCount = false, int pageSize = 0)
         => new SqlPagingResult<TEntity>(_findResult, totalCount, pageSize);

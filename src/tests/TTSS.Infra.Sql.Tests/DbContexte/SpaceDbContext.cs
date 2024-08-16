@@ -4,15 +4,11 @@ using TTSS.Infra.Data.Sql.DbModels;
 
 namespace TTSS.Infra.Data.Sql.DbContexte;
 
-internal class SpaceDbContext : DbContextBase<SpaceDbContext>, IAuditRepository
+internal class SpaceDbContext(DbContextOptions<SpaceDbContext> options) : DbContextBase<SpaceDbContext>(options), IAuditRepository
 {
     public DbSet<Astronaut> Astronauts { get; set; }
     public DbSet<Spaceship> Spaceships { get; set; }
     public DbSet<AuditLog> Audits { get; set; }
-
-    public SpaceDbContext(DbContextOptions<SpaceDbContext> options) : base(options)
-    {
-    }
 
     public Task AddAuditEntityAsync(IEnumerable<IAuditEntity> entities, CancellationToken cancellationToken = default)
         => Audits.AddRangeAsync(entities.Select(it => (AuditLog)it), cancellationToken);

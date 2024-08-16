@@ -111,7 +111,7 @@ public class RedisRepositoryCache<TEntity> : RedisRepositoryCache,
     /// <param name="cancellationToken">Cancellation token</param>
     /// <returns>Acknowledgement</returns>
     public Task<bool> DeleteAsync(string key, CancellationToken cancellationToken = default)
-        => DeleteManyAsync(new[] { key }, cancellationToken);
+        => DeleteManyAsync([key], cancellationToken);
 
     /// <summary>
     /// Delete entities.

@@ -137,7 +137,7 @@ public abstract class RedisCacheBase<TEntity> : IRedisCache<TEntity>
     /// <param name="cancellationToken">Cancellation token</param>
     /// <returns>Acknowledgement</returns>
     public Task DeleteAsync(string key, CancellationToken cancellationToken = default)
-        => DeleteAsync(new[] { key }, cancellationToken);
+        => DeleteAsync([key], cancellationToken);
 
     /// <summary>
     /// Delete multiple-values from cache.

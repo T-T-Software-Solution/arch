@@ -2,21 +2,13 @@
 
 namespace TTSS.Infra.Data.Redis.Models;
 
-internal sealed class RedisMultiplexer : IDisposable
+internal sealed class RedisMultiplexer(RedisConnection connection) : IDisposable
 {
     #region Fields
 
     private IDatabase? _database;
-    private readonly RedisConnection _connection;
     private volatile ConnectionMultiplexer _connectionMultiplexer = null!;
     private readonly SemaphoreSlim _theLock = new(initialCount: 1, maxCount: 1);
-
-    #endregion
-
-    #region Constructors
-
-    public RedisMultiplexer(RedisConnection connection)
-        => _connection = connection;
 
     #endregion
 
@@ -40,7 +32,7 @@ internal sealed class RedisMultiplexer : IDisposable
         {
             if (_database == null)
             {
-                _connectionMultiplexer = await ConnectionMultiplexer.ConnectAsync(_connection.ConnectionString);
+                _connectionMultiplexer = await ConnectionMultiplexer.ConnectAsync(connection.ConnectionString);
                 _database = _connectionMultiplexer.GetDatabase();
             }
         }

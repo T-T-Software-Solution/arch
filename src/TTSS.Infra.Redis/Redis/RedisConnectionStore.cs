@@ -11,7 +11,7 @@ public class RedisConnectionStore
     #region Fields
 
     private ConcurrentDictionary<string, RedisMultiplexer> _databases = null!;
-    private readonly Dictionary<Type, RedisConnection> _connections = new();
+    private readonly Dictionary<Type, RedisConnection> _connections = [];
 
     #endregion
 
