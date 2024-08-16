@@ -293,6 +293,34 @@ public abstract class CommonTestCases : IoCTestBase, IDisposable
         AuditEvents.Should().HaveCount(2);
         ValidateAuditEvnet(0, "Create", nameof(Astronaut));
         ValidateAuditEvnet(1, "Create", nameof(Spaceship));
+
+        var auditRepo = ServiceProvider.GetRequiredService<IRepository<AuditLog>>();
+        var auditRecords = auditRepo.Get().ToList();
+        auditRecords.Should().HaveCount(2);
+        ValidateAuditRecord(auditRecords, 0, "Create", nameof(Astronaut));
+        ValidateAuditRecord(auditRecords, 1, "Create", nameof(Spaceship));
+    }
+
+    [Fact(DisplayName = "เพิ่มข้อมูลรายที่เป็น audit โดยใช้ช่องทางปรกติ ระบบสามารถบันทึกข้อมูลได้ถูกต้อง โดยไม่มีการแจ้งไปยัง interceptor")]
+    public async Task Insert_AuditRecordDirectly_TheSystemMustInsertItWithTheSpecialPathForAudit()
+    {
+        SetupInterceptors();
+
+        var audit = Fixture.Create<AuditLog>();
+        var auditRepo = ServiceProvider.GetRequiredService<IRepository<AuditLog>>();
+        await auditRepo.InsertAsync(audit);
+
+        var actual = await auditRepo.GetByIdAsync(audit.Id);
+        actual.Should().BeEquivalentTo(audit);
+        actual.Id.Should().Be(audit.Id);
+        actual.Message.Should().Be(audit.Message);
+        auditRepo.Get().Should().BeEquivalentTo(new[] { audit });
+
+        const int NoEvent = 0;
+        AuditEvents.Should().HaveCount(NoEvent);
+        CreationEvents.Should().HaveCount(NoEvent);
+        DeletionEvents.Should().HaveCount(NoEvent);
+        UpdationEvents.Should().HaveCount(NoEvent);
     }
 
     #region Key is a number
@@ -525,6 +553,14 @@ public abstract class CommonTestCases : IoCTestBase, IDisposable
         ValidateAuditEvnet(1, "Update", nameof(Astronaut));
         ValidateAuditEvnet(2, "Create", nameof(Spaceship));
         ValidateAuditEvnet(3, "Update", nameof(Spaceship));
+
+        var auditRepo = ServiceProvider.GetRequiredService<IRepository<AuditLog>>();
+        var auditRecords = auditRepo.Get().ToList();
+        auditRecords.Should().HaveCount(4);
+        ValidateAuditRecord(auditRecords, 0, "Create", nameof(Astronaut));
+        ValidateAuditRecord(auditRecords, 1, "Update", nameof(Astronaut));
+        ValidateAuditRecord(auditRecords, 2, "Create", nameof(Spaceship));
+        ValidateAuditRecord(auditRecords, 3, "Update", nameof(Spaceship));
     }
 
     #endregion
@@ -633,6 +669,12 @@ public abstract class CommonTestCases : IoCTestBase, IDisposable
         AuditEvents.Should().HaveCount(2);
         ValidateAuditEvnet(0, "Create", nameof(Astronaut));
         ValidateAuditEvnet(1, "Delete", nameof(Astronaut));
+
+        var auditRepo = ServiceProvider.GetRequiredService<IRepository<AuditLog>>();
+        var auditRecords = auditRepo.Get().ToList();
+        auditRecords.Should().HaveCount(2);
+        ValidateAuditRecord(auditRecords, 0, "Create", nameof(Astronaut));
+        ValidateAuditRecord(auditRecords, 1, "Delete", nameof(Astronaut));
     }
 
     #region Key is a number
@@ -888,6 +930,13 @@ public abstract class CommonTestCases : IoCTestBase, IDisposable
     private void ValidateAuditEvnet(int elementPosition, string expectedAction, string expectedMessage)
     {
         var target = AuditEvents.ToList()[elementPosition];
+        target.Id.Should().NotBeNullOrEmpty();
+        target.Action.Should().BeEquivalentTo(expectedAction);
+        target.Message.Should().BeEquivalentTo(expectedMessage);
+    }
+    private void ValidateAuditRecord(IList<AuditLog> auditLogs, int elementPosition, string expectedAction, string expectedMessage)
+    {
+        var target = auditLogs[elementPosition];
         target.Id.Should().NotBeNullOrEmpty();
         target.Action.Should().BeEquivalentTo(expectedAction);
         target.Message.Should().BeEquivalentTo(expectedMessage);
