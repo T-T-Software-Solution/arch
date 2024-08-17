@@ -1,8 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Diagnostics;
+using TTSS.Core.Data;
 using TTSS.Core.Data.Models;
 using TTSS.Core.Services;
-using TTSS.Infra.Data.Sql.Models;
 
 namespace TTSS.Infra.Data.Sql.Interceptors
 {
@@ -26,8 +26,8 @@ namespace TTSS.Infra.Data.Sql.Interceptors
         internal static void AssignActivityLog(IEnumerable<EntityEntry> entityEntries, IDateTimeService timeService)
         {
             var entries = entityEntries
-             .Where(it => it is not null && it.Entity is ActivityLogSqlModelBase)
-             .Select(it => new { Entry = it, Entity = (ActivityLogSqlModelBase)it.Entity, }) ?? [];
+             .Where(it => it is not null && it.Entity is IHaveActivityLog)
+             .Select(it => new { Entry = it, Entity = (IHaveActivityLog)it.Entity, }) ?? [];
 
             if (false == entries.Any())
             {

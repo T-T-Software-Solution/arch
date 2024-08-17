@@ -59,7 +59,7 @@ public abstract class SqlSaveChangesInterceptorBase(IDateTimeService dateTimeSer
         {
             _auditEntities.RemoveAll(it => eventData.Context!.Entry(it).State == EntityState.Unchanged);
             var entriesQry = _auditEntities
-                .Where(it => it is ActivityLogSqlModelBase activity && activity.ActivityLog is null)
+                .Where(it => it is IHaveActivityLog activity && activity.ActivityLog is null)
                 .Select(it => eventData.Context!.Entry(it));
             SqlActivityLogInterceptor.AssignActivityLog(entriesQry, dateTimeService);
             await auditRepo.AddAuditEntityAsync(_auditEntities, cancellationToken);

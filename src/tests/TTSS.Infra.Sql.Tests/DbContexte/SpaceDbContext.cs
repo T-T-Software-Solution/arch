@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using TTSS.Core.Data;
+using TTSS.Core.Data.Models;
 using TTSS.Infra.Data.Sql.DbModels;
-using TTSS.Infra.Data.Sql.Models;
 
 namespace TTSS.Infra.Data.Sql.DbContexte;
 
@@ -52,7 +52,8 @@ internal class SensitivitySpaceStation : SqlDbModel, IMaskableEntity
         => Secret = string.Join(string.Empty, Secret.Reverse());
 }
 
-internal class MaintenanceLog : ActivityLogSqlModelBase
+internal class MaintenanceLog : SqlDbModel, IHaveActivityLog
 {
     public int Attempt { get; set; }
+    public ActivityLog ActivityLog { get; set; }
 }
