@@ -5,7 +5,7 @@ using System.Reflection;
 using TTSS.Core.Data;
 using TTSS.Infra.Data.Sql.Models;
 
-namespace TTSS.Infra.Data.Sql;
+namespace TTSS.Infra.Data.Sql.Interceptors;
 
 /// <summary>
 /// SQL database interceptor base.

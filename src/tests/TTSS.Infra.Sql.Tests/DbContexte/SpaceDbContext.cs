@@ -9,6 +9,7 @@ internal class SpaceDbContext(DbContextOptions<SpaceDbContext> options) : DbCont
     public DbSet<Astronaut> Astronauts { get; set; }
     public DbSet<Spaceship> Spaceships { get; set; }
     public DbSet<AuditLog> Audits { get; set; }
+    public DbSet<SensitivitySpaceStation> SensitivitySpaceStations { get; set; }
 
     public Task AddAuditEntityAsync(IEnumerable<IAuditEntity> entities, CancellationToken cancellationToken = default)
         => Audits.AddRangeAsync(entities.Select(it => (AuditLog)it), cancellationToken);
@@ -35,4 +36,13 @@ internal class AuditLog : SqlDbModel, IAuditEntity
 {
     public string Action { get; set; }
     public string Message { get; set; }
+}
+
+internal class SensitivitySpaceStation : SqlDbModel, IMaskableEntity
+{
+    [Comment("Secret of the space station")]
+    public string Secret { get; set; }
+
+    public void MaskData()
+        => Secret = string.Join(string.Empty, Secret.Reverse());
 }

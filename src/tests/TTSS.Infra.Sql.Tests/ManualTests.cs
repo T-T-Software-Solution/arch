@@ -32,6 +32,7 @@ public class ManualTests : CommonTestCases
                 .RegisterCollection<Astronaut>()
                 .RegisterCollection<Spaceship>()
                 .RegisterCollection<AuditLog>()
+                .RegisterCollection<SensitivitySpaceStation>()
             .Build(interceptorBuilder);
 
         var lazyProvider = new Lazy<IServiceProvider>(() => services.BuildServiceProvider());
@@ -44,6 +45,7 @@ public class ManualTests : CommonTestCases
         var astronaut = new Lazy<SqlRepository<Astronaut>>(() => new SqlRepository<Astronaut>(store, contextFactory));
         var spaceship = new Lazy<SqlRepository<Spaceship>>(() => new SqlRepository<Spaceship>(store, contextFactory));
         var audit = new Lazy<SqlRepository<AuditLog>>(() => new SqlRepository<AuditLog>(store, contextFactory));
+        var sensitivitySpaceStation = new Lazy<SqlRepository<SensitivitySpaceStation>>(() => new SqlRepository<SensitivitySpaceStation>(store, contextFactory));
 
         var connBuilder = new SqliteConnectionStringBuilder { DataSource = ":memory:" };
         _connection = new SqliteConnection(connBuilder.ConnectionString);
@@ -85,7 +87,11 @@ public class ManualTests : CommonTestCases
                 .AddScoped<IRepository<AuditLog>>(_ => audit.Value)
                 .AddScoped<IRepository<AuditLog, string>>(_ => audit.Value)
                 .AddScoped<ISqlRepository<AuditLog>>(_ => audit.Value)
-                .AddScoped<ISqlRepository<AuditLog, string>>(_ => audit.Value);
+                .AddScoped<ISqlRepository<AuditLog, string>>(_ => audit.Value)
+                .AddScoped<IRepository<SensitivitySpaceStation>>(_ => sensitivitySpaceStation.Value)
+                .AddScoped<IRepository<SensitivitySpaceStation, string>>(_ => sensitivitySpaceStation.Value)
+                .AddScoped<ISqlRepository<SensitivitySpaceStation>>(_ => sensitivitySpaceStation.Value)
+                .AddScoped<ISqlRepository<SensitivitySpaceStation, string>>(_ => sensitivitySpaceStation.Value);
     }
 
     public override void Dispose()

@@ -29,6 +29,7 @@ public abstract class CommonTestCases : IoCTestBase, IDisposable
         ServiceProvider.GetRequiredService<IRepository<Astronaut>>().Should().NotBeNull();
         ServiceProvider.GetRequiredService<IRepository<Spaceship>>().Should().NotBeNull();
         ServiceProvider.GetRequiredService<IRepository<AuditLog>>().Should().NotBeNull();
+        ServiceProvider.GetRequiredService<IRepository<SensitivitySpaceStation>>().Should().NotBeNull();
     }
 
     [Fact]
@@ -42,6 +43,7 @@ public abstract class CommonTestCases : IoCTestBase, IDisposable
         ServiceProvider.GetRequiredService<IRepository<Astronaut, string>>().Should().NotBeNull();
         ServiceProvider.GetRequiredService<IRepository<Spaceship, string>>().Should().NotBeNull();
         ServiceProvider.GetRequiredService<IRepository<AuditLog, string>>().Should().NotBeNull();
+        ServiceProvider.GetRequiredService<IRepository<SensitivitySpaceStation, string>>().Should().NotBeNull();
     }
 
     [Fact]
@@ -54,6 +56,7 @@ public abstract class CommonTestCases : IoCTestBase, IDisposable
         ServiceProvider.GetRequiredService<ISqlRepository<Astronaut>>().Should().NotBeNull();
         ServiceProvider.GetRequiredService<ISqlRepository<Spaceship>>().Should().NotBeNull();
         ServiceProvider.GetRequiredService<ISqlRepository<AuditLog>>().Should().NotBeNull();
+        ServiceProvider.GetRequiredService<ISqlRepository<SensitivitySpaceStation>>().Should().NotBeNull();
     }
 
     [Fact]
@@ -67,6 +70,7 @@ public abstract class CommonTestCases : IoCTestBase, IDisposable
         ServiceProvider.GetRequiredService<ISqlRepository<Astronaut, string>>().Should().NotBeNull();
         ServiceProvider.GetRequiredService<ISqlRepository<Spaceship, string>>().Should().NotBeNull();
         ServiceProvider.GetRequiredService<ISqlRepository<AuditLog, string>>().Should().NotBeNull();
+        ServiceProvider.GetRequiredService<ISqlRepository<SensitivitySpaceStation, string>>().Should().NotBeNull();
     }
 
     [Fact]
@@ -79,6 +83,7 @@ public abstract class CommonTestCases : IoCTestBase, IDisposable
         ServiceProvider.GetService<ISqlRepositorySpecific<Astronaut>>().Should().BeNull();
         ServiceProvider.GetService<ISqlRepositorySpecific<Spaceship>>().Should().BeNull();
         ServiceProvider.GetService<ISqlRepositorySpecific<AuditLog>>().Should().BeNull();
+        ServiceProvider.GetService<ISqlRepositorySpecific<SensitivitySpaceStation>>().Should().BeNull();
     }
 
     [Fact]
@@ -91,6 +96,7 @@ public abstract class CommonTestCases : IoCTestBase, IDisposable
         ServiceProvider.GetService<SqlRepository<Astronaut>>().Should().BeNull();
         ServiceProvider.GetService<SqlRepository<Spaceship>>().Should().BeNull();
         ServiceProvider.GetService<SqlRepository<AuditLog>>().Should().BeNull();
+        ServiceProvider.GetService<SqlRepository<SensitivitySpaceStation>>().Should().BeNull();
     }
 
     [Fact]
@@ -104,6 +110,7 @@ public abstract class CommonTestCases : IoCTestBase, IDisposable
         ServiceProvider.GetService<SqlRepository<Astronaut, string>>().Should().BeNull();
         ServiceProvider.GetService<SqlRepository<Spaceship, string>>().Should().BeNull();
         ServiceProvider.GetService<SqlRepository<AuditLog, string>>().Should().BeNull();
+        ServiceProvider.GetService<SqlRepository<SensitivitySpaceStation, string>>().Should().BeNull();
     }
 
     #endregion
@@ -321,6 +328,40 @@ public abstract class CommonTestCases : IoCTestBase, IDisposable
         CreationEvents.Should().HaveCount(NoEvent);
         DeletionEvents.Should().HaveCount(NoEvent);
         UpdationEvents.Should().HaveCount(NoEvent);
+    }
+
+    [Fact(DisplayName = "เพิ่มข้อมูลที่มีความสามารถในการทำ masking ระบบสามารถจับการบันทึกข้อมูลได้ถูกต้อง")]
+    public async Task Insert_With_MaskableEntity_ThenTheMaskingMustWorkAsExpected()
+    {
+        SetupInterceptors();
+
+        var station = new SensitivitySpaceStation { Id = "1", Secret = "Hello" };
+        var stationRepo = ServiceProvider.GetRequiredService<IRepository<SensitivitySpaceStation>>();
+        await stationRepo.InsertAsync(station);
+
+        CreationEvents.Should().HaveCount(1);
+        CreationEvents.First().entity.Should().BeEquivalentTo(station);
+        CreationEvents.First().properties.Should().BeEquivalentTo([
+            new SqlPropertyInfo
+            {
+                ColumnName = "Id",
+                Value = station.Id,
+                Remark = null,
+            },
+            new SqlPropertyInfo
+            {
+                ColumnName = "Secret",
+                Value = "olleH",
+                Remark = "Secret of the space station",
+            }]);
+
+        AuditEvents.Should().HaveCount(1);
+        ValidateAuditEvnet(0, "Create", nameof(SensitivitySpaceStation));
+
+        var auditRepo = ServiceProvider.GetRequiredService<IRepository<AuditLog>>();
+        var auditRecords = auditRepo.Get().ToList();
+        auditRecords.Should().HaveCount(1);
+        ValidateAuditRecord(auditRecords, 0, "Create", nameof(SensitivitySpaceStation));
     }
 
     #region Key is a number
@@ -561,6 +602,39 @@ public abstract class CommonTestCases : IoCTestBase, IDisposable
         ValidateAuditRecord(auditRecords, 1, "Update", nameof(Astronaut));
         ValidateAuditRecord(auditRecords, 2, "Create", nameof(Spaceship));
         ValidateAuditRecord(auditRecords, 3, "Update", nameof(Spaceship));
+    }
+
+    [Fact(DisplayName = "อัพโดยใส่เดทข้อมูลที่มีความสามารถ masking data ระบบสามารถจับการอัพเดทข้อมูลได้ถูกต้อง")]
+    public async Task Update_With_MaskableEntity_ThenTheUpdateMustWorkAsExpected()
+    {
+        SetupInterceptors();
+        var stationRepo = ServiceProvider.GetRequiredService<IRepository<SensitivitySpaceStation>>();
+        var station = new SensitivitySpaceStation { Id = "1", Secret = "Hello" };
+        await stationRepo.InsertAsync(station);
+        
+        station.Secret = "World";
+        await stationRepo.UpdateAsync(station);
+
+        UpdationEvents.Should().HaveCount(1);
+        UpdationEvents.First().entity.Should().BeEquivalentTo(station);
+        UpdationEvents.First().properties.Should().BeEquivalentTo([
+                new SqlUpdatePropertyInfo
+                {
+                    ColumnName = "Secret",
+                    NewValue = "dlroW",
+                    Value = "olleH",
+                    Remark = "Secret of the space station",
+                }]);
+        
+        AuditEvents.Should().HaveCount(2);
+        ValidateAuditEvnet(0, "Create", nameof(SensitivitySpaceStation));
+        ValidateAuditEvnet(1, "Update", nameof(SensitivitySpaceStation));
+
+        var auditRepo = ServiceProvider.GetRequiredService<IRepository<AuditLog>>();
+        var auditRecords = auditRepo.Get().ToList();
+        auditRecords.Should().HaveCount(2);
+        ValidateAuditRecord(auditRecords, 0, "Create", nameof(SensitivitySpaceStation));
+        ValidateAuditRecord(auditRecords, 1, "Update", nameof(SensitivitySpaceStation));
     }
 
     #endregion

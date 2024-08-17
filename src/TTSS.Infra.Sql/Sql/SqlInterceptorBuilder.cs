@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore.Diagnostics;
+using TTSS.Infra.Data.Sql.Interceptors;
 
 namespace TTSS.Infra.Data.Sql;
 
@@ -24,6 +25,24 @@ public sealed class SqlInterceptorBuilder
     /// Gets the registered interceptor types.
     /// </summary>
     public IEnumerable<Type> InterceptorTypes => _interceptors.Distinct();
+
+    #endregion
+
+    #region Constructors
+
+    /// <summary>
+    /// Create a new instance of <see cref="SqlInterceptorBuilder"/>.
+    /// </summary>
+    /// <param name="excludeDefaultInterceptors">True, to exclude default interceptors; otherwise, false</param>
+    public SqlInterceptorBuilder(bool excludeDefaultInterceptors = false)
+    {
+        if (excludeDefaultInterceptors)
+        {
+            return;
+        }
+
+        Register<SqlMaskingInterceptor>();
+    }
 
     #endregion
 
