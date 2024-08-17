@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using System.Reflection;
 using TTSS.Core.Data;
+using TTSS.Core.Models;
 using TTSS.Core.Services;
 using TTSS.Infra.Data.Sql.Models;
 
@@ -11,7 +12,7 @@ namespace TTSS.Infra.Data.Sql.Interceptors;
 /// <summary>
 /// SQL database interceptor base.
 /// </summary>
-public abstract class SqlSaveChangesInterceptorBase(IDateTimeService dateTimeService) : SaveChangesInterceptor
+public abstract class SqlSaveChangesInterceptorBase(IDateTimeService dateTimeService, ICorrelationContext context) : SaveChangesInterceptor
 {
     #region Fields
 
@@ -49,8 +50,8 @@ public abstract class SqlSaveChangesInterceptorBase(IDateTimeService dateTimeSer
             .Where(it => it.Entry.State == EntityState.Modified)
             .GroupBy(it => it.Entity, selector => selector.Entry.Properties
                 .Where(it => it.IsModified)
-                .Select(it => ExtractUpdatePropertyInfo(it, selector.Entity))
-                .Where(it => it.Value != it.NewValue)
+                .Select(it => ShouldSkipProperty(it) ? null! : ExtractUpdatePropertyInfo(it, selector.Entity))
+                .Where(it => it is not null && it.Value != it.NewValue)
                 .Distinct()
                 .ToList());
         await ExecuteAsync(updateQry, OnUpdateAsync);
@@ -59,9 +60,9 @@ public abstract class SqlSaveChangesInterceptorBase(IDateTimeService dateTimeSer
         {
             _auditEntities.RemoveAll(it => eventData.Context!.Entry(it).State == EntityState.Unchanged);
             var entriesQry = _auditEntities
-                .Where(it => it is IHaveActivityLog activity && activity.ActivityLog is null)
+                .Where(it => it is ITimeActivityEntity)
                 .Select(it => eventData.Context!.Entry(it));
-            SqlActivityLogInterceptor.AssignActivityLog(entriesQry, dateTimeService);
+            SqlActivityLogInterceptor.AssignActivityLog(entriesQry, dateTimeService, context);
             await auditRepo.AddAuditEntityAsync(_auditEntities, cancellationToken);
         }
 
@@ -73,7 +74,8 @@ public abstract class SqlSaveChangesInterceptorBase(IDateTimeService dateTimeSer
             => entries
                 .Where(it => filter(it.Entry.State))
                 .GroupBy(it => it.Entity, selector => selector.Entry.Properties
-                    .Select(it => ExtractPropertyInfo(it, selector.Entity))
+                    .Select(it => ShouldSkipProperty(it) ? null! : ExtractPropertyInfo(it, selector.Entity))
+                    .Where(it => it is not null)
                     .Distinct()
                     .ToList());
         async Task ExecuteAsync<TProperty>(IEnumerable<IGrouping<IDbModel, IList<TProperty>>> qry, Func<IDbModel, IList<TProperty>, CancellationToken, Task> func) where TProperty : SqlPropertyInfo
@@ -109,6 +111,15 @@ public abstract class SqlSaveChangesInterceptorBase(IDateTimeService dateTimeSer
                 ?.GetCustomAttribute<CommentAttribute>()
                 ?.Comment;
         }
+        bool ShouldSkipProperty(PropertyEntry entry)
+            => (entry.EntityEntry.Entity is ITimeActivityEntity
+                && entry.Metadata.Name is nameof(ITimeActivityEntity.CreatedDate)
+                or nameof(ITimeActivityEntity.LastUpdatedDate)
+                or nameof(ITimeActivityEntity.DeletedDate))
+                || (entry.EntityEntry.Entity is IUserActivityEntity
+                && entry.Metadata.Name is nameof(IUserActivityEntity.CreatedById)
+                or nameof(IUserActivityEntity.LastUpdatedById)
+                or nameof(IUserActivityEntity.DeletedById));
     }
 
     /// <summary>

@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using System.Reflection;
+using TTSS.Core.Models;
 using TTSS.Core.Services;
 using TTSS.Infra.Data.Sql.DbContexte;
 using TTSS.Infra.Data.Sql.Interceptors;
@@ -10,7 +11,7 @@ namespace TTSS.Infra.Data.Sql;
 
 public class IoCTests : CommonTestCases
 {
-    public override bool IsManual => false;
+    protected override bool IsManual => false;
     private SqliteConnection _connection = null!;
 
     protected override void RegisterServices(IServiceCollection services)
@@ -20,6 +21,7 @@ public class IoCTests : CommonTestCases
 
         services
             .AddSingleton<IDateTimeService>(DateTimeService)
+            .AddScoped<ICorrelationContext, CorrelationContext>(_ => Context)
             .SetupSqlDatabase(it => it.UseSqlite(_connection, opt => opt.MigrationsAssembly(Assembly.GetExecutingAssembly().FullName)))
                 .AddDbContext<FruitDbContext>()
                 .AddDbContext<SchoolDbContext>()

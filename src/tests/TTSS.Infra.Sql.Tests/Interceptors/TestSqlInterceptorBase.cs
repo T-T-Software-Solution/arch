@@ -1,11 +1,12 @@
 ﻿using TTSS.Core.Data;
+using TTSS.Core.Models;
 using TTSS.Core.Services;
 using TTSS.Infra.Data.Sql.DbContexte;
 using TTSS.Infra.Data.Sql.Models;
 
 namespace TTSS.Infra.Data.Sql.Interceptors;
 
-internal abstract class TestSqlInterceptorBase(IDateTimeService dateTimeService) : SqlSaveChangesInterceptorBase(dateTimeService)
+internal abstract class TestSqlInterceptorBase(IDateTimeService dateTimeService, ICorrelationContext context) : SqlSaveChangesInterceptorBase(dateTimeService, context)
 {
     public abstract bool IsManual { get; }
     public static event EventHandler<(object entity, bool isManual)> OnAuditEntityAdded;
@@ -43,11 +44,11 @@ internal abstract class TestSqlInterceptorBase(IDateTimeService dateTimeService)
         }
     }
 }
-internal class TestSqlInterceptorIoC(IDateTimeService dateTimeService) : TestSqlInterceptorBase(dateTimeService)
+internal class TestSqlInterceptorIoC(IDateTimeService dateTimeService, ICorrelationContext context) : TestSqlInterceptorBase(dateTimeService, context)
 {
     public override bool IsManual => false;
 }
-internal class TestSqlInterceptorManual(IDateTimeService dateTimeService) : TestSqlInterceptorBase(dateTimeService)
+internal class TestSqlInterceptorManual(IDateTimeService dateTimeService, ICorrelationContext context) : TestSqlInterceptorBase(dateTimeService, context)
 {
     public override bool IsManual => true;
 }

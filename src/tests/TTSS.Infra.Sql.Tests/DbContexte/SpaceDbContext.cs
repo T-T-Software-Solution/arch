@@ -1,6 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using TTSS.Core.Data;
-using TTSS.Core.Data.Models;
 using TTSS.Infra.Data.Sql.DbModels;
 
 namespace TTSS.Infra.Data.Sql.DbContexte;
@@ -12,6 +11,7 @@ internal class SpaceDbContext(DbContextOptions<SpaceDbContext> options) : DbCont
     public DbSet<AuditLog> Audits { get; set; }
     public DbSet<SensitivitySpaceStation> SensitivitySpaceStations { get; set; }
     public DbSet<MaintenanceLog> MaintenanceLogs { get; set; }
+    public DbSet<SeriousLog> SeriousLogs { get; set; }
 
     public Task AddAuditEntityAsync(IEnumerable<IAuditEntity> entities, CancellationToken cancellationToken = default)
         => Audits.AddRangeAsync(entities.Select(it => (AuditLog)it), cancellationToken);
@@ -52,8 +52,21 @@ internal class SensitivitySpaceStation : SqlDbModel, IMaskableEntity
         => Secret = string.Join(string.Empty, Secret.Reverse());
 }
 
-internal class MaintenanceLog : SqlDbModel, IHaveActivityLog
+internal class MaintenanceLog : SqlDbModel, ITimeActivityEntity
 {
     public int Attempt { get; set; }
-    public ActivityLog ActivityLog { get; set; }
+    public DateTime CreatedDate { get; set; }
+    public DateTime? LastUpdatedDate { get; set; }
+    public DateTime? DeletedDate { get; set; }
+}
+
+internal class SeriousLog : SqlDbModel, ITimeActivityEntity, IUserActivityEntity
+{
+    public int Attempt { get; set; }
+    public string CreatedById { get; set; }
+    public string LastUpdatedById { get; set; }
+    public string DeletedById { get; set; }
+    public DateTime CreatedDate { get; set; }
+    public DateTime? LastUpdatedDate { get; set; }
+    public DateTime? DeletedDate { get; set; }
 }

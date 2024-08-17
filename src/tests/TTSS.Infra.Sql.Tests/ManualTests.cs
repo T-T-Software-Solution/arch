@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using System.Reflection;
 using TTSS.Core.Data;
+using TTSS.Core.Models;
 using TTSS.Core.Services;
 using TTSS.Infra.Data.Sql;
 using TTSS.Infra.Data.Sql.DbContexte;
@@ -12,7 +13,7 @@ namespace TTSS.Infra.Data.Sql;
 
 public class ManualTests : CommonTestCases
 {
-    public override bool IsManual => true;
+    protected override bool IsManual => true;
     private SqliteConnection _connection = null!;
 
     protected override void RegisterServices(IServiceCollection services)
@@ -34,6 +35,7 @@ public class ManualTests : CommonTestCases
                 .RegisterCollection<AuditLog>()
                 .RegisterCollection<SensitivitySpaceStation>()
                 .RegisterCollection<MaintenanceLog>()
+                .RegisterCollection<SeriousLog>()
             .Build(interceptorBuilder);
 
         var lazyProvider = new Lazy<IServiceProvider>(() => services.BuildServiceProvider());
@@ -48,6 +50,7 @@ public class ManualTests : CommonTestCases
         var audit = new Lazy<SqlRepository<AuditLog>>(() => new SqlRepository<AuditLog>(store, contextFactory));
         var sensitivitySpaceStation = new Lazy<SqlRepository<SensitivitySpaceStation>>(() => new SqlRepository<SensitivitySpaceStation>(store, contextFactory));
         var maintenanceLog = new Lazy<SqlRepository<MaintenanceLog>>(() => new SqlRepository<MaintenanceLog>(store, contextFactory));
+        var seriousLog = new Lazy<SqlRepository<SeriousLog>>(() => new SqlRepository<SeriousLog>(store, contextFactory));
 
         var connBuilder = new SqliteConnectionStringBuilder { DataSource = ":memory:" };
         _connection = new SqliteConnection(connBuilder.ConnectionString);
@@ -56,6 +59,7 @@ public class ManualTests : CommonTestCases
             .AddSingleton<IDateTimeService>(DateTimeService)
             .AddScoped<SqlDbContextFactory>(_ => contextFactory)
             .AddScoped<Lazy<IServiceProvider>>(_ => lazyProvider)
+            .AddScoped<ICorrelationContext, CorrelationContext>(_ => Context)
             .AddInterceptors(store, interceptorBuilder)
             .AddDbContext<FruitDbContext>(it => it.UseSqlite(_connection, opt => opt.MigrationsAssembly(assemblyName)))
                 .AddScoped<IRepository<Apple>>(_ => apple.Value)
@@ -97,7 +101,11 @@ public class ManualTests : CommonTestCases
                 .AddScoped<IRepository<MaintenanceLog>>(_ => maintenanceLog.Value)
                 .AddScoped<IRepository<MaintenanceLog, string>>(_ => maintenanceLog.Value)
                 .AddScoped<ISqlRepository<MaintenanceLog>>(_ => maintenanceLog.Value)
-                .AddScoped<ISqlRepository<MaintenanceLog, string>>(_ => maintenanceLog.Value);
+                .AddScoped<ISqlRepository<MaintenanceLog, string>>(_ => maintenanceLog.Value)
+                .AddScoped<IRepository<SeriousLog>>(_ => seriousLog.Value)
+                .AddScoped<IRepository<SeriousLog, string>>(_ => seriousLog.Value)
+                .AddScoped<ISqlRepository<SeriousLog>>(_ => seriousLog.Value)
+                .AddScoped<ISqlRepository<SeriousLog, string>>(_ => seriousLog.Value);
     }
 
     public override void Dispose()

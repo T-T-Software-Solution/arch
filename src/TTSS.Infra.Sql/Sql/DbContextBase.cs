@@ -1,7 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
-using System.Reflection;
-using TTSS.Core.Data;
 
 namespace TTSS.Infra.Data.Sql;
 
@@ -34,25 +32,6 @@ public abstract class DbContextBase(DbContextOptions options) : DbContext(option
             optionsBuilder.AddInterceptors(_interceptors);
         }
         base.OnConfiguring(optionsBuilder);
-    }
-
-    /// <summary>
-    /// Decorate the model builder with configurations from the assembly of the given type.
-    /// </summary>
-    /// <param name="modelBuilder">The model builder</param>
-    protected override void OnModelCreating(ModelBuilder modelBuilder)
-    {
-        IEnumerable<Type> qry = GetType()
-            .GetProperties(BindingFlags.Public | BindingFlags.Instance)
-            .Where(it => it.PropertyType.IsGenericType && it.PropertyType.GetGenericTypeDefinition() == typeof(DbSet<>))
-            .Select(it => it.PropertyType.GetGenericArguments().FirstOrDefault()!)
-            .Where(it => it is not null)
-            .Where(it => typeof(IHaveActivityLog).IsAssignableFrom(it));
-        foreach (var item in qry)
-        {
-            modelBuilder.Entity(item).ComplexProperty(nameof(IHaveActivityLog.ActivityLog)).IsRequired();
-        }
-        base.OnModelCreating(modelBuilder);
     }
 
     internal void SetInterceptors(IEnumerable<IInterceptor> interceptors)

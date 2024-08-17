@@ -1,12 +1,12 @@
 ﻿using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using TTSS.Core.Data;
-using TTSS.Core.Data.Models;
+using TTSS.Core.Models;
 using TTSS.Core.Services;
 
 namespace TTSS.Infra.Data.Sql.Interceptors
 {
-    internal class SqlActivityLogInterceptor(IDateTimeService dateTimeService) : SaveChangesInterceptor
+    internal class SqlActivityLogInterceptor(IDateTimeService dateTimeService, ICorrelationContext context) : SaveChangesInterceptor
     {
         public override async ValueTask<InterceptionResult<int>> SavingChangesAsync(DbContextEventData eventData, InterceptionResult<int> result, CancellationToken cancellationToken = default)
         {
@@ -16,18 +16,23 @@ namespace TTSS.Infra.Data.Sql.Interceptors
                 return await SavingChangesAsync();
             }
 
-            AssignActivityLog(entries, dateTimeService);
+            AssignActivityLog(entries, dateTimeService, context);
             return await SavingChangesAsync();
 
             ValueTask<InterceptionResult<int>> SavingChangesAsync()
                 => base.SavingChangesAsync(eventData, result, cancellationToken);
         }
 
-        internal static void AssignActivityLog(IEnumerable<EntityEntry> entityEntries, IDateTimeService timeService)
+        internal static void AssignActivityLog(IEnumerable<EntityEntry> entityEntries, IDateTimeService timeService, ICorrelationContext context)
         {
             var entries = entityEntries
-             .Where(it => it is not null && it.Entity is IHaveActivityLog)
-             .Select(it => new { Entry = it, Entity = (IHaveActivityLog)it.Entity, }) ?? [];
+             .Where(it => it is not null && it.Entity is ITimeActivityEntity or IUserActivityEntity)
+             .Select(it => new
+             {
+                 Entry = it,
+                 UserEntity = it.Entity as IUserActivityEntity,
+                 TimeEntity = it.Entity as ITimeActivityEntity,
+             }) ?? [];
 
             if (false == entries.Any())
             {
@@ -37,18 +42,20 @@ namespace TTSS.Infra.Data.Sql.Interceptors
             var now = timeService.UtcNow;
             foreach (var entry in entries)
             {
-                entry.Entity.ActivityLog ??= new ActivityLog { CreatedDate = now };
                 switch (entry.Entry.State)
                 {
                     case Microsoft.EntityFrameworkCore.EntityState.Added:
                     case Microsoft.EntityFrameworkCore.EntityState.Detached:
-                        entry.Entity.ActivityLog.CreatedDate = now;
+                        if (entry.TimeEntity is not null) entry.TimeEntity.CreatedDate = now;
+                        if (entry.UserEntity is not null) entry.UserEntity.CreatedById = context.CurrentUserId;
                         break;
                     case Microsoft.EntityFrameworkCore.EntityState.Deleted:
-                        entry.Entity.ActivityLog.DeletedDate = now;
+                        if (entry.TimeEntity is not null) entry.TimeEntity.DeletedDate = now;
+                        if (entry.UserEntity is not null) entry.UserEntity.DeletedById = context.CurrentUserId;
                         break;
                     case Microsoft.EntityFrameworkCore.EntityState.Modified:
-                        entry.Entity.ActivityLog.LastUpdatedDate = now;
+                        if (entry.TimeEntity is not null) entry.TimeEntity.LastUpdatedDate = now;
+                        if (entry.UserEntity is not null) entry.UserEntity.LastUpdatedById = context.CurrentUserId;
                         break;
                     default:
                         break;
