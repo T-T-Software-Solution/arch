@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using TTSS.Core.Data;
 using TTSS.Infra.Data.Sql.DbModels;
+using TTSS.Infra.Data.Sql.Models;
 
 namespace TTSS.Infra.Data.Sql.DbContexte;
 
@@ -10,6 +11,7 @@ internal class SpaceDbContext(DbContextOptions<SpaceDbContext> options) : DbCont
     public DbSet<Spaceship> Spaceships { get; set; }
     public DbSet<AuditLog> Audits { get; set; }
     public DbSet<SensitivitySpaceStation> SensitivitySpaceStations { get; set; }
+    public DbSet<MaintenanceLog> MaintenanceLogs { get; set; }
 
     public Task AddAuditEntityAsync(IEnumerable<IAuditEntity> entities, CancellationToken cancellationToken = default)
         => Audits.AddRangeAsync(entities.Select(it => (AuditLog)it), cancellationToken);
@@ -22,6 +24,9 @@ internal class Astronaut : SqlDbModel
 
     [Comment("Size of the astronaut")]
     public int Size { get; set; }
+
+    public string GetDisplayName()
+        => Name;
 }
 
 internal class Spaceship : SqlDbModel
@@ -45,4 +50,9 @@ internal class SensitivitySpaceStation : SqlDbModel, IMaskableEntity
 
     public void MaskData()
         => Secret = string.Join(string.Empty, Secret.Reverse());
+}
+
+internal class MaintenanceLog : ActivityLogSqlModelBase
+{
+    public int Attempt { get; set; }
 }

@@ -42,6 +42,7 @@ public sealed class SqlInterceptorBuilder
         }
 
         Register<SqlMaskingInterceptor>();
+        Register<SqlActivityLogInterceptor>();
     }
 
     #endregion

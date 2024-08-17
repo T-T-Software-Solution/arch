@@ -33,6 +33,7 @@ public class ManualTests : CommonTestCases
                 .RegisterCollection<Spaceship>()
                 .RegisterCollection<AuditLog>()
                 .RegisterCollection<SensitivitySpaceStation>()
+                .RegisterCollection<MaintenanceLog>()
             .Build(interceptorBuilder);
 
         var lazyProvider = new Lazy<IServiceProvider>(() => services.BuildServiceProvider());
@@ -46,6 +47,7 @@ public class ManualTests : CommonTestCases
         var spaceship = new Lazy<SqlRepository<Spaceship>>(() => new SqlRepository<Spaceship>(store, contextFactory));
         var audit = new Lazy<SqlRepository<AuditLog>>(() => new SqlRepository<AuditLog>(store, contextFactory));
         var sensitivitySpaceStation = new Lazy<SqlRepository<SensitivitySpaceStation>>(() => new SqlRepository<SensitivitySpaceStation>(store, contextFactory));
+        var maintenanceLog = new Lazy<SqlRepository<MaintenanceLog>>(() => new SqlRepository<MaintenanceLog>(store, contextFactory));
 
         var connBuilder = new SqliteConnectionStringBuilder { DataSource = ":memory:" };
         _connection = new SqliteConnection(connBuilder.ConnectionString);
@@ -91,7 +93,11 @@ public class ManualTests : CommonTestCases
                 .AddScoped<IRepository<SensitivitySpaceStation>>(_ => sensitivitySpaceStation.Value)
                 .AddScoped<IRepository<SensitivitySpaceStation, string>>(_ => sensitivitySpaceStation.Value)
                 .AddScoped<ISqlRepository<SensitivitySpaceStation>>(_ => sensitivitySpaceStation.Value)
-                .AddScoped<ISqlRepository<SensitivitySpaceStation, string>>(_ => sensitivitySpaceStation.Value);
+                .AddScoped<ISqlRepository<SensitivitySpaceStation, string>>(_ => sensitivitySpaceStation.Value)
+                .AddScoped<IRepository<MaintenanceLog>>(_ => maintenanceLog.Value)
+                .AddScoped<IRepository<MaintenanceLog, string>>(_ => maintenanceLog.Value)
+                .AddScoped<ISqlRepository<MaintenanceLog>>(_ => maintenanceLog.Value)
+                .AddScoped<ISqlRepository<MaintenanceLog, string>>(_ => maintenanceLog.Value);
     }
 
     public override void Dispose()

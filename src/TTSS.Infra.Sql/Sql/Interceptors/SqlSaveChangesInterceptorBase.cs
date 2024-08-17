@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using System.Reflection;
 using TTSS.Core.Data;
+using TTSS.Core.Services;
 using TTSS.Infra.Data.Sql.Models;
 
 namespace TTSS.Infra.Data.Sql.Interceptors;
@@ -10,7 +11,7 @@ namespace TTSS.Infra.Data.Sql.Interceptors;
 /// <summary>
 /// SQL database interceptor base.
 /// </summary>
-public abstract class SqlSaveChangesInterceptorBase : SaveChangesInterceptor
+public abstract class SqlSaveChangesInterceptorBase(IDateTimeService dateTimeService) : SaveChangesInterceptor
 {
     #region Fields
 
@@ -57,6 +58,10 @@ public abstract class SqlSaveChangesInterceptorBase : SaveChangesInterceptor
         if (eventData.Context is IAuditRepository auditRepo)
         {
             _auditEntities.RemoveAll(it => eventData.Context!.Entry(it).State == EntityState.Unchanged);
+            var entriesQry = _auditEntities
+                .Where(it => it is ActivityLogSqlModelBase activity && activity.ActivityLog is null)
+                .Select(it => eventData.Context!.Entry(it));
+            SqlActivityLogInterceptor.AssignActivityLog(entriesQry, dateTimeService);
             await auditRepo.AddAuditEntityAsync(_auditEntities, cancellationToken);
         }
 

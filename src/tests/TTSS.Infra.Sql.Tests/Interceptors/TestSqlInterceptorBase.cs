@@ -5,7 +5,7 @@ using TTSS.Infra.Data.Sql.Models;
 
 namespace TTSS.Infra.Data.Sql.Interceptors;
 
-internal abstract class TestSqlInterceptorBase(IDateTimeService dateTimeService) : SqlSaveChangesInterceptorBase
+internal abstract class TestSqlInterceptorBase(IDateTimeService dateTimeService) : SqlSaveChangesInterceptorBase(dateTimeService)
 {
     public abstract bool IsManual { get; }
     public static event EventHandler<(object entity, bool isManual)> OnAuditEntityAdded;
