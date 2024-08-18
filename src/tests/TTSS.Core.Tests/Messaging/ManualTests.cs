@@ -12,7 +12,7 @@ public class ManualTests : CommonTestCases
         services.AddSingleton<IMessagingHub>(sp => new MessagingHub(new Lazy<IServiceProvider>(sp)));
         services.AddMediatR(cfg =>
         {
-            cfg.RegisterServicesFromAssemblies(new[] { typeof(ManualTests).Assembly });
+            cfg.RegisterServicesFromAssemblies([typeof(ManualTests).Assembly]);
             var pipelines = new[]
             {
                     typeof(IncrementPipelineBehavior<,>),

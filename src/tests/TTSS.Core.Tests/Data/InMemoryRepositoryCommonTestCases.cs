@@ -369,7 +369,7 @@ public abstract class InMemoryRepositoryCommonTestCases : IoCTestBase
         await sut.InsertAsync(new BasicDbModel { Id = "3", Name = "Three" });
 
         var qry = from it in sut.Query()
-                  where it.Name.StartsWith("T")
+                  where it.Name.StartsWith('T')
                   select it.Name;
 
         qry.Should().BeEquivalentTo("Two", "Three");
@@ -398,7 +398,7 @@ public abstract class InMemoryRepositoryCommonTestCases : IoCTestBase
         await sut.InsertAsync(new CustomPrimaryKeyDbModel { Id = 3, Name = "Three" });
 
         var qry = from it in sut.Query()
-                  where it.Name.StartsWith("T")
+                  where it.Name.StartsWith('T')
                   select it.Name;
 
         qry.Should().BeEquivalentTo("Two", "Three");

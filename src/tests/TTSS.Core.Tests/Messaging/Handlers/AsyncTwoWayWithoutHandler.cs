@@ -5,12 +5,7 @@ public class AsyncTwoWayWithoutHandler : IRequesting<AsyncTwoWayWithoutHandlerRe
     public required string Name { get; set; }
 }
 
-public class AsyncTwoWayWithoutHandlerResponse
+public class AsyncTwoWayWithoutHandlerResponse(int value)
 {
-    public AsyncTwoWayWithoutHandlerResponse(int value)
-    {
-        Value = value;
-    }
-
-    public int Value { get; }
+    public int Value { get; } = value;
 }

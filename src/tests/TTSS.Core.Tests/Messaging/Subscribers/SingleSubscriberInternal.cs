@@ -4,19 +4,14 @@ namespace TTSS.Core.Messaging.Subscribers;
 
 internal class SingleSubscriberInternal : IPublication
 {
-    public List<string> HandlerNames { get; set; } = new();
+    public List<string> HandlerNames { get; set; } = [];
 }
 
-internal class SingleSubscriberInternalHandler : PublicationHandler<SingleSubscriberInternal>
+internal class SingleSubscriberInternalHandler(ITestInterface testInterface) : PublicationHandler<SingleSubscriberInternal>
 {
-    private readonly ITestInterface _testInterface;
-
-    public SingleSubscriberInternalHandler(ITestInterface testInterface)
-        => _testInterface = testInterface;
-
     public override void Handle(SingleSubscriberInternal notification)
     {
-        _testInterface.Execute(notification);
+        testInterface.Execute(notification);
         notification.HandlerNames.Add(GetType().Name);
     }
 }

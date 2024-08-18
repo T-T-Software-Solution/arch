@@ -12,7 +12,7 @@ public class ActivityTests : TestBase
 {
     private readonly ActivityListener _listener;
 
-    private IActivityFactory Sut => Fixture.Create<ActivityFactory>();
+    private ActivityFactory Sut => Fixture.Create<ActivityFactory>();
 
     public ActivityTests(ITestOutputHelper testOutput)
     {

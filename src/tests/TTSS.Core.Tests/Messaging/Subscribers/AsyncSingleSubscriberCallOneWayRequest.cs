@@ -4,27 +4,18 @@ namespace TTSS.Core.Messaging.Subscribers;
 
 public class AsyncSingleSubscriberCallOneWayRequest : IPublication
 {
-    public List<string> HandlerNames { get; set; } = new();
+    public List<string> HandlerNames { get; set; } = [];
 }
 
-public class AsyncSingleSubscriberCallOneWayRequestHandler : PublicationHandlerAsync<AsyncSingleSubscriberCallOneWayRequest>
+public class AsyncSingleSubscriberCallOneWayRequestHandler(ITestInterface testInterface, IMessagingHub messagingHub) : PublicationHandlerAsync<AsyncSingleSubscriberCallOneWayRequest>
 {
-    private readonly IMessagingHub _messagingHub;
-    private readonly ITestInterface _testInterface;
-
-    public AsyncSingleSubscriberCallOneWayRequestHandler(ITestInterface testInterface, IMessagingHub messagingHub)
-    {
-        _testInterface = testInterface;
-        _messagingHub = messagingHub;
-    }
-
     public override async Task HandleAsync(AsyncSingleSubscriberCallOneWayRequest notification, CancellationToken cancellationToken = default)
     {
-        await _testInterface.ExecuteAsync(notification, cancellationToken);
+        await testInterface.ExecuteAsync(notification, cancellationToken);
         notification.HandlerNames.Add(GetType().Name);
 
         var request = new OneWay { Name = Guid.NewGuid().ToString() };
-        await _messagingHub.SendAsync(request);
+        await messagingHub.SendAsync(request, cancellationToken);
 
         notification.HandlerNames.Add(request.Name);
     }

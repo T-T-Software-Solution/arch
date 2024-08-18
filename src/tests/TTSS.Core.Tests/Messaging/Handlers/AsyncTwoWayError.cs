@@ -5,26 +5,16 @@ public class AsyncTwoWayError : IRequesting<AsyncTwoWayErrorResponse>
     public required string Name { get; set; }
 }
 
-public class AsyncTwoWayErrorResponse
+public class AsyncTwoWayErrorResponse(int value)
 {
-    public AsyncTwoWayErrorResponse(int value)
-    {
-        Value = value;
-    }
-
-    public int Value { get; }
+    public int Value { get; } = value;
 }
 
-public class AsyncTwoWayErrorHandler : RequestHandler<AsyncTwoWayError, AsyncTwoWayErrorResponse>
+public class AsyncTwoWayErrorHandler(ITestInterface testInterface) : RequestHandler<AsyncTwoWayError, AsyncTwoWayErrorResponse>
 {
-    private readonly ITestInterface _testInterface;
-
-    public AsyncTwoWayErrorHandler(ITestInterface testInterface)
-        => _testInterface = testInterface;
-
     public override AsyncTwoWayErrorResponse Handle(AsyncTwoWayError request)
     {
-        _testInterface.Execute(request);
+        testInterface.Execute(request);
         request.Name = GetType().Name;
         throw new InvalidOperationException();
     }

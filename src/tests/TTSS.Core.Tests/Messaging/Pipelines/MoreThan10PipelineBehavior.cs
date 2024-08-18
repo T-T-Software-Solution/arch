@@ -2,19 +2,14 @@
 
 namespace TTSS.Core.Messaging.Pipelines;
 
-public class MoreThan10PipelineBehavior<TRequest, TResponse> : PipelineBehavior<TRequest, TResponse>
+public class MoreThan10PipelineBehavior<TRequest, TResponse>(ITestInterface testInterface) : PipelineBehavior<TRequest, TResponse>
     where TRequest : MoreThan10Request
 {
-    private readonly ITestInterface _testInterface;
-
-    public MoreThan10PipelineBehavior(ITestInterface testInterface)
-        => _testInterface = testInterface;
-
     public override TResponse Handle(TRequest request, Func<TResponse> next)
     {
         if (request.Number < 10) return default!;
 
-        _testInterface.Execute(request);
+        testInterface.Execute(request);
         return next();
     }
 }

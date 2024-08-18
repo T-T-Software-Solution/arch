@@ -4,28 +4,19 @@ namespace TTSS.Core.Messaging.Subscribers;
 
 public class SingleSubscriberCallAsyncSingleSubscriber : IPublication
 {
-    public List<string> HandlerNames { get; set; } = new();
+    public List<string> HandlerNames { get; set; } = [];
 }
 
-public class SingleSubscriberCallAsyncSingleSubscriberHandler : PublicationHandler<SingleSubscriberCallAsyncSingleSubscriber>
+public class SingleSubscriberCallAsyncSingleSubscriberHandler(ITestInterface testInterface, IMessagingHub messagingHub) : PublicationHandler<SingleSubscriberCallAsyncSingleSubscriber>
 {
-    private readonly IMessagingHub _messagingHub;
-    private readonly ITestInterface _testInterface;
-
-    public SingleSubscriberCallAsyncSingleSubscriberHandler(ITestInterface testInterface, IMessagingHub messagingHub)
-    {
-        _testInterface = testInterface;
-        _messagingHub = messagingHub;
-    }
-
     public override void Handle(SingleSubscriberCallAsyncSingleSubscriber notification)
     {
-        _testInterface.Execute(notification);
+        testInterface.Execute(notification);
         notification.HandlerNames.Add(GetType().Name);
 
         var noti = new AsyncSingleSubscriber();
-        var response = _messagingHub.PublishAsync(noti);
-        Task.WaitAll(response);
+        var response = messagingHub.PublishAsync(noti);
+        response.Wait();
 
         notification.HandlerNames.AddRange(noti.HandlerNames);
     }

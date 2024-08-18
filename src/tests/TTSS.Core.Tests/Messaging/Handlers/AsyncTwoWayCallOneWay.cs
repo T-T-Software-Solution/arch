@@ -5,35 +5,21 @@ public class AsyncTwoWayCallOneWay : IRequesting<AsyncTwoWayCallOneWayResponse>
     public required string Name { get; set; }
 }
 
-public class AsyncTwoWayCallOneWayResponse
+public class AsyncTwoWayCallOneWayResponse(int value)
 {
-    public AsyncTwoWayCallOneWayResponse(int value)
-    {
-        Value = value;
-    }
-
-    public int Value { get; }
+    public int Value { get; } = value;
     public required string NameFromOneWay { get; set; }
 }
 
-public class AsyncTwoWayCallOneWayHandler : RequestHandlerAsync<AsyncTwoWayCallOneWay, AsyncTwoWayCallOneWayResponse>
+public class AsyncTwoWayCallOneWayHandler(ITestInterface testInterface, IMessagingHub messagingHub) : RequestHandlerAsync<AsyncTwoWayCallOneWay, AsyncTwoWayCallOneWayResponse>
 {
-    private readonly IMessagingHub _messagingHub;
-    private readonly ITestInterface _testInterface;
-
-    public AsyncTwoWayCallOneWayHandler(ITestInterface testInterface, IMessagingHub messagingHub)
-    {
-        _testInterface = testInterface;
-        _messagingHub = messagingHub;
-    }
-
     public override async Task<AsyncTwoWayCallOneWayResponse> HandleAsync(AsyncTwoWayCallOneWay request, CancellationToken cancellationToken = default)
     {
-        await _testInterface.ExecuteAsync(request, cancellationToken);
+        await testInterface.ExecuteAsync(request, cancellationToken);
         request.Name = GetType().Name;
 
         var req = new OneWay { Name = Guid.NewGuid().ToString() };
-        await _messagingHub.SendAsync(req);
+        await messagingHub.SendAsync(req, cancellationToken);
 
         return new AsyncTwoWayCallOneWayResponse(999)
         {
