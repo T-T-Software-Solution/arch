@@ -1,0 +1,25 @@
+﻿using Shipping.Shared.Entities;
+using System.ComponentModel.DataAnnotations;
+using TTSS.Core.Data;
+using TTSS.Core.Messaging;
+using TTSS.Core.Messaging.Handlers;
+using TTSS.Core.Services;
+
+namespace Shopping.WebApi.Biz.Products;
+
+public sealed record DeleteProduct([Required] string ProductId) : IRequesting;
+
+internal sealed class DeleteProductHandler(IRepository<Product> repository, IDateTimeService dateTimeService) : RequestHandlerAsync<DeleteProduct>
+{
+    public override async Task HandleAsync(DeleteProduct request, CancellationToken cancellationToken = default)
+    {
+        var entity = await repository.GetByIdAsync(request.ProductId);
+        if (entity is null)
+        {
+            return;
+        }
+
+        entity.DeletedDate = dateTimeService.UtcNow;
+        await repository.UpdateAsync(entity);
+    }
+}
