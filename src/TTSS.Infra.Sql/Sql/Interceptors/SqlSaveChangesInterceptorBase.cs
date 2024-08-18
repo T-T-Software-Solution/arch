@@ -123,6 +123,29 @@ public abstract class SqlSaveChangesInterceptorBase(IDateTimeService dateTimeSer
     }
 
     /// <summary>
+    /// Called at the end of entity saving.
+    /// </summary>
+    /// <param name="eventData">Contextual information about the DbContext being used</param>
+    /// <param name="result">Represents the current result if one exists</param>
+    /// <param name="cancellationToken">Cancellation token</param>
+    public override ValueTask<int> SavedChangesAsync(SaveChangesCompletedEventData eventData, int result, CancellationToken cancellationToken = default)
+    {
+        if (eventData.Context is null)
+        {
+            return SavedChangesAsync();
+        }
+
+        if (eventData.Context is IAuditRepository auditRepo)
+        {
+            _auditEntities.RemoveAll(it => eventData.Context!.Entry(it).State == EntityState.Unchanged);
+        }
+        return SavedChangesAsync();
+
+        ValueTask<int> SavedChangesAsync()
+            => base.SavedChangesAsync(eventData, result, cancellationToken);
+    }
+
+    /// <summary>
     /// Add audit entity.
     /// </summary>
     /// <param name="entities">Audit entities</param>

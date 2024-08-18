@@ -32,7 +32,7 @@ public class CorrelationContext : ICorrelationContext
     /// Set the current user ID.
     /// </summary>
     /// <param name="currentUserId">The current user ID</param>
-    protected void SetCurrentUserIdentity(string currentUserId)
+    protected void SetCurrentUserIdentity(string? currentUserId)
         => _currentUserId = currentUserId;
 
     /// <summary>

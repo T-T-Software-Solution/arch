@@ -32,12 +32,9 @@ public class SqlDbContextFactory(Lazy<IServiceProvider> serviceProvider) : Facto
     }
 
     internal IEnumerable<IInterceptor> GetInterceptors(SqlConnectionStore store, SqlInterceptorBuilder builder)
-    {
-        foreach (var item in builder.InterceptorTypes)
-        {
-            yield return (IInterceptor)serviceProvider.Value.GetRequiredKeyedService(item, store);
-        }
-    }
+        => builder.InterceptorTypes
+            .Select(it => serviceProvider.Value.GetRequiredKeyedService(it, store))
+            .Cast<IInterceptor>();
 
     #endregion
 }

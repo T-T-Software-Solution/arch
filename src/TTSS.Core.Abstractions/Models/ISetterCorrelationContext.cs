@@ -9,7 +9,7 @@ public interface ISetterCorrelationContext
     /// Set the current user ID.
     /// </summary>
     /// <param name="currentUserId">The current user ID</param>
-    void SetCurrentUserId(string currentUserId);
+    void SetCurrentUserId(string? currentUserId);
 
     /// <summary>
     /// Set the correlation ID.
