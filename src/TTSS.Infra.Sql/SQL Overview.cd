@@ -12,16 +12,19 @@
   <Comment CommentText="Entities &amp; Contexts">
     <Position X="5.5" Y="7.75" Height="0.291" Width="2.012" />
   </Comment>
+  <Comment CommentText="Interceptors">
+    <Position X="11.25" Y="7.75" Height="0.291" Width="4.033" />
+  </Comment>
   <Class Name="TTSS.Infra.Data.Sql.Models.SqlModelBase" BaseTypeListCollapsed="true">
-    <Position X="5.5" Y="8.5" Width="2" />
+    <Position X="5.5" Y="8.75" Width="2" />
     <TypeIdentifier>
-      <HashCode>AAACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <HashCode>AAACAAAAAAAAAAAAAAAAAAAAAACAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Sql\Models\SqlModelBase.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
   </Class>
   <Class Name="TTSS.Infra.Data.Sql.DbContextBase&lt;TEntity&gt;">
-    <Position X="5.5" Y="10" Width="2" />
+    <Position X="5.5" Y="10.5" Width="2" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Sql\DbContextBase.cs</FileName>
@@ -48,7 +51,7 @@
   <Class Name="TTSS.Infra.Data.Sql.SqlDbContextFactory">
     <Position X="11.25" Y="2.25" Width="2.25" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <HashCode>AAAAAEAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Sql\SqlDbContextFactory.cs</FileName>
     </TypeIdentifier>
   </Class>
@@ -63,7 +66,7 @@
   <Class Name="TTSS.Infra.Data.Sql.SqlQueryResult&lt;TEntity&gt;" Collapsed="true" BaseTypeListCollapsed="true">
     <Position X="8.5" Y="1.75" Width="1.75" />
     <TypeIdentifier>
-      <HashCode>AAABAAAAAAAABBAAAAAAQAAAAAAAAAAEAAAAIAAAAAA=</HashCode>
+      <HashCode>AAABAAAAAAAABBAAAAAAAAAAAAAAAAAEAAAAIAAAAAA=</HashCode>
       <FileName>Sql\SqlQueryResult.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
@@ -90,13 +93,29 @@
     </TypeIdentifier>
     <Lollipop Position="0.2" />
   </Class>
-  <Class Name="TTSS.Infra.Data.Sql.SqlSaveChangesInterceptorBase">
-    <Position X="11.25" Y="6" Width="4" />
+  <Class Name="TTSS.Infra.Data.Sql.Interceptors.SqlActivityLogInterceptor">
+    <Position X="11.25" Y="9.75" Width="4" />
     <TypeIdentifier>
-      <HashCode>CABAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAQAA=</HashCode>
-      <FileName>Sql\SqlSaveChangesInterceptorBase.cs</FileName>
+      <HashCode>AQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAA=</HashCode>
+      <FileName>Sql\Interceptors\SqlActivityLogInterceptor.cs</FileName>
     </TypeIdentifier>
-    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="TTSS.Infra.Data.Sql.Interceptors.SqlMaskingInterceptor">
+    <Position X="11.25" Y="8.25" Width="4" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAA=</HashCode>
+      <FileName>Sql\Interceptors\SqlMaskingInterceptor.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TTSS.Infra.Data.Sql.Interceptors.SqlSaveChangesInterceptorBase">
+    <Position X="11.25" Y="11.5" Width="4" />
+    <Members>
+      <Field Name="_auditEntities" Hidden="true" />
+    </Members>
+    <TypeIdentifier>
+      <HashCode>CABAAAAAAAAAQCAAAACAAAAAAAAAAAAAAAAAAAAAQAA=</HashCode>
+      <FileName>Sql\Interceptors\SqlSaveChangesInterceptorBase.cs</FileName>
+    </TypeIdentifier>
   </Class>
   <Interface Name="TTSS.Infra.Data.Sql.ISqlRepository&lt;TEntity, TKey&gt;" Collapsed="true">
     <Position X="0.5" Y="5.75" Width="2.5" />

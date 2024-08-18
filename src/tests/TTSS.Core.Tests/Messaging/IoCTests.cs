@@ -1,5 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using TTSS.Core.Contexts;
 using TTSS.Core.Messaging.Pipelines;
+using TTSS.Core.Models;
 
 namespace TTSS.Core.Messaging;
 
@@ -8,7 +10,6 @@ public class IoCTests : CommonTestCases
     protected override void RegisterServices(IServiceCollection services)
     {
         var mock = SetupMock<ITestInterface>();
-        services.AddTransient<ITestInterface>(pvd => mock.Object);
         var behaviorTypes = new[]
         {
             typeof(IncrementPipelineBehavior<,>),
@@ -16,6 +17,9 @@ public class IoCTests : CommonTestCases
             typeof(AsyncIncrementPipelineBehavior<,>),
             typeof(AsyncMoreThan10PipelineBehavior<,>),
         };
-        services.RegisterMessagingModule([GetType().Assembly], behaviorTypes);
+        services
+            .AddScoped<ICorrelationContext, MessagingContext>()
+            .AddTransient<ITestInterface>(pvd => mock.Object)
+            .RegisterMessagingModule([GetType().Assembly], behaviorTypes);
     }
 }

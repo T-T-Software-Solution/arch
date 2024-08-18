@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using System.Reflection;
+using TTSS.Core.Messaging.Pipelines;
 
 namespace TTSS.Core.Messaging;
 
@@ -21,6 +22,7 @@ public static class ModuleInitializer
         {
             typeof(MediatR.Pipeline.RequestPreProcessorBehavior<,>),
             typeof(MediatR.Pipeline.RequestPostProcessorBehavior<,>),
+            typeof(CorrelationPipelineBehaviorAsync<,>),
         };
         var target = typeof(IPipelineBehaviorBase<,>);
         var qry = (pipelines ?? [])
@@ -28,16 +30,17 @@ public static class ModuleInitializer
                 && type.GetInterfaces().Any(it => it.IsGenericType && it.GetGenericTypeDefinition() == target))
             .Union(defaultPipelines);
 
-        services.AddSingleton<IMessagingHub>(sp => new MessagingHub(new Lazy<IServiceProvider>(sp)));
-        services.AddMediatR(cfg =>
-        {
-            cfg.RegisterServicesFromAssemblies(assemblies.ToArray());
-            cfg.NotificationPublisherType = typeof(MediatR.NotificationPublishers.TaskWhenAllPublisher);
-            foreach (var item in qry)
+        services
+            .AddScoped<IMessagingHub>(sp => new MessagingHub(new(sp)))
+            .AddMediatR(cfg =>
             {
-                cfg.AddOpenBehavior(item, ServiceLifetime.Scoped);
-            }
-        });
+                cfg.RegisterServicesFromAssemblies(assemblies.ToArray());
+                cfg.NotificationPublisherType = typeof(MediatR.NotificationPublishers.TaskWhenAllPublisher);
+                foreach (var item in qry)
+                {
+                    cfg.AddOpenBehavior(item, ServiceLifetime.Scoped);
+                }
+            });
         return services;
     }
 }

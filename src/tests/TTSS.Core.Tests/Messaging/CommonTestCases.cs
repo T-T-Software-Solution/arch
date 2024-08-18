@@ -776,4 +776,50 @@ public abstract class CommonTestCases : IoCTestBase
     }
 
     #endregion
+
+    #region Context
+
+    [Fact]
+    public async Task SendAMessageWithContextThruMultipleHandlers_ThenTheContextMustBeTheSameObjectAcrossThoseHandlers()
+    {
+        var sut = ServiceProvider.GetRequiredService<IMessagingHub>();
+        var actual = await sut.SendAsync(Fixture.Create<FirstRequest>());
+        VerifyExecutionWithContext(actual, 3, 1);
+    }
+
+    [Fact]
+    public async Task SendAMessageWithContextThruMultipleHandlers_MultipleTimes_ThenTheContextMustBeTheSameObjectAcrossThoseHandlers()
+    {
+        var sut = ServiceProvider.GetRequiredService<IMessagingHub>();
+
+        var act1 = await sut.SendAsync(Fixture.Create<FirstRequest>());
+        VerifyExecutionWithContext(act1, 3, 1);
+
+        var act2 = await sut.SendAsync(Fixture.Create<FirstRequest>());
+        VerifyExecutionWithContext(act2, 6, 2);
+
+        var act3 = await sut.SendAsync(Fixture.Create<FirstRequest>());
+        VerifyExecutionWithContext(act3, 9, 3);
+    }
+
+    private void VerifyExecutionWithContext(FirstResponse actual, int expectedSummary, int expectedCalledHandlers)
+    {
+        actual.Should().NotBeNull();
+        actual.Message.Should().Be(nameof(FirstHandler));
+        actual.Data.Summary.Should().Be(expectedSummary);
+        actual.Data.FirstHandlerCanReceive.Should().BeTrue();
+        actual.Data.SecondHandlerCanReceive.Should().BeTrue();
+        actual.Data.ThirdHandlerCanReceive.Should().BeTrue();
+        actual.Data.MessageFromThirdHandler.Should().Be(nameof(ThirdHandler));
+        actual.Data.FirstHandlerReceivedCorrelationId
+            .Should()
+            .Be(actual.Data.SecondHandlerReceivedCorrelationId)
+            .And
+            .Be(actual.Data.ThirdHandlerReceivedCorrelationId);
+        Mock.Verify(it => it.ExecuteAsync(It.IsAny<FirstRequest>(), It.IsAny<CancellationToken>()), Times.Exactly(expectedCalledHandlers));
+        Mock.Verify(it => it.Execute(It.IsAny<SecondRequest>()), Times.Exactly(expectedCalledHandlers));
+        Mock.Verify(it => it.Execute(It.IsAny<ThirdRequest>()), Times.Exactly(expectedCalledHandlers));
+    }
+
+    #endregion
 }

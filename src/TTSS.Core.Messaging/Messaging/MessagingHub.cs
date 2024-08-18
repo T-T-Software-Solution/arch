@@ -39,8 +39,7 @@ internal sealed class MessagingHub : IMessagingHub
     {
         if (publication is null) return Task.CompletedTask;
 
-        using var scope = ServiceProvider.CreateScope();
-        var mediator = scope.ServiceProvider.GetRequiredService<MediatR.IMediator>();
+        var mediator = ServiceProvider.GetRequiredService<MediatR.IMediator>();
         return mediator.Publish(publication, cancellationToken);
     }
 
@@ -54,8 +53,7 @@ internal sealed class MessagingHub : IMessagingHub
     {
         if (request is null) return;
 
-        using var scope = ServiceProvider.CreateScope();
-        var mediator = scope.ServiceProvider.GetRequiredService<MediatR.IMediator>();
+        var mediator = ServiceProvider.GetRequiredService<MediatR.IMediator>();
         await mediator.Send(request, cancellationToken);
     }
 
@@ -70,8 +68,7 @@ internal sealed class MessagingHub : IMessagingHub
     {
         if (request is null) return default!;
 
-        using var scope = ServiceProvider.CreateScope();
-        var mediator = scope.ServiceProvider.GetRequiredService<MediatR.IMediator>();
+        var mediator = ServiceProvider.GetRequiredService<MediatR.IMediator>();
         return await mediator.Send(request, cancellationToken);
     }
 

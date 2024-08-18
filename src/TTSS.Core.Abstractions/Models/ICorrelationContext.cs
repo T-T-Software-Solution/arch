@@ -8,5 +8,10 @@ public interface ICorrelationContext
     /// <summary>
     /// Current user ID.
     /// </summary>
-    string? CurrentUserId { get; set; }
+    string? CurrentUserId { get; }
+
+    /// <summary>
+    /// Correlation ID.
+    /// </summary>
+    public string CorrelationId { get; }
 }

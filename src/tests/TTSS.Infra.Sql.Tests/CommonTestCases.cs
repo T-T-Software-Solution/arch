@@ -4,7 +4,7 @@ using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using TTSS.Core.Data;
-using TTSS.Core.Models;
+using TTSS.Infra.Data.Sql.Contexts;
 using TTSS.Infra.Data.Sql.DbContexte;
 using TTSS.Infra.Data.Sql.DbModels;
 using TTSS.Infra.Data.Sql.Interceptors;
@@ -16,7 +16,7 @@ namespace TTSS.Infra.Data.Sql;
 public abstract class CommonTestCases : IoCTestBase, IDisposable
 {
     protected abstract bool IsManual { get; }
-    protected CorrelationContext Context = new() { CurrentUserId = Guid.NewGuid().ToString() };
+    protected TestContext Context = new(Guid.NewGuid().ToString());
 
     public abstract void Dispose();
 
@@ -782,7 +782,7 @@ public abstract class CommonTestCases : IoCTestBase, IDisposable
         seriousLog.Attempt = 99;
         var originalCreateByUserId = Context.CurrentUserId;
         var newUpdateByUserId = Guid.NewGuid().ToString();
-        Context.CurrentUserId = newUpdateByUserId;
+        Context.SetCurrentUserId(newUpdateByUserId);
         await seriousLogRepo.UpdateAsync(seriousLog);
 
         UpdationEvents.Should().HaveCount(1);
@@ -979,7 +979,7 @@ public abstract class CommonTestCases : IoCTestBase, IDisposable
 
         var originalCreateByUserId = Context.CurrentUserId;
         var newDeleteByUserId = Guid.NewGuid().ToString();
-        Context.CurrentUserId = newDeleteByUserId;
+        Context.SetCurrentUserId(newDeleteByUserId);
         await seriousLogRepo.DeleteAsync(seriousLog.Id);
 
         DeletionEvents.Should().HaveCount(1);
