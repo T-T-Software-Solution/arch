@@ -1,4 +1,4 @@
-﻿namespace Shipping.Shared.Entities.ViewModels;
+﻿namespace Shopping.Shared.Entities.ViewModels;
 
 public sealed record CartVm
 {

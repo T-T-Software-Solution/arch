@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
-using Shipping.Shared.Entities;
-using Shipping.Shared.Entities.ViewModels;
+using Shopping.Shared.Entities;
+using Shopping.Shared.Entities.ViewModels;
 using TTSS.Core.Data;
 using TTSS.Core.Messaging;
 using TTSS.Core.Messaging.Handlers;

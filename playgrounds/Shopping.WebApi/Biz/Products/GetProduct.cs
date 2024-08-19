@@ -1,14 +1,13 @@
 ﻿using AutoMapper;
-using Shipping.Shared.Entities;
-using Shipping.Shared.Entities.ViewModels;
-using System.ComponentModel.DataAnnotations;
+using Shopping.Shared.Entities;
+using Shopping.Shared.Entities.ViewModels;
 using TTSS.Core.Data;
 using TTSS.Core.Messaging;
 using TTSS.Core.Messaging.Handlers;
 
 namespace Shopping.WebApi.Biz.Products;
 
-public sealed record GetProduct([Required] string ProductId) : IRequesting<ProductVm>;
+public sealed record GetProduct(string ProductId) : IRequesting<ProductVm>;
 
 internal sealed class GetProductHandler(IRepository<Product> repository, IMapper mapper) : RequestHandlerAsync<GetProduct, ProductVm>
 {

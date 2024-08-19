@@ -3,7 +3,7 @@ using System.Collections.ObjectModel;
 using TTSS.Core.Data;
 using TTSS.Infra.Data.Sql.Models;
 
-namespace Shipping.Shared.Entities;
+namespace Shopping.Shared.Entities;
 
 [Comment("ตะกร้าสินค้า")]
 public sealed class Cart : SqlModelBase, ITimeActivityEntity

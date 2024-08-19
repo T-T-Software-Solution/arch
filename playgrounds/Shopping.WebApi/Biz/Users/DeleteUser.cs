@@ -1,5 +1,4 @@
-﻿using Shipping.Shared.Entities;
-using System.ComponentModel.DataAnnotations;
+﻿using Shopping.Shared.Entities;
 using TTSS.Core.Data;
 using TTSS.Core.Messaging;
 using TTSS.Core.Messaging.Handlers;
@@ -7,7 +6,7 @@ using TTSS.Core.Models;
 
 namespace Shopping.WebApi.Biz.Users;
 
-public sealed record DeleteUser([Required] string UserId) : IRequesting;
+public sealed record DeleteUser(string UserId) : IRequesting;
 
 internal class DeleteUserHandler(ICorrelationContext context, IRepository<User> repository) : RequestHandlerAsync<DeleteUser>
 {

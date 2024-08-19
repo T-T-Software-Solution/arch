@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Shipping.Shared.Entities.ViewModels;
+using Shopping.Shared.Entities.ViewModels;
 using Shopping.WebApi.Biz.Users;
 using TTSS.Core.AspNetCore.Controllers;
 using TTSS.Core.Messaging;
@@ -23,12 +23,12 @@ public sealed class UsersController(IMessagingHub hub) : ApiControllerBase
         => hub.SendAsync(new ListUsers());
 
     [Authorize]
-    [HttpPut("update")]
-    public Task<UserVm> Update([FromBody] UpdateUser request)
-        => hub.SendAsync(request);
+    [HttpPut("update/{id}")]
+    public Task<UserVm> Update(string id)
+        => hub.SendAsync(new UpdateUser(id));
 
     [Authorize]
-    [HttpDelete("delete")]
-    public Task Delete([FromBody] DeleteUser request)
-        => hub.SendAsync(request);
+    [HttpDelete("delete/{id}")]
+    public Task Delete(string id)
+        => hub.SendAsync(new DeleteUser(id));
 }

@@ -1,6 +1,6 @@
 ﻿using TTSS.Core.Models;
 
-namespace Shipping.Shared;
+namespace Shopping.Shared;
 
 public sealed class DEMO_Context : CorrelationContext, ISetterCorrelationContext
 {

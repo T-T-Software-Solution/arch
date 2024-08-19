@@ -1,6 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Shipping.Shared.Entities;
-using System.ComponentModel.DataAnnotations;
+using Shopping.Shared.Entities;
 using TTSS.Core.Data;
 using TTSS.Core.Messaging;
 using TTSS.Core.Messaging.Handlers;
@@ -9,7 +8,7 @@ using TTSS.Core.Services;
 
 namespace Shopping.WebApi.Biz.Carts;
 
-public sealed record DeleteCart([Required] string CartId) : IRequesting;
+public sealed record DeleteCart(string CartId) : IRequesting;
 
 internal class DeleteCartHandler(ICorrelationContext context,
     IRepository<Cart> repository,

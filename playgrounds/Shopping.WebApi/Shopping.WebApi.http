@@ -1,10 +1,14 @@
 @Host= http://localhost:5105
 
-### Audit -----------------------------------------------------------
+###========================================================= AuditLog
+###- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - List
 GET {{Host}}/api/auditlogs
 
-### User ------------------------------------------------------------
+###============================================================= User
+###- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - List
+GET {{Host}}/api/users/list
 
+###- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - Create
 # @name UserCreate
 POST {{Host}}/api/users/create
 Content-Type: application/json
@@ -14,17 +18,20 @@ Content-Type: application/json
   "lastName": "Doe"
 }
 
-### Cart ------------------------------------------------------------
+###============================================================= Cart
+###- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - List
 GET {{Host}}/api/carts/list
 
-###
+###- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - Create
 POST {{Host}}/api/carts/create
 Authorization: Bearer {{UserCreate.response.body.message}}
 
-### Product ---------------------------------------------------------
+
+###========================================================== Product
+###- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - List
 GET {{Host}}/api/products/list
 
-###
+###- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - Create
 # @name ProductCreate
 POST {{Host}}/api/products/create
 Content-Type: application/json
@@ -35,16 +42,19 @@ Authorization: Bearer {{UserCreate.response.body.message}}
   "price": 39900
 }
 
-###
-PUT {{Host}}/api/products/update
+###- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - Update
+PUT {{Host}}/api/products/update/{{ProductCreate.response.body.id}}
 Content-Type: application/json
 Authorization: Bearer {{UserCreate.response.body.message}}
 
 {
-  "productId": "{{ProductCreate.response.body.id}}",
   "name": "iPhone 15 Pro Max",
   "price": 99999
 }
+
+###- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - Delete
+DELETE {{Host}}/api/products/delete/{{ProductCreate.response.body.id}}
+Authorization: Bearer {{UserCreate.response.body.message}}
 
 ###
 

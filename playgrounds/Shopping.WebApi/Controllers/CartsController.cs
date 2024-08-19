@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Shipping.Shared.Entities.ViewModels;
+using Shopping.Shared.Entities.ViewModels;
 using Shopping.WebApi.Biz.Carts;
 using TTSS.Core.AspNetCore.Controllers;
 using TTSS.Core.Messaging;
@@ -23,12 +23,12 @@ public sealed class CartsController(IMessagingHub hub) : ApiControllerBase
         => hub.SendAsync(new ListCarts());
 
     [Authorize]
-    [HttpPut("update")]
-    public Task<CartVm> Update([FromBody] UpdateCart request)
-        => hub.SendAsync(request);
+    [HttpPut("update/{id}")]
+    public Task<CartVm> Update(string id)
+        => hub.SendAsync(new UpdateCart(id));
 
     [Authorize]
-    [HttpDelete("delete")]
-    public Task Delete([FromBody] DeleteCart request)
-        => hub.SendAsync(request);
+    [HttpDelete("delete/{id}")]
+    public Task Delete(string id)
+        => hub.SendAsync(new DeleteCart(id));
 }

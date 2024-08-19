@@ -1,4 +1,4 @@
-﻿using Shipping.Shared.Entities;
+﻿using Shopping.Shared.Entities;
 using Shopping.WebApi.Biz.Tokens;
 using TTSS.Core.Data;
 using TTSS.Core.Messaging;

@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
-using Shipping.Shared.Entities;
-using Shipping.Shared.Entities.ViewModels;
+using Shopping.Shared.Entities;
+using Shopping.Shared.Entities.ViewModels;
 using System.ComponentModel.DataAnnotations;
 using TTSS.Core.Data;
 using TTSS.Core.Messaging;

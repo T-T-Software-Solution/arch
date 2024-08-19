@@ -1,4 +1,4 @@
-﻿using Shipping.Shared.Entities;
+﻿using Shopping.Shared.Entities;
 using System.Text;
 using TTSS.Core.Data;
 using TTSS.Core.Models;
@@ -6,7 +6,7 @@ using TTSS.Core.Services;
 using TTSS.Infra.Data.Sql.Interceptors;
 using TTSS.Infra.Data.Sql.Models;
 
-namespace Shipping.Shared.Interceptors;
+namespace Shopping.Shared.Interceptors;
 
 public sealed class AuditInterceptor(IDateTimeService dateTimeService, ICorrelationContext context) : SqlSaveChangesInterceptorBase(dateTimeService, context)
 {

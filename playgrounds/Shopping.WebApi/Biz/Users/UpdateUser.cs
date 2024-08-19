@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
-using Shipping.Shared.Entities;
-using Shipping.Shared.Entities.ViewModels;
+using Shopping.Shared.Entities;
+using Shopping.Shared.Entities.ViewModels;
 using TTSS.Core.Data;
 using TTSS.Core.Messaging;
 using TTSS.Core.Messaging.Handlers;
@@ -8,9 +8,8 @@ using TTSS.Core.Models;
 
 namespace Shopping.WebApi.Biz.Users;
 
-public sealed record UpdateUser : IRequesting<UserVm>
+public sealed record UpdateUser(string UserId) : IRequesting<UserVm>
 {
-    public required string UserId { get; init; }
     public string? FirstName { get; init; }
     public string? LastName { get; init; }
 }

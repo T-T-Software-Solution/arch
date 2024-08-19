@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using TTSS.Infra.Data.Sql.Models;
 
-namespace Shipping.Shared.Entities;
+namespace Shopping.Shared.Entities;
 
 [Comment("ผู้ใช้")]
 public sealed class User : SqlModelBase

@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Shipping.Shared.Entities.ViewModels;
+using Shopping.Shared.Entities.ViewModels;
 using Shopping.WebApi.Biz.AuditLogs;
 using TTSS.Core.AspNetCore.Controllers;
 using TTSS.Core.Messaging;

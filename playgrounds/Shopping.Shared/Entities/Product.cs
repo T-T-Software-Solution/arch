@@ -2,7 +2,7 @@
 using TTSS.Core.Data;
 using TTSS.Infra.Data.Sql.Models;
 
-namespace Shipping.Shared.Entities;
+namespace Shopping.Shared.Entities;
 
 [Comment("สินค้า")]
 public sealed class Product : SqlModelBase, ITimeActivityEntity, IUserActivityEntity

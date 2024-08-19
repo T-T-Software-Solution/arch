@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 
-namespace Shipping.Shared.Entities.ViewModels;
+namespace Shopping.Shared.Entities.ViewModels;
 
 [AutoMap(typeof(Product))]
 public sealed record ProductVm

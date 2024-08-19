@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
-using Shipping.Shared.Entities;
-using Shipping.Shared.Entities.ViewModels;
+using Shopping.Shared.Entities;
+using Shopping.Shared.Entities.ViewModels;
 using TTSS.Core.Data;
 using TTSS.Core.Messaging;
 using TTSS.Core.Messaging.Handlers;
@@ -9,9 +9,8 @@ using TTSS.Core.Models;
 
 namespace Shopping.WebApi.Biz.Carts;
 
-public sealed record UpdateCart : IRequesting<CartVm>
+public sealed record UpdateCart(string CartId) : IRequesting<CartVm>
 {
-    public required string CartId { get; init; }
     public string AddProductId { get; init; }
     public string RemoveProductId { get; init; }
 }

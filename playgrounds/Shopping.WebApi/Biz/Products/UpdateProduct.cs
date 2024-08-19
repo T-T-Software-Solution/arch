@@ -1,17 +1,14 @@
 ﻿using AutoMapper;
-using Shipping.Shared.Entities;
-using Shipping.Shared.Entities.ViewModels;
-using System.ComponentModel.DataAnnotations;
+using Shopping.Shared.Entities;
+using Shopping.Shared.Entities.ViewModels;
 using TTSS.Core.Data;
 using TTSS.Core.Messaging;
 using TTSS.Core.Messaging.Handlers;
 
 namespace Shopping.WebApi.Biz.Products;
 
-public sealed record UpdateProduct : IRequesting<ProductVm>
+public sealed record UpdateProduct(string ProductId) : IRequesting<ProductVm>
 {
-    [Required]
-    public required string ProductId { get; init; }
     public string? Name { get; init; }
     public double? Price { get; init; }
 }

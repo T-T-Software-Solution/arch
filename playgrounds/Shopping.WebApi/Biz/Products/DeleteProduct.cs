@@ -1,4 +1,4 @@
-﻿using Shipping.Shared.Entities;
+﻿using Shopping.Shared.Entities;
 using System.ComponentModel.DataAnnotations;
 using TTSS.Core.Data;
 using TTSS.Core.Messaging;
@@ -7,7 +7,7 @@ using TTSS.Core.Services;
 
 namespace Shopping.WebApi.Biz.Products;
 
-public sealed record DeleteProduct([Required] string ProductId) : IRequesting;
+public sealed record DeleteProduct(string ProductId) : IRequesting;
 
 internal sealed class DeleteProductHandler(IRepository<Product> repository, IDateTimeService dateTimeService) : RequestHandlerAsync<DeleteProduct>
 {

@@ -1,8 +1,8 @@
 ﻿using AutoMapper;
-using Shipping.Shared.Entities;
-using Shipping.Shared.Entities.ViewModels;
+using Shopping.Shared.Entities;
+using Shopping.Shared.Entities.ViewModels;
 
-namespace Shipping.Shared;
+namespace Shopping.Shared;
 
 public sealed class MappingProfileRegistrar : Profile
 {

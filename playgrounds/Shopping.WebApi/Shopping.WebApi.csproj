@@ -15,7 +15,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\src\TTSS.Core.AspNetCore\TTSS.Core.AspNetCore.csproj" />
     <ProjectReference Include="..\..\src\TTSS.Core.Messaging\TTSS.Core.Messaging.csproj" />
-    <ProjectReference Include="..\Shipping.Shared\Shipping.Shared.csproj" />
+    <ProjectReference Include="..\Shopping.Shared\Shopping.Shared.csproj" />
   </ItemGroup>
 
 </Project>

@@ -1,9 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Shipping.Shared.Entities;
+using Shopping.Shared.Entities;
 using TTSS.Core.Data;
 using TTSS.Infra.Data.Sql;
 
-namespace Shipping.Shared.DbContexts;
+namespace Shopping.Shared.DbContexts;
 
 public sealed class ShoppingDbContext(DbContextOptions<ShoppingDbContext> options)
     : DbContextBase<ShoppingDbContext>(options), IAuditRepository
