@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore.ChangeTracking;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using TTSS.Core.Data;
 using TTSS.Core.Models;
@@ -29,9 +30,9 @@ namespace TTSS.Infra.Data.Sql.Interceptors
              .Where(it => it is not null && it.Entity is ITimeActivityEntity or IUserActivityEntity)
              .Select(it => new
              {
-                 Entry = it,
-                 UserEntity = it.Entity as IUserActivityEntity,
-                 TimeEntity = it.Entity as ITimeActivityEntity,
+                 State = it.GetState(),
+                 UserActivity = it.Entity as IUserActivityEntity,
+                 TimeActivity = it.Entity as ITimeActivityEntity,
              }) ?? [];
 
             if (false == entries.Any())
@@ -39,26 +40,43 @@ namespace TTSS.Infra.Data.Sql.Interceptors
                 return;
             }
 
+            EnsureCommitHasUserId();
+
             var now = timeService.UtcNow;
             foreach (var entry in entries)
             {
-                switch (entry.Entry.State)
+                switch (entry.State)
                 {
-                    case Microsoft.EntityFrameworkCore.EntityState.Added:
-                    case Microsoft.EntityFrameworkCore.EntityState.Detached:
-                        if (entry.TimeEntity is not null) entry.TimeEntity.CreatedDate = now;
-                        if (entry.UserEntity is not null) entry.UserEntity.CreatedById = context.CurrentUserId;
-                        break;
-                    case Microsoft.EntityFrameworkCore.EntityState.Deleted:
-                        if (entry.TimeEntity is not null) entry.TimeEntity.DeletedDate = now;
-                        if (entry.UserEntity is not null) entry.UserEntity.DeletedById = context.CurrentUserId;
-                        break;
-                    case Microsoft.EntityFrameworkCore.EntityState.Modified:
-                        if (entry.TimeEntity is not null) entry.TimeEntity.LastUpdatedDate = now;
-                        if (entry.UserEntity is not null) entry.UserEntity.LastUpdatedById = context.CurrentUserId;
-                        break;
+                    case EntityState.Added:
+                    case EntityState.Detached:
+                        {
+                            if (entry.TimeActivity is not null) entry.TimeActivity.CreatedDate = now;
+                            if (entry.UserActivity is not null) entry.UserActivity.CreatedById = context.CurrentUserId!;
+                            break;
+                        }
+                    case EntityState.Deleted:
+                        {
+                            if (entry.TimeActivity is not null) entry.TimeActivity.DeletedDate = now;
+                            if (entry.UserActivity is not null) entry.UserActivity.DeletedById = context.CurrentUserId;
+                            break;
+                        }
+                    case EntityState.Modified:
+                        {
+                            if (entry.TimeActivity is not null) entry.TimeActivity.LastUpdatedDate = now;
+                            if (entry.UserActivity is not null) entry.UserActivity.LastUpdatedById = context.CurrentUserId;
+                            break;
+                        }
                     default:
                         break;
+                }
+            }
+
+            void EnsureCommitHasUserId()
+            {
+                if (context.CurrentUserId is null
+                    && entries.Any(it => it.UserActivity is not null))
+                {
+                    throw new InvalidOperationException("Current user id is not set.");
                 }
             }
         }

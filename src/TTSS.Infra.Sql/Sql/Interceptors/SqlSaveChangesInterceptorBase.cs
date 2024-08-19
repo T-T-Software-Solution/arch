@@ -47,7 +47,7 @@ public abstract class SqlSaveChangesInterceptorBase(IDateTimeService dateTimeSer
         await ExecuteAsync(deletionQry, OnDeleteAsync);
 
         var updateQry = entries
-            .Where(it => it.Entry.State == EntityState.Modified)
+            .Where(it => it.Entry.GetState() == EntityState.Modified)
             .GroupBy(it => it.Entity, selector => selector.Entry.Properties
                 .Where(it => it.IsModified)
                 .Select(it => ShouldSkipProperty(it) ? null! : ExtractUpdatePropertyInfo(it, selector.Entity))
@@ -72,7 +72,7 @@ public abstract class SqlSaveChangesInterceptorBase(IDateTimeService dateTimeSer
             => base.SavingChangesAsync(eventData, result, cancellationToken);
         IEnumerable<IGrouping<IDbModel, IList<SqlPropertyInfo>>> CreateGroup(Func<EntityState, bool> filter)
             => entries
-                .Where(it => filter(it.Entry.State))
+                .Where(it => filter(it.Entry.GetState()))
                 .GroupBy(it => it.Entity, selector => selector.Entry.Properties
                     .Select(it => ShouldSkipProperty(it) ? null! : ExtractPropertyInfo(it, selector.Entity))
                     .Where(it => it is not null)
