@@ -9,6 +9,7 @@ namespace Shopping.WebApi.Controllers;
 
 public sealed class ProductsController(IMessagingHub hub) : ApiControllerBase
 {
+    [Authorize]
     [HttpPost("create")]
     public Task<ProductVm> Create([FromBody] CreateProduct request)
        => hub.SendAsync(request);

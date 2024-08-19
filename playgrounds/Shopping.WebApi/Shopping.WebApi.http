@@ -1,6 +1,52 @@
-@Shopping.WebApi_HostAddress = http://localhost:5105
+@Host= http://localhost:5105
 
-GET {{Shopping.WebApi_HostAddress}}/weatherforecast/
-Accept: application/json
+### Audit -----------------------------------------------------------
+GET {{Host}}/api/auditlogs
+
+### User ------------------------------------------------------------
+
+# @name UserCreate
+POST {{Host}}/api/users/create
+Content-Type: application/json
+
+{
+  "firstName": "John",
+  "lastName": "Doe"
+}
+
+### Cart ------------------------------------------------------------
+GET {{Host}}/api/carts/list
 
 ###
+POST {{Host}}/api/carts/create
+Authorization: Bearer {{UserCreate.response.body.message}}
+
+### Product ---------------------------------------------------------
+GET {{Host}}/api/products/list
+
+###
+# @name ProductCreate
+POST {{Host}}/api/products/create
+Content-Type: application/json
+Authorization: Bearer {{UserCreate.response.body.message}}
+
+{
+  "name": "iPhone 15 Pro",
+  "price": 39900
+}
+
+###
+PUT {{Host}}/api/products/update
+Content-Type: application/json
+Authorization: Bearer {{UserCreate.response.body.message}}
+
+{
+  "productId": "{{ProductCreate.response.body.id}}",
+  "name": "iPhone 15 Pro Max",
+  "price": 99999
+}
+
+###
+
+GET {{Host}}/api/tokens/CheckAuth
+Authorization: Bearer {{UserCreate.response.body.message}}
