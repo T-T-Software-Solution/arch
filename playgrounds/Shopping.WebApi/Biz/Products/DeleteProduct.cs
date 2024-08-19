@@ -1,5 +1,4 @@
 ﻿using Shopping.Shared.Entities;
-using System.ComponentModel.DataAnnotations;
 using TTSS.Core.Data;
 using TTSS.Core.Messaging;
 using TTSS.Core.Messaging.Handlers;
@@ -13,13 +12,13 @@ internal sealed class DeleteProductHandler(IRepository<Product> repository, IDat
 {
     public override async Task HandleAsync(DeleteProduct request, CancellationToken cancellationToken = default)
     {
-        var entity = await repository.GetByIdAsync(request.ProductId);
+        var entity = await repository.GetByIdAsync(request.ProductId, cancellationToken);
         if (entity is null)
         {
             return;
         }
 
         entity.DeletedDate = dateTimeService.UtcNow;
-        await repository.UpdateAsync(entity);
+        await repository.UpdateAsync(entity, cancellationToken);
     }
 }

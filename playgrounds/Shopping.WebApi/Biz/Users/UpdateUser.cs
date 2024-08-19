@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Shopping.Shared.Entities;
 using Shopping.Shared.Entities.ViewModels;
+using System.Text.Json.Serialization;
 using TTSS.Core.Data;
 using TTSS.Core.Messaging;
 using TTSS.Core.Messaging.Handlers;
@@ -8,8 +9,10 @@ using TTSS.Core.Models;
 
 namespace Shopping.WebApi.Biz.Users;
 
-public sealed record UpdateUser(string UserId) : IRequesting<UserVm>
+public sealed record UpdateUser : IRequesting<UserVm>
 {
+    [JsonIgnore]
+    public string? UserId { get; init; }
     public string? FirstName { get; init; }
     public string? LastName { get; init; }
 }
@@ -26,7 +29,7 @@ internal sealed class UpdateUserHandler(ICorrelationContext context, IRepository
             return null;
         }
 
-        var entity = await repository.GetByIdAsync(request.UserId);
+        var entity = await repository.GetByIdAsync(request.UserId, cancellationToken);
         if (entity is null)
         {
             return null;
@@ -34,7 +37,7 @@ internal sealed class UpdateUserHandler(ICorrelationContext context, IRepository
 
         entity.FirstName = request.FirstName;
         entity.LastName = request.LastName;
-        await repository.UpdateAsync(entity);
+        await repository.UpdateAsync(entity, cancellationToken);
 
         return mapper.Map<UserVm>(entity);
     }

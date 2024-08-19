@@ -4,17 +4,16 @@ using System.Security.Claims;
 using System.Text;
 using TTSS.Core.Messaging;
 using TTSS.Core.Messaging.Handlers;
-using TTSS.Core.Models;
 
 namespace Shopping.WebApi.Biz.Tokens;
 
-public sealed record CreateToken : IRequesting<Response>
+public sealed record CreateToken : IRequesting<string>
 {
     public required string UserId { get; init; }
     public string FullName { get; init; }
 }
 
-internal sealed class CreateTokenHandler : RequestHandler<CreateToken, Response>
+internal sealed class CreateTokenHandler : RequestHandler<CreateToken, string>
 {
     // DON'T DO THIS IN PRODUCTION
     public const string Issuer = "demo";
@@ -23,9 +22,8 @@ internal sealed class CreateTokenHandler : RequestHandler<CreateToken, Response>
     private static readonly JwtSecurityTokenHandler JwtTokenHandler = new JwtSecurityTokenHandler();
     public static readonly SigningCredentials SigningCreds = new SigningCredentials(SigningKey, SecurityAlgorithms.HmacSha256);
 
-    public override Response Handle(CreateToken request)
-    {
-        var token = JwtTokenHandler.CreateJwtSecurityToken(
+    public override string Handle(CreateToken request)
+        => JwtTokenHandler.WriteToken(JwtTokenHandler.CreateJwtSecurityToken(
             issuer: Issuer,
             audience: Audience,
             signingCredentials: SigningCreds,
@@ -33,7 +31,5 @@ internal sealed class CreateTokenHandler : RequestHandler<CreateToken, Response>
             subject: new([
                 new (ClaimTypes.Name, request.UserId),
                 new (ClaimTypes.GivenName, request.FullName ?? "Undefined"),
-            ]));
-        return new() { Message = JwtTokenHandler.WriteToken(token) };
-    }
+            ])));
 }

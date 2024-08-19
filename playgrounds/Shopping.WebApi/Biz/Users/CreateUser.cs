@@ -1,21 +1,23 @@
-﻿using Shopping.Shared.Entities;
+﻿using AutoMapper;
+using Shopping.Shared.Entities;
+using Shopping.Shared.Entities.ViewModels;
 using Shopping.WebApi.Biz.Tokens;
+using Shopping.WebApi.Biz.Users.ViewModels;
 using TTSS.Core.Data;
 using TTSS.Core.Messaging;
 using TTSS.Core.Messaging.Handlers;
-using TTSS.Core.Models;
 
 namespace Shopping.WebApi.Biz.Users;
 
-public sealed record CreateUser : IRequesting<Response>
+public sealed record CreateUser : IRequesting<CreateUserResult>
 {
     public string? FirstName { get; init; }
     public string? LastName { get; init; }
 }
 
-internal sealed class CreateUserHandler(IRepository<User> repository, IMessagingHub hub) : RequestHandlerAsync<CreateUser, Response>
+internal sealed class CreateUserHandler(IRepository<User> repository, IMessagingHub hub, IMapper mapper) : RequestHandlerAsync<CreateUser, CreateUserResult>
 {
-    public override async Task<Response> HandleAsync(CreateUser request, CancellationToken cancellationToken = default)
+    public override async Task<CreateUserResult> HandleAsync(CreateUser request, CancellationToken cancellationToken = default)
     {
         var entity = new User
         {
@@ -23,8 +25,14 @@ internal sealed class CreateUserHandler(IRepository<User> repository, IMessaging
             FirstName = request.FirstName,
             LastName = request.LastName,
         };
-        await repository.InsertAsync(entity);
+        await repository.InsertAsync(entity, cancellationToken);
 
-        return await hub.SendAsync(new CreateToken { UserId = entity.Id, FullName = $"{entity.FirstName} {entity.LastName}" });
+        var vm = mapper.Map<UserVm>(entity);
+        var token = await hub.SendAsync(new CreateToken
+        {
+            UserId = entity.Id,
+            FullName = $"{entity.FirstName} {entity.LastName}",
+        }, cancellationToken);
+        return new CreateUserResult(vm, token);
     }
 }

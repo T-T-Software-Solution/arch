@@ -33,7 +33,7 @@ internal sealed class CreateCartHandler(ICorrelationContext context,
             Id = Guid.NewGuid().ToString(),
             Owner = user,
         };
-        await cartRepository.InsertAsync(entity);
+        await cartRepository.InsertAsync(entity, cancellationToken);
         return mapper.Map<CartVm>(entity);
     }
 }

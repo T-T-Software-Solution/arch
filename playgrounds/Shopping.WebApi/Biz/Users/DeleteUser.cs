@@ -16,9 +16,9 @@ internal class DeleteUserHandler(ICorrelationContext context, IRepository<User> 
             && context.CurrentUserId == request.UserId;
         if (!areArgumentsValid) return;
 
-        var entity = await repository.GetByIdAsync(request.UserId);
+        var entity = await repository.GetByIdAsync(request.UserId, cancellationToken);
         if (entity is null) return;
 
-        await repository.DeleteAsync(entity.Id);
+        await repository.DeleteAsync(entity.Id, cancellationToken);
     }
 }

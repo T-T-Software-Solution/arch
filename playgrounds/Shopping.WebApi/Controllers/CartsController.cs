@@ -24,8 +24,8 @@ public sealed class CartsController(IMessagingHub hub) : ApiControllerBase
 
     [Authorize]
     [HttpPut("update/{id}")]
-    public Task<CartVm> Update(string id)
-        => hub.SendAsync(new UpdateCart(id));
+    public Task<CartVm> Update(string id, [FromBody] UpdateCart request)
+        => hub.SendAsync(request with { CartId = id });
 
     [Authorize]
     [HttpDelete("delete/{id}")]

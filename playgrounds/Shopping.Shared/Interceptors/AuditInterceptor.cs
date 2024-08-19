@@ -12,10 +12,10 @@ public sealed class AuditInterceptor(IDateTimeService dateTimeService, ICorrelat
 {
     protected override Task OnCreateAsync(IDbModel entity, IEnumerable<SqlPropertyInfo> properties, CancellationToken cancellationToken)
     {
-        var qry = properties.Select(it => $"{it.Remark ?? it.ColumnName}: {it.Value}");
+        var qry = properties.Select(it => $"({it.Remark ?? it.ColumnName}: {it.Value})");
         var sb = new StringBuilder()
-            .AppendLine($"มีการเพิ่มข้อมูลให้กับตาราง {entity.GetType().Name} โดยมีรายละเอียดดังนี้")
-            .AppendLine(string.Join(Environment.NewLine, qry));
+            .Append($"เพิ่มข้อมูลใหม่ลงตาราง {entity.GetType().Name} โดยมีรายละเอียดดังนี้ ")
+            .Append(string.Join(' ', qry));
         AddAuditEntity(new AuditLog
         {
             Id = Guid.NewGuid().ToString(),
@@ -26,10 +26,12 @@ public sealed class AuditInterceptor(IDateTimeService dateTimeService, ICorrelat
 
     protected override Task OnDeleteAsync(IDbModel entity, IEnumerable<SqlPropertyInfo> properties, CancellationToken cancellationToken)
     {
-        var qry = properties.Select(it => $"{it.Remark ?? it.ColumnName}: {it.Value}");
+        var qry = properties
+            .Where(it => it.ColumnName == "Id")
+            .Select(it => $"({it.Remark ?? it.ColumnName}: {it.Value})");
         var sb = new StringBuilder()
-            .AppendLine($"มีการลบข้อมูลออกจากตาราง {entity.GetType().Name} โดยมีรายละเอียดดังนี้")
-            .AppendLine(string.Join(Environment.NewLine, qry));
+            .Append($"ลบข้อมูลออกจากตาราง {entity.GetType().Name} โดยมีรายละเอียดดังนี้ ")
+            .Append(string.Join(' ', qry));
         AddAuditEntity(new AuditLog
         {
             Id = Guid.NewGuid().ToString(),
@@ -40,10 +42,10 @@ public sealed class AuditInterceptor(IDateTimeService dateTimeService, ICorrelat
 
     protected override Task OnUpdateAsync(IDbModel entity, IEnumerable<SqlUpdatePropertyInfo> properties, CancellationToken cancellationToken)
     {
-        var qry = properties.Select(it => $"{it.Remark ?? it.ColumnName}: ค่าเดิม {it.Value} ถูกแก้ไขเป็น {it.NewValue}");
+        var qry = properties.Select(it => $"(ข้อมูล '{it.Remark ?? it.ColumnName}' ค่าเดิม {it.Value} ถูกแก้ไขเป็น {it.NewValue})");
         var sb = new StringBuilder()
-            .AppendLine($"มีการแก้ไขมูลจากตาราง {entity.GetType().Name} โดยมีรายละเอียดดังนี้")
-            .AppendLine(string.Join(Environment.NewLine, qry));
+            .Append($"แก้ไขมูลในตาราง {entity.GetType().Name} โดยมีรายละเอียดดังนี้ ")
+            .Append(string.Join(' ', qry));
         AddAuditEntity(new AuditLog
         {
             Id = Guid.NewGuid().ToString(),

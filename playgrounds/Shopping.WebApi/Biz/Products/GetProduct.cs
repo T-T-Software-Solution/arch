@@ -13,7 +13,7 @@ internal sealed class GetProductHandler(IRepository<Product> repository, IMapper
 {
     public override async Task<ProductVm> HandleAsync(GetProduct request, CancellationToken cancellationToken = default)
     {
-        var entity = await repository.GetByIdAsync(request.ProductId);
+        var entity = await repository.GetByIdAsync(request.ProductId, cancellationToken);
         return mapper.Map<ProductVm>(entity);
     }
 }

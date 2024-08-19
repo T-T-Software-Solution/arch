@@ -1,14 +1,17 @@
 ﻿using AutoMapper;
 using Shopping.Shared.Entities;
 using Shopping.Shared.Entities.ViewModels;
+using System.Text.Json.Serialization;
 using TTSS.Core.Data;
 using TTSS.Core.Messaging;
 using TTSS.Core.Messaging.Handlers;
 
 namespace Shopping.WebApi.Biz.Products;
 
-public sealed record UpdateProduct(string ProductId) : IRequesting<ProductVm>
+public sealed record UpdateProduct : IRequesting<ProductVm>
 {
+    [JsonIgnore]
+    public string? ProductId { get; init; }
     public string? Name { get; init; }
     public double? Price { get; init; }
 }
@@ -17,7 +20,13 @@ internal sealed class UpdateProductHandler(IRepository<Product> repository, IMap
 {
     public override async Task<ProductVm> HandleAsync(UpdateProduct request, CancellationToken cancellationToken = default)
     {
-        var entity = await repository.GetByIdAsync(request.ProductId);
+        var areArgumentsValid = !string.IsNullOrWhiteSpace(request.ProductId);
+        if (!areArgumentsValid)
+        {
+            return null;
+        }
+
+        var entity = await repository.GetByIdAsync(request.ProductId, cancellationToken);
         if (entity is null)
         {
             return null;
@@ -33,7 +42,7 @@ internal sealed class UpdateProductHandler(IRepository<Product> repository, IMap
             entity.Price = request.Price.Value;
         }
 
-        await repository.UpdateAsync(entity);
+        await repository.UpdateAsync(entity, cancellationToken);
         return mapper.Map<ProductVm>(entity);
     }
 }

@@ -23,9 +23,9 @@ internal class DeleteCartHandler(ICorrelationContext context,
         }
 
         var entity = await repository
-            .Query()
+            .Query(cancellationToken)
             .Include(it => it.Owner)
-            .FirstOrDefaultAsync(it => it.Id == request.CartId);
+            .FirstOrDefaultAsync(it => it.Id == request.CartId, cancellationToken);
         if (entity is null)
         {
             return;
@@ -37,6 +37,6 @@ internal class DeleteCartHandler(ICorrelationContext context,
         }
 
         entity.DeletedDate = dateTimeService.UtcNow;
-        await repository.UpdateAsync(entity);
+        await repository.UpdateAsync(entity, cancellationToken);
     }
 }

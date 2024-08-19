@@ -14,7 +14,7 @@ internal sealed class ListCartsHandler(IRepository<Cart> repository, IMapper map
 {
     public override async Task<IEnumerable<CartVm>> HandleAsync(ListCarts request, CancellationToken cancellationToken = default)
     {
-        var entities = await repository.Query()
+        var entities = await repository.Query(cancellationToken)
             .Include(it => it.Owner)
             .GetAsync();
 

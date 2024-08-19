@@ -1,5 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using System.Collections.ObjectModel;
 using TTSS.Core.Data;
 using TTSS.Infra.Data.Sql.Models;
 
@@ -12,7 +11,7 @@ public sealed class Cart : SqlModelBase, ITimeActivityEntity
     public required User Owner { get; set; }
 
     [Comment("รายการสินค้า")]
-    public Collection<Product> Products { get; set; } = [];
+    public ICollection<Product> Products { get; set; } = [];
 
     public DateTime CreatedDate { get; set; }
     public DateTime? LastUpdatedDate { get; set; }

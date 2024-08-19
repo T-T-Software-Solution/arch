@@ -24,8 +24,8 @@ public sealed class ProductsController(IMessagingHub hub) : ApiControllerBase
 
     [Authorize]
     [HttpPut("update/{id}")]
-    public Task<ProductVm> Update(string id)
-        => hub.SendAsync(new UpdateProduct(id));
+    public Task<ProductVm> Update(string id, [FromBody] UpdateProduct request)
+        => hub.SendAsync(request with { ProductId = id });
 
     [Authorize]
     [HttpDelete("delete/{id}")]

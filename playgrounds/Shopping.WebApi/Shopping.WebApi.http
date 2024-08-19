@@ -4,6 +4,8 @@
 ###- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - List
 GET {{Host}}/api/auditlogs
 
+
+
 ###============================================================= User
 ###- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - List
 GET {{Host}}/api/users/list
@@ -18,13 +20,36 @@ Content-Type: application/json
   "lastName": "Doe"
 }
 
+###- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - Update
+PUT {{Host}}/api/users/update/{{UserCreate.response.body.userInfo.id}}
+Content-Type: application/json
+Authorization: Bearer {{UserCreate.response.body.token}}
+
+{
+  "firstName": "Mina",
+  "lastName": "Dixon"
+}
+
+###- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - Delete
+DELETE {{Host}}/api/users/delete/{{UserCreate.response.body.userInfo.id}}
+Authorization: Bearer {{UserCreate.response.body.token}}
+
+
+
+
 ###============================================================= Cart
 ###- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - List
 GET {{Host}}/api/carts/list
 
 ###- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - Create
+# @name CartCreate
 POST {{Host}}/api/carts/create
-Authorization: Bearer {{UserCreate.response.body.message}}
+Authorization: Bearer {{UserCreate.response.body.token}}
+
+###- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - Delete
+DELETE {{Host}}/api/carts/delete/{{CartCreate.response.body.id}}
+Authorization: Bearer {{UserCreate.response.body.token}}
+
 
 
 ###========================================================== Product
@@ -35,7 +60,7 @@ GET {{Host}}/api/products/list
 # @name ProductCreate
 POST {{Host}}/api/products/create
 Content-Type: application/json
-Authorization: Bearer {{UserCreate.response.body.message}}
+Authorization: Bearer {{UserCreate.response.body.token}}
 
 {
   "name": "iPhone 15 Pro",
@@ -45,7 +70,7 @@ Authorization: Bearer {{UserCreate.response.body.message}}
 ###- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - Update
 PUT {{Host}}/api/products/update/{{ProductCreate.response.body.id}}
 Content-Type: application/json
-Authorization: Bearer {{UserCreate.response.body.message}}
+Authorization: Bearer {{UserCreate.response.body.token}}
 
 {
   "name": "iPhone 15 Pro Max",
@@ -54,9 +79,17 @@ Authorization: Bearer {{UserCreate.response.body.message}}
 
 ###- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - Delete
 DELETE {{Host}}/api/products/delete/{{ProductCreate.response.body.id}}
-Authorization: Bearer {{UserCreate.response.body.message}}
+Authorization: Bearer {{UserCreate.response.body.token}}
 
 ###
 
-GET {{Host}}/api/tokens/CheckAuth
-Authorization: Bearer {{UserCreate.response.body.message}}
+
+###============================================================= Cart
+###- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - Update
+PUT {{Host}}/api/carts/update/{{CartCreate.response.body.id}}
+Content-Type: application/json
+Authorization: Bearer {{UserCreate.response.body.token}}
+
+{
+  "addProductId": "{{ProductCreate.response.body.id}}"
+}

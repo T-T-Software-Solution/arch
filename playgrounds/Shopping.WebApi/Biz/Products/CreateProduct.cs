@@ -29,7 +29,7 @@ internal sealed class CreateProductHandler(IRepository<Product> repository, IMap
             Name = request.Name,
             Price = request.Price
         };
-        await repository.InsertAsync(entity);
+        await repository.InsertAsync(entity, cancellationToken);
         return mapper.Map<ProductVm>(entity);
     }
 }

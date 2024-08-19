@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Shopping.Shared.Entities;
 using Shopping.Shared.Entities.ViewModels;
+using System.Text.Json.Serialization;
 using TTSS.Core.Data;
 using TTSS.Core.Messaging;
 using TTSS.Core.Messaging.Handlers;
@@ -9,10 +10,12 @@ using TTSS.Core.Models;
 
 namespace Shopping.WebApi.Biz.Carts;
 
-public sealed record UpdateCart(string CartId) : IRequesting<CartVm>
+public sealed record UpdateCart : IRequesting<CartVm>
 {
-    public string AddProductId { get; init; }
-    public string RemoveProductId { get; init; }
+    [JsonIgnore]
+    public string? CartId { get; init; }
+    public string? AddProductId { get; init; }
+    public string? RemoveProductId { get; init; }
 }
 
 internal sealed class UpdateCartHandler(ICorrelationContext context,
@@ -22,17 +25,18 @@ internal sealed class UpdateCartHandler(ICorrelationContext context,
 {
     public override async Task<CartVm> HandleAsync(UpdateCart request, CancellationToken cancellationToken = default)
     {
-        var areArgumentsValid = !string.IsNullOrWhiteSpace(request.CartId);
+        var areArgumentsValid = !string.IsNullOrWhiteSpace(request.CartId)
+            && (false == string.IsNullOrWhiteSpace(request.AddProductId) || false == string.IsNullOrWhiteSpace(request.RemoveProductId));
         if (!areArgumentsValid)
         {
             return null;
         }
 
         var entity = await cartRepository
-            .Query()
+            .Query(cancellationToken)
             .Include(it => it.Owner)
             .Include(it => it.Products)
-            .FirstOrDefaultAsync(it => it.Id == request.CartId);
+            .FirstOrDefaultAsync(it => it.Id == request.CartId, cancellationToken);
         if (entity is null)
         {
             return null;
@@ -45,7 +49,7 @@ internal sealed class UpdateCartHandler(ICorrelationContext context,
 
         if (false == string.IsNullOrWhiteSpace(request.AddProductId))
         {
-            var product = await productRepository.GetByIdAsync(request.AddProductId);
+            var product = await productRepository.GetByIdAsync(request.AddProductId, cancellationToken);
             if (product is not null)
             {
                 entity.Products.Add(product);
