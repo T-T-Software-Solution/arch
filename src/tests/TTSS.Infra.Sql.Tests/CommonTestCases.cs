@@ -815,6 +815,99 @@ public abstract class CommonTestCases : IoCTestBase, IDisposable
         ValidateAuditRecord(auditRecords, 1, "Update", nameof(SeriousLog));
     }
 
+    [Fact(DisplayName = "อัพข้อมูลที่มีความสามารถ TimeActivityLog โดยกำหนดให้เป็น soft deleted ระบบสามารถจับการอัพเดทข้อมูลได้ถูกต้อง")]
+    public async Task Update_TimeActivityLog_WithSoftDeleted_ThenTheUpdateMustWorkAsExpected()
+    {
+        SetupInterceptors();
+        var maintenanceLogRepo = ServiceProvider.GetRequiredService<IRepository<MaintenanceLog>>();
+        var maintenanceLog = new MaintenanceLog { Id = "1", Attempt = 5 };
+        await maintenanceLogRepo.InsertAsync(maintenanceLog);
+
+        maintenanceLog.Attempt = 99;
+        maintenanceLog.DeletedDate = CurrentTime;
+        await maintenanceLogRepo.UpdateAsync(maintenanceLog);
+
+        DeletionEvents.Should().HaveCount(1);
+        DeletionEvents.First().entity.Should().BeEquivalentTo(maintenanceLog);
+        DeletionEvents.First().properties.Should().BeEquivalentTo([
+                new SqlPropertyInfo
+                {
+                    ColumnName = "Id",
+                    Value = maintenanceLog.Id,
+                    Remark = null,
+                },
+                new SqlPropertyInfo
+                {
+                    ColumnName = "Attempt",
+                    Value = "5",
+                    Remark = null,
+                }]);
+
+        maintenanceLog.CreatedDate.Should().BeCloseTo(CurrentTime, TimeSpan.FromSeconds(1));
+        maintenanceLog.LastUpdatedDate.Should().BeNull();
+        maintenanceLog.DeletedDate.Should().BeCloseTo(CurrentTime, TimeSpan.FromSeconds(1));
+
+        AuditEvents.Should().HaveCount(2);
+        ValidateAuditEvnet(0, "Create", nameof(MaintenanceLog));
+        ValidateAuditEvnet(1, "Delete", nameof(MaintenanceLog));
+
+        var auditRepo = ServiceProvider.GetRequiredService<IRepository<AuditLog>>();
+        var auditRecords = auditRepo.Get().ToList();
+        auditRecords.Should().HaveCount(2);
+        ValidateAuditRecord(auditRecords, 0, "Create", nameof(MaintenanceLog));
+        ValidateAuditRecord(auditRecords, 1, "Delete", nameof(MaintenanceLog));
+    }
+
+    [Fact(DisplayName = "อัพข้อมูลที่มีความสามารถ UserActivityLog โดยกำหนดให้เป็น soft deleted ระบบสามารถจับการอัพเดทข้อมูลได้ถูกต้อง")]
+    public async Task Update_UserActivityLog_WithSoftDeleted_ThenTheUpdateMustWorkAsExpected()
+    {
+        SetupInterceptors();
+        var seriousLogRepo = ServiceProvider.GetRequiredService<IRepository<SeriousLog>>();
+        var seriousLog = new SeriousLog { Id = "1", Attempt = 5 };
+        await seriousLogRepo.InsertAsync(seriousLog);
+
+        seriousLog.Attempt = 99;
+        seriousLog.DeletedDate = CurrentTime;
+        var originalCreateByUserId = Context.CurrentUserId;
+        var newUpdateByUserId = Guid.NewGuid().ToString();
+        Context.SetCurrentUserId(newUpdateByUserId);
+        await seriousLogRepo.UpdateAsync(seriousLog);
+
+        DeletionEvents.Should().HaveCount(1);
+        DeletionEvents.First().entity.Should().BeEquivalentTo(seriousLog);
+        DeletionEvents.First().properties.Should().BeEquivalentTo([
+                new SqlPropertyInfo
+                {
+                    ColumnName = "Id",
+                    Value = seriousLog.Id,
+                    Remark = null,
+                },
+                new SqlPropertyInfo
+                {
+                    ColumnName = "Attempt",
+                    Value = "5",
+                    Remark = null,
+                }]);
+
+        seriousLog.CreatedDate.Should().BeCloseTo(CurrentTime, TimeSpan.FromSeconds(1));
+        seriousLog.LastUpdatedDate.Should().BeNull();
+        seriousLog.DeletedDate.Should().BeCloseTo(CurrentTime, TimeSpan.FromSeconds(1));
+
+        seriousLog.CreatedById.Should().Be(originalCreateByUserId);
+        seriousLog.LastUpdatedById.Should().BeNull();
+        seriousLog.DeletedById.Should().Be(newUpdateByUserId);
+
+        AuditEvents.Should().HaveCount(2);
+        ValidateAuditEvnet(0, "Create", nameof(SeriousLog));
+        ValidateAuditEvnet(1, "Delete", nameof(SeriousLog));
+
+        var auditRepo = ServiceProvider.GetRequiredService<IRepository<AuditLog>>();
+        var auditRecords = auditRepo.Get().ToList();
+        auditRecords.Should().HaveCount(2);
+        ValidateAuditRecord(auditRecords, 0, "Create", nameof(SeriousLog));
+        ValidateAuditRecord(auditRecords, 1, "Delete", nameof(SeriousLog));
+    }
+
     #endregion
 
     #endregion
