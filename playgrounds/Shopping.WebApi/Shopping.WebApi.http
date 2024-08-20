@@ -93,3 +93,7 @@ Authorization: Bearer {{UserCreate.response.body.token}}
 {
   "addProductId": "{{ProductCreate.response.body.id}}"
 }
+
+###====================================================== Default API
+GET {{Host}}/api/learns/4/correlation
+Authorization: Bearer {{UserCreate.response.body.token}}

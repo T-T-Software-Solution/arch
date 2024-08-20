@@ -25,10 +25,12 @@ public sealed class PlaygroundWebInitializer : WebInitializerBase
 
     public override void RegisterServices(IServiceCollection services)
     {
-        IEnumerable<Assembly> assemblies = [
-                typeof(DEMO_Context).Assembly,
-                Assembly.GetExecutingAssembly(),
-            ];
+        var assemblies = new[]
+        {
+            typeof(DEMO_Context).Assembly,
+            Assembly.GetExecutingAssembly(),
+        };
+
         services
             .RegisterWebModules()
             .RegisterCoreModules()

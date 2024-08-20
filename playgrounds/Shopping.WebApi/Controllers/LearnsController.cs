@@ -6,7 +6,7 @@ using TTSS.Core.Models;
 
 namespace Shopping.WebApi.Controllers;
 
-public sealed class LearnsController(IMessagingHub hub) : ApiControllerBase
+public sealed class LearnsController(IMessagingHub hub, ICorrelationContext context) : ApiControllerBase
 {
     [HttpGet("1/OneWay/{input}")]
     public Task OneWay(string input)
@@ -19,4 +19,8 @@ public sealed class LearnsController(IMessagingHub hub) : ApiControllerBase
     [HttpPut("3/ChainCalls")]
     public Task<Response> ChainCall([FromBody] ChainCalls request)
         => hub.SendAsync(request);
+
+    [HttpGet("4/Correlation")]
+    public ICorrelationContext GetCollelationContext()
+        => context;
 }

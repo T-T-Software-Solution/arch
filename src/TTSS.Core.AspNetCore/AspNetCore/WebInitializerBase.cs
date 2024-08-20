@@ -1,4 +1,5 @@
-﻿using TTSS.Core.Configurations;
+﻿using TTSS.Core.AspNetCore.Pipelines;
+using TTSS.Core.Configurations;
 
 namespace TTSS.Core.AspNetCore;
 
@@ -10,6 +11,7 @@ public abstract class WebInitializerBase
     #region Fields
 
     private readonly List<IValidator> _registeredOptionsValidators = [];
+    private readonly Dictionary<Type, ServiceDescriptor> _registeredMiddlewares = [];
 
     #endregion
 
@@ -127,6 +129,35 @@ public abstract class WebInitializerBase
     /// <exception cref="ArgumentNullException">The validator is required</exception>
     internal void AddOptionsValidator(IOptionsValidator? validator)
         => _registeredOptionsValidators.Add(validator ?? throw new ArgumentNullException(nameof(validator)));
+
+    internal WebInitializerBase AddMiddleware<TMiddleware>(ServiceDescriptor descriptor)
+        where TMiddleware : IMiddleware
+    {
+        var target = typeof(TMiddleware);
+        if (false == _registeredMiddlewares.ContainsKey(target))
+        {
+            _registeredMiddlewares.Add(target, descriptor);
+        }
+        return this;
+    }
+
+    internal void RegisterMiddlewares(IServiceCollection services)
+    {
+        this.RegisterMiddleware<HttpCorrelationContextMiddleware>(ServiceLifetime.Scoped);
+
+        foreach (var item in _registeredMiddlewares)
+        {
+            services.Add(item.Value);
+        }
+    }
+
+    internal void UseMiddlewares(IApplicationBuilder app)
+    {
+        foreach (var item in _registeredMiddlewares)
+        {
+            app.UseMiddleware(item.Key);
+        }
+    }
 
     #endregion
 }

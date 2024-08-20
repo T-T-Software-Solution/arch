@@ -27,10 +27,12 @@ public static class WebApplicationBuilderExtensions
         initializer.RegisterServices(target.Services);
         initializer.RegisterSystemMonitorings(target.Services);
         initializer.RegisterDatabases(target.Services);
+        initializer.RegisterMiddlewares(target.Services);
 
         var app = target.Build();
         initializer.ConfigureRoutes(app);
         initializer.ConfigurePipelines(app);
+        initializer.UseMiddlewares(app);
         initializer.PostBuild(app);
         await initializer.PostBuildAsync(app);
         return app;
@@ -65,6 +67,73 @@ public static class WebApplicationBuilderExtensions
         services.AddOptionsValidator<TOptionsValidator>(configuration!, failureMessage);
         var validator = configuration.GetSection(TOptionsValidator.SectionName).Get<TOptionsValidator>();
         target.AddOptionsValidator(validator);
+        return target;
+    }
+
+    /// <summary>
+    /// Registers middleware to the service collection.
+    /// </summary>
+    /// <typeparam name="TMiddleware">Middleware type</typeparam>
+    /// <param name="target">Web application builder</param>
+    /// <param name="lifetime">Service lifetime</param>
+    /// <returns>Web application builder</returns>
+    public static WebInitializerBase RegisterMiddleware<TMiddleware>(this WebInitializerBase target, ServiceLifetime lifetime = ServiceLifetime.Singleton)
+        where TMiddleware : IMiddleware
+    {
+        var type = typeof(TMiddleware);
+        var descriptor = new ServiceDescriptor(type, type, lifetime);
+        target.AddMiddleware<TMiddleware>(descriptor);
+        return target;
+    }
+
+    /// <summary>
+    /// Registers middleware to the service collection.
+    /// </summary>
+    /// <typeparam name="TMiddleware">Middleware type</typeparam>
+    /// <typeparam name="TImplementation">Middleware implementation type</typeparam>
+    /// <param name="target">Web application builder</param>
+    /// <param name="instance">Middleware instance</param>
+    /// <returns>Web application builder</returns>
+    public static WebInitializerBase RegisterMiddleware<TMiddleware, TImplementation>(this WebInitializerBase target, TImplementation instance)
+        where TMiddleware : IMiddleware
+        where TImplementation : class, TMiddleware
+    {
+        var descriptor = new ServiceDescriptor(typeof(TMiddleware), instance);
+        target.AddMiddleware<TMiddleware>(descriptor);
+        return target;
+    }
+
+    /// <summary>
+    /// Registers middleware to the service collection.
+    /// </summary>
+    /// <typeparam name="TMiddleware">Middleware type</typeparam>
+    /// <typeparam name="TImplementation">Middleware implementation type</typeparam>
+    /// <param name="target">Web application builder</param>
+    /// <param name="factory">Middleware factory</param>
+    /// <param name="lifetime">Service lifetime</param>
+    /// <returns>Web application builder</returns>
+    public static WebInitializerBase RegisterMiddleware<TMiddleware, TImplementation>(this WebInitializerBase target, Func<IServiceProvider, object> factory, ServiceLifetime lifetime = ServiceLifetime.Singleton)
+        where TMiddleware : IMiddleware
+    {
+        var descriptor = new ServiceDescriptor(typeof(TMiddleware), factory, lifetime);
+        target.AddMiddleware<TMiddleware>(descriptor);
+        return target;
+    }
+
+    /// <summary>
+    /// Registers middleware to the service collection.
+    /// </summary>
+    /// <typeparam name="TMiddleware">Middleware type</typeparam>
+    /// <typeparam name="TImplementation">Middleware implementation type</typeparam>
+    /// <param name="target">Web application builder</param>
+    /// <param name="lifetime">Service lifetime</param>
+    /// <returns>Web application builder</returns>
+    public static WebInitializerBase RegisterMiddleware<TMiddleware, TImplementation>(this WebInitializerBase target, ServiceLifetime lifetime = ServiceLifetime.Singleton)
+        where TMiddleware : IMiddleware
+        where TImplementation : class, TMiddleware
+    {
+        var descriptor = new ServiceDescriptor(typeof(TMiddleware), typeof(TImplementation), lifetime);
+        target.AddMiddleware<TMiddleware>(descriptor);
         return target;
     }
 
