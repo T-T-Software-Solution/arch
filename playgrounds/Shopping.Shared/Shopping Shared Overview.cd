@@ -1,0 +1,96 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1" MembersFormat="NameAndType">
+  <Comment CommentText="Correlations">
+    <Position X="13.5" Y="0.5" Height="0.291" Width="4.325" />
+  </Comment>
+  <Comment CommentText="Audits">
+    <Position X="6.25" Y="1.25" Height="0.291" Width="5.002" />
+  </Comment>
+  <Comment CommentText="DB Contexts">
+    <Position X="0.5" Y="1.167" Height="0.291" Width="2.856" />
+  </Comment>
+  <Comment CommentText="Entities">
+    <Position X="0.5" Y="4.75" Height="0.291" Width="10.742" />
+  </Comment>
+  <Comment CommentText="Databases">
+    <Position X="0.5" Y="0.5" Height="0.291" Width="10.742" />
+  </Comment>
+  <Comment CommentText="Model mappings">
+    <Position X="13.5" Y="4" Height="0.291" Width="4.325" />
+  </Comment>
+  <Class Name="Shopping.Shared.Interceptors.AuditInterceptor">
+    <Position X="6.25" Y="2.25" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>CABAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Interceptors\AuditInterceptor.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Shopping.Shared.Entities.AuditLog" BaseTypeListCollapsed="true">
+    <Position X="8.75" Y="2.25" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAgAAAAAAAAAAAAAAAAAAAACgAAIAAAAAA=</HashCode>
+      <FileName>Entities\AuditLog.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Shopping.Shared.Entities.Cart" BaseTypeListCollapsed="true">
+    <Position X="4" Y="6" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAACAAAAAAAAAAAAAAAAAAAAAAAAACgAAIAAAAAQ=</HashCode>
+      <FileName>Entities\Cart.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="Owner" />
+    </ShowAsAssociation>
+    <ShowAsCollectionAssociation>
+      <Property Name="Products" />
+    </ShowAsCollectionAssociation>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Shopping.Shared.Entities.Product" BaseTypeListCollapsed="true">
+    <Position X="8.75" Y="5.75" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAgAASAAAAAAAAAACAQAAAAAAAAACgBAIAAAAAA=</HashCode>
+      <FileName>Entities\Product.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsCollectionAssociation>
+      <Property Name="Carts" />
+    </ShowAsCollectionAssociation>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Shopping.Shared.Entities.User">
+    <Position X="0.5" Y="6" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAg=</HashCode>
+      <FileName>Entities\User.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Shopping.Shared.DbContexts.ShoppingDbContext" BaseTypeListCollapsed="true">
+    <Position X="0.5" Y="2" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAACAAAAAABAAAAAAACAAAAAAAAAAAAIAAAAAAAAQ=</HashCode>
+      <FileName>DbContexts\ShoppingDbContext.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Shopping.Shared.MappingProfileRegistrar">
+    <Position X="13.5" Y="4.5" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>MappingProfileRegistrar.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Shopping.Shared.DEMO_Context" Collapsed="true">
+    <Position X="15.75" Y="1.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAgAAAAAAAAAAgAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>DEMO_Context.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Interface Name="TTSS.Core.Models.ICorrelationContext">
+    <Position X="13.5" Y="1" Width="1.75" />
+    <TypeIdentifier />
+  </Interface>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

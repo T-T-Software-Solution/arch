@@ -16,6 +16,7 @@ internal sealed class ListCartsHandler(IRepository<Cart> repository, IMapper map
     {
         var entities = await repository.Query(cancellationToken)
             .Include(it => it.Owner)
+            .Include(it => it.Products)
             .GetAsync();
 
         return entities.Select(mapper.Map<CartVm>);

@@ -13,6 +13,9 @@ public sealed class Product : SqlModelBase, ITimeActivityEntity, IUserActivityEn
     [Comment("ราคา")]
     public required double Price { get; set; }
 
+    [Comment("ตะกร้าสินค้า")]
+    public ICollection<Cart> Carts { get; set; } = [];
+
     public DateTime CreatedDate { get; set; }
     public DateTime? LastUpdatedDate { get; set; }
     public DateTime? DeletedDate { get; set; }
