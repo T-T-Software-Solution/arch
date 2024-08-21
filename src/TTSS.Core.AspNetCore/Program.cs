@@ -5,14 +5,15 @@ var builder = WebApplication.CreateBuilder(args);
 builder.AddOptionsValidator<Opt>();
 
 builder.Services.AddControllers();
-var app = await builder.BuildAsync<WebInitializer>();
+var application = await builder.BuildAsync<WebInitializer>(app =>
+{
+    // Configure the HTTP request pipeline.
+    app.UseHttpsRedirection();
+    app.UseAuthorization();
+    app.MapControllers();
+});
 
-// Configure the HTTP request pipeline.
-app.UseHttpsRedirection();
-app.UseAuthorization();
-app.MapControllers();
-app.Run();
-
+application.Run();
 
 file class WebInitializer : WebInitializerBase
 {

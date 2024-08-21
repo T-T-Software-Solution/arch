@@ -12,9 +12,10 @@ public static class WebApplicationBuilderExtensions
     /// </summary>
     /// <typeparam name="TWebInitializer">Web application initializer</typeparam>
     /// <param name="target">Web application builder</param>
+    /// <param name="config">Web application configuration</param>
     /// <returns>The web application</returns>
     /// <exception cref="InvalidOperationException">The builder is required</exception>
-    public static async Task<WebApplication> BuildAsync<TWebInitializer>(this WebApplicationBuilder target)
+    public static async Task<WebApplication> BuildAsync<TWebInitializer>(this WebApplicationBuilder target, Action<WebApplication> config)
         where TWebInitializer : WebInitializerBase
     {
         var initializer = Activator.CreateInstance<TWebInitializer>()
@@ -32,10 +33,24 @@ public static class WebApplicationBuilderExtensions
         var app = target.Build();
         initializer.ConfigureRoutes(app);
         initializer.ConfigurePipelines(app);
-        initializer.UseMiddlewares(app);
         initializer.PostBuild(app);
         await initializer.PostBuildAsync(app);
+        config?.Invoke(app);
+        initializer.UseMiddlewares(app);
         return app;
+    }
+
+    /// <summary>
+    /// Builds the web application and runs the initializer.
+    /// </summary>
+    /// <typeparam name="TWebInitializer">Web application initializer</typeparam>
+    /// <param name="target">Web application builder</param>
+    /// <param name="config">Web application configuration</param>
+    public static async Task RunAsync<TWebInitializer>(this WebApplicationBuilder target, Action<WebApplication> config)
+        where TWebInitializer : WebInitializerBase
+    {
+        var app = await target.BuildAsync<TWebInitializer>(config);
+        await app.RunAsync();
     }
 
     /// <summary>

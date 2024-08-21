@@ -31,7 +31,6 @@ public class HttpCorrelationContextMiddleware(ICorrelationContext context, IHttp
             setter.SetCorrelationId(Guid.NewGuid().ToString());
         }
 
-        // TODO: Not working right now, because the authentication process is not finished yet.
         if (context.CurrentUserId is null
             && (accessor.HttpContext?.User?.Identity?.IsAuthenticated ?? false))
         {

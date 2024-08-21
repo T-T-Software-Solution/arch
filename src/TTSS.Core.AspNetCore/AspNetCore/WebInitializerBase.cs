@@ -151,11 +151,11 @@ public abstract class WebInitializerBase
         }
     }
 
-    internal void UseMiddlewares(IApplicationBuilder app)
+    internal void UseMiddlewares(IApplicationBuilder builder)
     {
         foreach (var item in _registeredMiddlewares)
         {
-            app.UseMiddleware(item.Key);
+            builder.UseMiddleware(item.Key);
         }
     }
 
