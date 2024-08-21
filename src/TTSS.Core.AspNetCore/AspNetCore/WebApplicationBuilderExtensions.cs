@@ -12,33 +12,10 @@ public static class WebApplicationBuilderExtensions
     /// </summary>
     /// <typeparam name="TWebInitializer">Web application initializer</typeparam>
     /// <param name="target">Web application builder</param>
-    /// <param name="config">Web application configuration</param>
-    /// <returns>The web application</returns>
-    /// <exception cref="InvalidOperationException">The builder is required</exception>
-    public static async Task<WebApplication> BuildAsync<TWebInitializer>(this WebApplicationBuilder target, Action<WebApplication> config)
-        where TWebInitializer : WebInitializerBase
-    {
-        var initializer = Activator.CreateInstance<TWebInitializer>()
-            ?? throw new InvalidOperationException($"Could not create instance of {typeof(TWebInitializer)}");
-
-        initializer.Builder = target;
-        initializer.PreBuild();
-        await initializer.PreBuildAsync();
-        initializer.RegisterOptions(target.Services);
-        initializer.RegisterServices(target.Services);
-        initializer.RegisterSystemMonitorings(target.Services);
-        initializer.RegisterDatabases(target.Services);
-        initializer.RegisterMiddlewares(target.Services);
-
-        var app = target.Build();
-        initializer.ConfigureRoutes(app);
-        initializer.ConfigurePipelines(app);
-        initializer.PostBuild(app);
-        await initializer.PostBuildAsync(app);
-        config?.Invoke(app);
-        initializer.UseMiddlewares(app);
-        return app;
-    }
+    /// <returns>The web application and The WebInitializer</returns>
+    public static Task<(WebApplication app, TWebInitializer initializer)> BuildAsync<TWebInitializer>(this WebApplicationBuilder target)
+       where TWebInitializer : WebInitializerBase
+        => buildAsync<TWebInitializer>(target, _ => { });
 
     /// <summary>
     /// Builds the web application and runs the initializer.
@@ -46,11 +23,23 @@ public static class WebApplicationBuilderExtensions
     /// <typeparam name="TWebInitializer">Web application initializer</typeparam>
     /// <param name="target">Web application builder</param>
     /// <param name="config">Web application configuration</param>
+    /// <returns>The web application</returns>
+    /// <exception cref="InvalidOperationException">The builder is required</exception>
+    public static async Task<WebApplication> BuildAsync<TWebInitializer>(this WebApplicationBuilder target, Action<WebApplication> config)
+        where TWebInitializer : WebInitializerBase
+        => (await buildAsync<TWebInitializer>(target, config)).application;
+
+    /// <summary>
+    /// Builds the web application and runs the web application.
+    /// </summary>
+    /// <typeparam name="TWebInitializer">Web application initializer</typeparam>
+    /// <param name="target">Web application builder</param>
+    /// <param name="config">Web application configuration</param>
     public static async Task RunAsync<TWebInitializer>(this WebApplicationBuilder target, Action<WebApplication> config)
         where TWebInitializer : WebInitializerBase
     {
-        var app = await target.BuildAsync<TWebInitializer>(config);
-        await app.RunAsync();
+        var result = await buildAsync<TWebInitializer>(target, config);
+        await result.application.RunAsync();
     }
 
     /// <summary>
@@ -170,5 +159,30 @@ public static class WebApplicationBuilderExtensions
             .Validate(it => it.Validate(), failureMessage ?? $"Options validation failed for {typeof(TOptionsValidator).Name}.")
             .ValidateOnStart();
         return target;
+    }
+
+    private static async Task<(WebApplication application, TWebInitializer initializer)> buildAsync<TWebInitializer>(WebApplicationBuilder target, Action<WebApplication> config)
+        where TWebInitializer : WebInitializerBase
+    {
+        var initializer = Activator.CreateInstance<TWebInitializer>()
+            ?? throw new InvalidOperationException($"Could not create instance of {typeof(TWebInitializer)}");
+
+        initializer.Builder = target;
+        initializer.PreBuild();
+        await initializer.PreBuildAsync();
+        initializer.RegisterOptions(target.Services);
+        initializer.RegisterServices(target.Services);
+        initializer.RegisterSystemMonitorings(target.Services);
+        initializer.RegisterDatabases(target.Services);
+        initializer.RegisterMiddlewares(target.Services);
+
+        var app = target.Build();
+        initializer.ConfigureRoutes(app);
+        initializer.ConfigurePipelines(app);
+        initializer.PostBuild(app);
+        await initializer.PostBuildAsync(app);
+        config?.Invoke(app);
+        initializer.UseMiddlewares(app);
+        return (app, initializer);
     }
 }
