@@ -20,8 +20,7 @@ public class HttpCorrelationContextMiddleware(ICorrelationContext context, IHttp
     /// <returns>A <see cref="Task"/> that represents the execution of this middleware.</returns>
     public Task InvokeAsync(HttpContext httpContext, RequestDelegate next)
     {
-        var setter = context as ISetterCorrelationContext;
-        if (setter is null)
+        if (context is not ISetterCorrelationContext setter)
         {
             return next(httpContext);
         }

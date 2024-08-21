@@ -1,5 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Diagnostics;
 using TTSS.Infra.Data.Sql.Models;
 
 namespace TTSS.Infra.Data.Sql;
