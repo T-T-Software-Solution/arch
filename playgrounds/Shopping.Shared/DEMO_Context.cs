@@ -1,12 +1,5 @@
-﻿using TTSS.Core.Models;
+﻿using TTSS.Core.AspNetCore.Models;
 
 namespace Shopping.Shared;
 
-public sealed class DEMO_Context : CorrelationContext, ISetterCorrelationContext
-{
-    public void SetCorrelationId(string correlationId)
-        => SetCorrelationIdentity(correlationId);
-
-    public void SetCurrentUserId(string? currentUserId)
-        => SetCurrentUserIdentity(currentUserId);
-}
+public sealed class DEMO_Context : WebCorrelationContext;

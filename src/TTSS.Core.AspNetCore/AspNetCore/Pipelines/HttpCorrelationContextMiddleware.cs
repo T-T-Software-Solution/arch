@@ -1,4 +1,5 @@
 ﻿
+using TTSS.Core.AspNetCore.Models;
 using TTSS.Core.Models;
 
 namespace TTSS.Core.AspNetCore.Pipelines;
@@ -34,6 +35,12 @@ public class HttpCorrelationContextMiddleware(ICorrelationContext context, IHttp
             && (accessor.HttpContext?.User?.Identity?.IsAuthenticated ?? false))
         {
             setter.SetCurrentUserId(accessor.HttpContext.User.Identity?.Name);
+        }
+
+        if (context is WebCorrelationContext webContext
+            && webContext.HttpContext is null)
+        {
+            webContext.SetHttpContext(httpContext);
         }
 
         return next(httpContext);

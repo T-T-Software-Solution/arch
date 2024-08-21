@@ -81,15 +81,14 @@
     </TypeIdentifier>
   </Class>
   <Class Name="Shopping.Shared.DEMO_Context" Collapsed="true">
-    <Position X="15.75" Y="1.25" Width="1.5" />
+    <Position X="16" Y="1.25" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAgAAAAAAAAAAgAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>DEMO_Context.cs</FileName>
     </TypeIdentifier>
-    <Lollipop Position="0.2" />
   </Class>
   <Interface Name="TTSS.Core.Models.ICorrelationContext">
-    <Position X="13.5" Y="1" Width="1.75" />
+    <Position X="13.5" Y="1" Width="2" />
     <TypeIdentifier />
   </Interface>
   <Font Name="Segoe UI" Size="9" />
