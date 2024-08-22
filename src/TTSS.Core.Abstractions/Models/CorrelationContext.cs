@@ -1,4 +1,5 @@
 ﻿using System.Collections.Concurrent;
+using System.Text.Json.Serialization;
 
 namespace TTSS.Core.Models;
 
@@ -19,6 +20,7 @@ public class CorrelationContext : ICorrelationContext, ISetterCorrelationContext
     /// </summary>
     public string CorrelationId { get; internal set; } = null!;
 
+    [JsonIgnore]
     IDictionary<string, object> ICorrelationContext.ContextBag { get; } = new ConcurrentDictionary<string, object>();
 
     #endregion

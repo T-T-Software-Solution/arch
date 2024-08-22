@@ -15,7 +15,7 @@ public static class WebApplicationBuilderExtensions
     /// <returns>The web application and The WebInitializer</returns>
     public static Task<(WebApplication app, TWebInitializer initializer)> BuildAsync<TWebInitializer>(this WebApplicationBuilder target)
        where TWebInitializer : WebInitializerBase
-        => buildAsync<TWebInitializer>(target, _ => { });
+        => BuildAndInitializeAsync<TWebInitializer>(target, _ => { });
 
     /// <summary>
     /// Builds the web application and runs the initializer.
@@ -27,7 +27,7 @@ public static class WebApplicationBuilderExtensions
     /// <exception cref="InvalidOperationException">The builder is required</exception>
     public static async Task<WebApplication> BuildAsync<TWebInitializer>(this WebApplicationBuilder target, Action<WebApplication> config)
         where TWebInitializer : WebInitializerBase
-        => (await buildAsync<TWebInitializer>(target, config)).application;
+        => (await BuildAndInitializeAsync<TWebInitializer>(target, config)).application;
 
     /// <summary>
     /// Builds the web application and runs the web application.
@@ -38,7 +38,7 @@ public static class WebApplicationBuilderExtensions
     public static async Task RunAsync<TWebInitializer>(this WebApplicationBuilder target, Action<WebApplication> config)
         where TWebInitializer : WebInitializerBase
     {
-        var result = await buildAsync<TWebInitializer>(target, config);
+        var result = await BuildAndInitializeAsync<TWebInitializer>(target, config);
         await result.application.RunAsync();
     }
 
@@ -161,7 +161,7 @@ public static class WebApplicationBuilderExtensions
         return target;
     }
 
-    private static async Task<(WebApplication application, TWebInitializer initializer)> buildAsync<TWebInitializer>(WebApplicationBuilder target, Action<WebApplication> config)
+    private static async Task<(WebApplication application, TWebInitializer initializer)> BuildAndInitializeAsync<TWebInitializer>(WebApplicationBuilder target, Action<WebApplication> config)
         where TWebInitializer : WebInitializerBase
     {
         var initializer = Activator.CreateInstance<TWebInitializer>()

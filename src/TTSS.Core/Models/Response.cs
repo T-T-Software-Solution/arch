@@ -1,10 +1,22 @@
-﻿namespace TTSS.Core.Models;
+﻿using TTSS.Core.Annotations;
+
+namespace TTSS.Core.Models;
 
 /// <summary>
 /// Represents a response from a request.
 /// </summary>
 /// <param name="Message">Response message</param>
-public record Response(string? Message = default) : IResponse;
+public record Response(string? Message = default) : IResponse
+{
+    #region Properties
+
+    /// <summary>
+    /// Operation description metadata.
+    /// </summary>
+    public OperationDescriptionAttribute? Metadata { get; init; }
+
+    #endregion
+}
 
 /// <summary>
 /// Represents a response from a request with data.
