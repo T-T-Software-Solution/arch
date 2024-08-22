@@ -1,4 +1,5 @@
 ﻿using Shopping.Shared.Entities;
+using System.Net;
 using TTSS.Core.Data;
 using TTSS.Core.Messaging;
 using TTSS.Core.Messaging.Handlers;
@@ -6,19 +7,26 @@ using TTSS.Core.Models;
 
 namespace Shopping.WebApi.Biz.Users;
 
-public sealed record DeleteUser(string UserId) : IRequesting;
+public sealed record DeleteUser(string UserId) : IHttpRequesting;
 
-internal class DeleteUserHandler(ICorrelationContext context, IRepository<User> repository) : RequestHandlerAsync<DeleteUser>
+internal class DeleteUserHandler(ICorrelationContext context, IRepository<User> repository) : HttpRequestHandlerAsync<DeleteUser>
 {
-    public override async Task HandleAsync(DeleteUser request, CancellationToken cancellationToken = default)
+    public override async Task<IHttpResponse> HandleAsync(DeleteUser request, CancellationToken cancellationToken = default)
     {
         var areArgumentsValid = !string.IsNullOrWhiteSpace(request.UserId)
             && context.CurrentUserId == request.UserId;
-        if (!areArgumentsValid) return;
+        if (!areArgumentsValid)
+        {
+            return Response(HttpStatusCode.BadRequest);
+        }
 
         var entity = await repository.GetByIdAsync(request.UserId, cancellationToken);
-        if (entity is null) return;
+        if (entity is null)
+        {
+            return Response(HttpStatusCode.NotFound);
+        }
 
         await repository.DeleteAsync(entity.Id, cancellationToken);
+        return Response(HttpStatusCode.NoContent);
     }
 }

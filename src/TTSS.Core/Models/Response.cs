@@ -1,4 +1,5 @@
-﻿using TTSS.Core.Annotations;
+﻿using System.Text.Json.Serialization;
+using TTSS.Core.Annotations;
 
 namespace TTSS.Core.Models;
 
@@ -13,6 +14,7 @@ public record Response(string? Message = default) : IResponse
     /// <summary>
     /// Operation description metadata.
     /// </summary>
+    [JsonIgnore]
     public OperationDescriptionAttribute? Metadata { get; init; }
 
     #endregion

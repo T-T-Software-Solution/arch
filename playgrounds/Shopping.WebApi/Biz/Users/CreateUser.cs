@@ -3,21 +3,24 @@ using Shopping.Shared.Entities;
 using Shopping.Shared.Entities.ViewModels;
 using Shopping.WebApi.Biz.Tokens;
 using Shopping.WebApi.Biz.Users.ViewModels;
+using TTSS.Core.Annotations;
 using TTSS.Core.Data;
 using TTSS.Core.Messaging;
 using TTSS.Core.Messaging.Handlers;
+using TTSS.Core.Models;
 
 namespace Shopping.WebApi.Biz.Users;
 
-public sealed record CreateUser : IRequesting<CreateUserResult>
+[OperationDescription(OperationType.Create, "User", "Create a new user.")]
+public sealed record CreateUser : IHttpRequesting<CreateUserResult>
 {
     public string? FirstName { get; init; }
     public string? LastName { get; init; }
 }
 
-internal sealed class CreateUserHandler(IRepository<User> repository, IMessagingHub hub, IMapper mapper) : RequestHandlerAsync<CreateUser, CreateUserResult>
+internal sealed class CreateUserHandler(IRepository<User> repository, IMessagingHub hub, IMapper mapper) : HttpRequestHandlerAsync<CreateUser, CreateUserResult>
 {
-    public override async Task<CreateUserResult> HandleAsync(CreateUser request, CancellationToken cancellationToken = default)
+    public override async Task<IHttpResponse<CreateUserResult>> HandleAsync(CreateUser request, CancellationToken cancellationToken = default)
     {
         var entity = new User
         {
@@ -33,6 +36,7 @@ internal sealed class CreateUserHandler(IRepository<User> repository, IMessaging
             UserId = entity.Id,
             FullName = $"{entity.FirstName} {entity.LastName}",
         }, cancellationToken);
-        return new CreateUserResult(vm, token);
+        var result = new CreateUserResult(vm, token);
+        return Response(System.Net.HttpStatusCode.OK, result);
     }
 }

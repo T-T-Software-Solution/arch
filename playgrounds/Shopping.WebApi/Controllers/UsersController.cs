@@ -11,24 +11,24 @@ namespace Shopping.WebApi.Controllers;
 public sealed class UsersController(IMessagingHub hub) : ApiControllerBase
 {
     [HttpPost("create")]
-    public Task<CreateUserResult> Create([FromBody] CreateUser request)
-        => hub.SendAsync(request);
+    public Task<ActionResult<CreateUserResult>> Create([FromBody] CreateUser request)
+        => hub.SendAsync(request).ToActionResultAsync();
 
     [HttpGet("{id}")]
-    public Task<UserVm> Get(string id)
-        => hub.SendAsync(new GetUser(id));
+    public Task<ActionResult<UserVm>> Get(string id)
+        => hub.SendAsync(new GetUser(id)).ToActionResultAsync();
 
     [HttpGet("list")]
-    public Task<IEnumerable<UserVm>> Liste()
-        => hub.SendAsync(new ListUsers());
+    public Task<ActionResult<IEnumerable<UserVm>>> Liste()
+        => hub.SendAsync(new ListUsers()).ToActionResultAsync();
 
     [Authorize]
     [HttpPut("update/{id}")]
-    public Task<UserVm> Update(string id, [FromBody] UpdateUser request)
-        => hub.SendAsync(request with { UserId = id });
+    public Task<ActionResult<UserVm>> Update(string id, [FromBody] UpdateUser request)
+        => hub.SendAsync(request with { UserId = id }).ToActionResultAsync();
 
     [Authorize]
     [HttpDelete("delete/{id}")]
-    public Task Delete(string id)
-        => hub.SendAsync(new DeleteUser(id));
+    public Task<ActionResult> Delete(string id)
+        => hub.SendAsync(new DeleteUser(id)).ToActionResultAsync();
 }

@@ -20,9 +20,10 @@ public static class ModuleInitializer
     {
         var defaultPipelines = new[]
         {
+            typeof(ExceptionPiplineBehaviorAsync<,>),
+            typeof(CorrelationPipelineBehaviorAsync<,>),
             typeof(MediatR.Pipeline.RequestPreProcessorBehavior<,>),
             typeof(MediatR.Pipeline.RequestPostProcessorBehavior<,>),
-            typeof(CorrelationPipelineBehaviorAsync<,>),
         };
         var target = typeof(IPipelineBehaviorBase<,>);
         var qry = (pipelines ?? [])

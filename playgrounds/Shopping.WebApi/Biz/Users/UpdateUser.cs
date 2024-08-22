@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Shopping.Shared.Entities;
 using Shopping.Shared.Entities.ViewModels;
+using System.Net;
 using System.Text.Json.Serialization;
 using TTSS.Core.Data;
 using TTSS.Core.Messaging;
@@ -9,7 +10,7 @@ using TTSS.Core.Models;
 
 namespace Shopping.WebApi.Biz.Users;
 
-public sealed record UpdateUser : IRequesting<UserVm>
+public sealed record UpdateUser : IHttpRequesting<UserVm>
 {
     [JsonIgnore]
     public string? UserId { get; init; }
@@ -17,28 +18,29 @@ public sealed record UpdateUser : IRequesting<UserVm>
     public string? LastName { get; init; }
 }
 
-internal sealed class UpdateUserHandler(ICorrelationContext context, IRepository<User> repository, IMapper mapper) : RequestHandlerAsync<UpdateUser, UserVm>
+internal sealed class UpdateUserHandler(ICorrelationContext context, IRepository<User> repository, IMapper mapper) : HttpRequestHandlerAsync<UpdateUser, UserVm>
 {
-    public override async Task<UserVm> HandleAsync(UpdateUser request, CancellationToken cancellationToken = default)
+    public override async Task<IHttpResponse<UserVm>> HandleAsync(UpdateUser request, CancellationToken cancellationToken = default)
     {
         var areArgumentsValid = !string.IsNullOrWhiteSpace(request.UserId)
             && context.CurrentUserId == request.UserId
             && (!string.IsNullOrWhiteSpace(request.FirstName) || !string.IsNullOrWhiteSpace(request.LastName));
         if (!areArgumentsValid)
         {
-            return null;
+            return Response(HttpStatusCode.BadRequest, "Invalid arguments");
         }
 
-        var entity = await repository.GetByIdAsync(request.UserId, cancellationToken);
+        var entity = await repository.GetByIdAsync(request.UserId!, cancellationToken);
         if (entity is null)
         {
-            return null;
+            return Response(HttpStatusCode.NotFound, "User not found");
         }
 
         entity.FirstName = request.FirstName;
         entity.LastName = request.LastName;
         await repository.UpdateAsync(entity, cancellationToken);
 
-        return mapper.Map<UserVm>(entity);
+        var vm = mapper.Map<UserVm>(entity);
+        return Response(HttpStatusCode.OK, vm);
     }
 }
