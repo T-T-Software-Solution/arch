@@ -3,7 +3,8 @@
 /// <summary>
 /// Contract for paging response.
 /// </summary>
-public interface IPagingResponse
+/// <typeparam name="TContent">Content type</typeparam>
+public interface IPagingResponse<TContent>
 {
     /// <summary>
     /// Total page count.
@@ -39,16 +40,9 @@ public interface IPagingResponse
     /// Total content count.
     /// </summary>
     int TotalCount { get; }
-}
 
-/// <summary>
-/// Contract for paging response.
-/// </summary>
-/// <typeparam name="TContent">Content type</typeparam>
-public interface IPagingResponse<TContent> : IPagingResponse
-{
     /// <summary>
     /// Contents.
     /// </summary>
-    IEnumerable<TContent> Data { get; }
+    IEnumerable<TContent> Result { get; }
 }

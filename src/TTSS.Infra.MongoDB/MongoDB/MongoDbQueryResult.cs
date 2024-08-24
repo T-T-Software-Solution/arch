@@ -1,10 +1,11 @@
 ﻿using MongoDB.Driver;
 using System.Collections;
 using TTSS.Core.Data;
+using TTSS.Core.Services;
 
 namespace TTSS.Infra.Data.MongoDB;
 
-internal sealed class MongoDbQueryResult<TEntity>(IFindFluent<TEntity, TEntity> findResult, CancellationToken cancellationToken) : IQueryResult<TEntity>
+internal sealed class MongoDbQueryResult<TEntity>(IFindFluent<TEntity, TEntity> findResult, IMappingStrategy mappingStrategy, CancellationToken cancellationToken) : IQueryResult<TEntity>
 {
     #region Fields
 
@@ -25,7 +26,7 @@ internal sealed class MongoDbQueryResult<TEntity>(IFindFluent<TEntity, TEntity> 
         => await _findResult.ToListAsync(_cancellationToken);
 
     public IPagingRepositoryResult<TEntity> ToPaging(bool totalCount = false, int pageSize = 0)
-        => new MongoDbPagingResult<TEntity>(_findResult, _cancellationToken, totalCount, pageSize);
+        => new MongoDbPagingResult<TEntity>(_findResult, mappingStrategy, _cancellationToken, totalCount, pageSize);
 
     public IEnumerator<TEntity> GetEnumerator()
         => _findResult.ToEnumerable(_cancellationToken).GetEnumerator();

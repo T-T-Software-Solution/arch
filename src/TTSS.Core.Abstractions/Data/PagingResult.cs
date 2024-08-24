@@ -1,4 +1,7 @@
-﻿namespace TTSS.Core.Data;
+﻿using TTSS.Core.Models;
+using TTSS.Core.Services;
+
+namespace TTSS.Core.Data;
 
 /// <summary>
 /// Paging result manager.
@@ -11,7 +14,8 @@
 /// <param name="pageSize">Configured total entities per page</param>
 /// <param name="currentPage">Target page number</param>
 /// <param name="totalCount">Function to get total entities</param>
-public sealed class PagingResult<TEntity>(Task<IEnumerable<TEntity>> resultTask, int pageSize, int currentPage, Func<int> totalCount)
+/// <param name="mappingStrategy">Mapping strategy</param>
+public sealed class PagingResult<TEntity>(Task<IEnumerable<TEntity>> resultTask, int pageSize, int currentPage, Func<int> totalCount, IMappingStrategy mappingStrategy)
 {
     #region Fields
 
@@ -30,7 +34,7 @@ public sealed class PagingResult<TEntity>(Task<IEnumerable<TEntity>> resultTask,
     /// <summary>
     /// Current page number.
     /// </summary>
-    public int CurrentPage { get; } = currentPage;
+    public int CurrentPage => currentPage;
 
     /// <summary>
     /// Total entities on the current page.
@@ -67,30 +71,77 @@ public sealed class PagingResult<TEntity>(Task<IEnumerable<TEntity>> resultTask,
     #region Methods
 
     /// <summary>
-    /// Get data.
+    /// Get entities.
     /// </summary>
     /// <returns>The entities</returns>
     public Task<IEnumerable<TEntity>> GetDataAsync()
         => resultTask;
 
     /// <summary>
-    /// Convert to paging data.
+    /// Get view models.
+    /// </summary>
+    /// <typeparam name="TViewModel">Target view model type</typeparam>
+    /// <returns>The view models</returns>
+    public async Task<IEnumerable<TViewModel>> GetDataAsync<TViewModel>()
+        where TViewModel : class
+    {
+        var result = await resultTask;
+        return result.Select(it => mappingStrategy.Map<TViewModel>(it!));
+    }
+
+    /// <summary>
+    /// Convert to entity paging data.
     /// </summary>
     /// <returns>The paging data</returns>
     public async Task<Models.PagingData<TEntity>> ToPagingDataAsync()
     {
         var result = await resultTask;
+        return CreateDisplayablePaging(result);
+    }
+
+    /// <summary>
+    /// Convert to view model paging data.
+    /// </summary>
+    /// <typeparam name="TViewModel">Target view model type</typeparam>
+    /// <returns>The paging data</returns>
+    public async Task<Models.PagingData<TViewModel>> ToPagingDataAsync<TViewModel>()
+        where TViewModel : class
+    {
+        var result = await GetDataAsync<TViewModel>();
+        return CreateDisplayablePaging(result);
+    }
+
+    private Models.PagingData<TData> CreateDisplayablePaging<TData>(IEnumerable<TData> result)
+    {
+        var itemNumber = currentPage * pageSize;
+        var contents = result.ToList();
+
+        if (typeof(TData).IsAssignableTo(typeof(IHaveOrderNumber)))
+        {
+            var orderableQry = contents
+                .Where(it => it is IHaveOrderNumber)
+                .Cast<IHaveOrderNumber>();
+            foreach (var item in orderableQry)
+            {
+                item.OrderNo = ++itemNumber;
+            }
+        }
+
+        const int Offset = 1;
+        var pageCount = PageCount == default ? Offset : PageCount;
+        var nextPage = NextPage == default ? default : NextPage + Offset;
+        var previousPage = PreviousPage == default && CurrentPage != Offset ? default : PreviousPage + Offset;
         return new()
         {
-            CurrentPage = CurrentPage,
+            CurrentPage = CurrentPage + Offset,
             PageSize = pageSize,
             TotalCount = TotalCount,
-            PageCount = PageCount,
-            NextPage = NextPage,
-            PreviousPage = PreviousPage,
+            PageCount = pageCount,
+            NextPage = nextPage,
+            PreviousPage = previousPage,
             HasNextPage = HasNextPage,
             HasPreviousPage = HasPreviousPage,
-            Result = result ?? [],
+            Result = contents ?? [],
         };
     }
 

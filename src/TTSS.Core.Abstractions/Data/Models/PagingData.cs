@@ -1,10 +1,12 @@
-﻿namespace TTSS.Core.Data.Models;
+﻿using TTSS.Core.Models;
+
+namespace TTSS.Core.Data.Models;
 
 /// <summary>
 /// Paging data.
 /// </summary>
 /// <typeparam name="TEntity">Entity type</typeparam>
-public sealed class PagingData<TEntity>
+public sealed class PagingData<TEntity> : IPagingResponse<TEntity>
 {
     #region Properties
 

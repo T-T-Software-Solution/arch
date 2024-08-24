@@ -1,4 +1,5 @@
 ﻿using System.Linq.Expressions;
+using TTSS.Core.Services;
 
 namespace TTSS.Core.Data;
 
@@ -9,14 +10,16 @@ internal sealed class InMemoryPagingResult<TEntity> : IPagingRepositoryResult<TE
     private readonly int _pageSize;
     private readonly int _totalCount;
     private IEnumerable<TEntity> _entities;
+    private readonly IMappingStrategy _mappingStrategy;
 
     #endregion
 
     #region Constructors
 
-    internal InMemoryPagingResult(IEnumerable<TEntity> entities, bool totalCount = false, int pageSize = 0)
+    internal InMemoryPagingResult(IEnumerable<TEntity> entities, IMappingStrategy mappingStrategy, bool totalCount = false, int pageSize = 0)
     {
         _entities = entities ?? throw new ArgumentNullException(nameof(entities));
+        _mappingStrategy = mappingStrategy;
         _pageSize = pageSize;
         _totalCount = totalCount ? entities.Count() : 0;
     }
@@ -26,7 +29,7 @@ internal sealed class InMemoryPagingResult<TEntity> : IPagingRepositoryResult<TE
     #region Methods
 
     public PagingResult<TEntity> GetPage(int pageNo)
-        => new(Task.FromResult(GetPageDataInternal(pageNo)), _pageSize, pageNo, () => _totalCount);
+        => new(Task.FromResult(GetPageDataInternal(pageNo)), _pageSize, pageNo, () => _totalCount, _mappingStrategy);
 
     public Task<IEnumerable<TEntity>> GetDataAsync(int pageNo)
         => Task.FromResult(GetPageDataInternal(pageNo));

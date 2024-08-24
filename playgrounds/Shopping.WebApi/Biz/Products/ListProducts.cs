@@ -19,9 +19,10 @@ internal sealed class ListProductHandler(IRepository<Product> repository)
 {
     public override async Task<IHttpResponse<IPagingResponse<ProductVm>>> HandleAsync(ListProducts request, CancellationToken cancellationToken = default)
     {
-        var paging = await repository
+        var paging = repository
             .ExcludeDelete()
-            .GetPagingAsync<ProductVm>(request.PageNo, request.PageSize, cancellationToken);
-        return Response(System.Net.HttpStatusCode.OK, paging);
+            .GetPaging(request.PageNo, request.PageSize);
+        var vm = await paging.ToPagingDataAsync<ProductVm>();
+        return Response(System.Net.HttpStatusCode.OK, vm);
     }
 }

@@ -20,11 +20,11 @@ internal sealed class ListUsersHandler(IRepository<User> repository)
     public override async Task<IHttpResponse<IPagingResponse<UserVm>>> HandleAsync(ListUsers request, CancellationToken cancellationToken = default)
     {
         var shouldSkipSearch = string.IsNullOrEmpty(request.Keyword);
-        var paging = await repository.GetPagingAsync<UserVm>(request.PageNo, request.PageSize,
+        var paging = repository.GetPaging(request.PageNo, request.PageSize,
             it => shouldSkipSearch
                 || (null != it.FirstName && it.FirstName.Contains(request.Keyword!))
-                || (null != it.LastName && it.LastName.Contains(request.Keyword!)),
-            cancellationToken);
-        return Response(System.Net.HttpStatusCode.OK, paging);
+                || (null != it.LastName && it.LastName.Contains(request.Keyword!)));
+        var vm = await paging.ToPagingDataAsync<UserVm>();
+        return Response(System.Net.HttpStatusCode.OK, vm);
     }
 }

@@ -4,7 +4,6 @@ using System.Data;
 using System.Data.Common;
 using System.Linq.Expressions;
 using TTSS.Core.Data;
-using TTSS.Core.Models;
 using TTSS.Core.Services;
 
 namespace TTSS.Infra.Data.Sql;
@@ -93,7 +92,7 @@ public class SqlRepository<TEntity, TKey> : ISqlRepository<TEntity, TKey>
     /// <param name="cancellationToken">Cancellation token</param>
     /// <returns>The entities</returns>
     public IEnumerable<TEntity> Get(CancellationToken cancellationToken = default)
-        => new SqlQueryResult<TEntity>(Queryable, cancellationToken);
+        => new SqlQueryResult<TEntity>(Queryable, MappingStrategy, cancellationToken);
 
     /// <summary>
     /// Get data by filter.
@@ -102,19 +101,19 @@ public class SqlRepository<TEntity, TKey> : ISqlRepository<TEntity, TKey>
     /// <param name="cancellationToken">Cancellation token</param>
     /// <returns>The entities</returns>
     public IEnumerable<TEntity> Get(Expression<Func<TEntity, bool>> filter, CancellationToken cancellationToken = default)
-        => new SqlQueryResult<TEntity>(Queryable.Where(filter), cancellationToken);
+        => new SqlQueryResult<TEntity>(Queryable.Where(filter), MappingStrategy, cancellationToken);
 
-    Task<IPagingResponse<TViewModel>> IQueryRepository<TEntity, TKey>.GetPagingAsync<TViewModel>(int pageNo, int pageSize, CancellationToken cancellationToken)
-        => PagingService.GetPagingAsync<TEntity, TKey, TViewModel>(this, pageNo, pageSize, MappingStrategy, cancellationToken: cancellationToken);
+    PagingResult<TEntity> IQueryRepository<TEntity, TKey>.GetPaging(int pageNo, int pageSize)
+        => PagingService.GetPaging(this, pageNo, pageSize);
 
-    Task<IPagingResponse<TViewModel>> IQueryRepository<TEntity, TKey>.GetPagingAsync<TViewModel>(int pageNo, int pageSize, Expression<Func<TEntity, bool>> filter, CancellationToken cancellationToken)
-        => PagingService.GetPagingAsync<TEntity, TKey, TViewModel>(this, pageNo, pageSize, MappingStrategy, filter, cancellationToken: cancellationToken);
+    PagingResult<TEntity> IQueryRepository<TEntity, TKey>.GetPaging(int pageNo, int pageSize, Expression<Func<TEntity, bool>> filter)
+        => PagingService.GetPaging(this, pageNo, pageSize, filter);
 
-    Task<IPagingResponse<TViewModel>> IQueryRepository<TEntity, TKey>.GetPagingAsync<TViewModel>(int pageNo, int pageSize, Func<IPagingRepositoryResult<TEntity>, IPagingRepositoryResult<TEntity>> decorate, CancellationToken cancellationToken)
-        => PagingService.GetPagingAsync<TEntity, TKey, TViewModel>(this, pageNo, pageSize, MappingStrategy, decorate: decorate, cancellationToken: cancellationToken);
+    PagingResult<TEntity> IQueryRepository<TEntity, TKey>.GetPaging(int pageNo, int pageSize, Func<IPagingRepositoryResult<TEntity>, IPagingRepositoryResult<TEntity>> decorate)
+        => PagingService.GetPaging(this, pageNo, pageSize, decorate: decorate);
 
-    Task<IPagingResponse<TViewModel>> IQueryRepository<TEntity, TKey>.GetPagingAsync<TViewModel>(int pageNo, int pageSize, Expression<Func<TEntity, bool>> filter, Func<IPagingRepositoryResult<TEntity>, IPagingRepositoryResult<TEntity>> decorate, CancellationToken cancellationToken)
-        => PagingService.GetPagingAsync<TEntity, TKey, TViewModel>(this, pageNo, pageSize, MappingStrategy, filter, decorate, cancellationToken: cancellationToken);
+    PagingResult<TEntity> IQueryRepository<TEntity, TKey>.GetPaging(int pageNo, int pageSize, Expression<Func<TEntity, bool>> filter, Func<IPagingRepositoryResult<TEntity>, IPagingRepositoryResult<TEntity>> decorate)
+        => PagingService.GetPaging(this, pageNo, pageSize, filter, decorate);
 
     /// <summary>
     /// Convert to queryable.

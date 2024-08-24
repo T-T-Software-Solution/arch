@@ -1,9 +1,10 @@
 ﻿using AutoMapper;
+using TTSS.Core.Models;
 
 namespace Shopping.Shared.Entities.ViewModels;
 
 [AutoMap(typeof(Product))]
-public sealed record ProductVm
+public sealed record ProductVm : IHaveOrderNumber
 {
     public string Id { get; init; }
     public string Name { get; init; }
@@ -14,4 +15,5 @@ public sealed record ProductVm
     public string CreatedById { get; init; }
     public string? LastUpdatedById { get; init; }
     public string? DeletedById { get; init; }
+    public int OrderNo { get; set; }
 }
