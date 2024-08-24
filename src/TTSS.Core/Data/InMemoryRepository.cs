@@ -9,7 +9,7 @@ namespace TTSS.Core.Data;
 /// <typeparam name="TEntity">Entity type</typeparam>
 /// <typeparam name="TKey">Primary key type</typeparam>
 public class InMemoryRepository<TEntity, TKey> : IInMemoryRepository<TEntity, TKey>
-    where TEntity : IDbModel<TKey>
+    where TEntity : class, IDbModel<TKey>
     where TKey : notnull
 {
     #region Fields
@@ -182,4 +182,4 @@ public class InMemoryRepository<TEntity, TKey> : IInMemoryRepository<TEntity, TK
 /// <param name="idField">The id field selector</param>
 public class InMemoryRepository<TEntity>(Expression<Func<TEntity, string>> idField)
     : InMemoryRepository<TEntity, string>(idField), IInMemoryRepository<TEntity>
-    where TEntity : IDbModel<string>;
+    where TEntity : class, IDbModel<string>;

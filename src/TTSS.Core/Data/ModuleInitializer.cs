@@ -15,7 +15,7 @@ public static class ModuleInitializer
     /// <param name="target">The service collection</param>
     /// <returns>The service collection</returns>
     public static IServiceCollection RegisterInMemoryRepository<TEntity, TKey>(this IServiceCollection target)
-        where TEntity : IDbModel<TKey>
+        where TEntity : class, IDbModel<TKey>
         where TKey : notnull
         => target.AddSingleton<IRepository<TEntity, TKey>>(_ => new InMemoryRepository<TEntity, TKey>(it => it.Id));
 
@@ -26,6 +26,6 @@ public static class ModuleInitializer
     /// <param name="target">The service collection</param>
     /// <returns>The service collection</returns>
     public static IServiceCollection RegisterInMemoryRepository<TEntity>(this IServiceCollection target)
-        where TEntity : IDbModel<string>
+        where TEntity : class, IDbModel<string>
         => target.AddSingleton<IRepository<TEntity>>(_ => new InMemoryRepository<TEntity>(it => it.Id));
 }

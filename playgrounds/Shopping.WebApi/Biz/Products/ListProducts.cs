@@ -12,7 +12,5 @@ public sealed record ListProducts : IRequesting<IEnumerable<ProductVm>>;
 internal sealed class ListProductHandler(IRepository<Product> repository, IMapper mapper) : RequestHandler<ListProducts, IEnumerable<ProductVm>>
 {
     public override IEnumerable<ProductVm> Handle(ListProducts request)
-    {
-        return repository.Get().Select(mapper.Map<ProductVm>);
-    }
+        => repository.ExcludeDelete().Get().Select(mapper.Map<ProductVm>);
 }

@@ -9,10 +9,11 @@ namespace TTSS.Infra.Data.Sql;
 /// <typeparam name="TKey">Primary key type</typeparam>
 public interface ISqlRepository<TEntity, TKey> : IRepository<TEntity, TKey>,
     ISqlRepositorySpecific<TEntity>,
+    IConfigurableRepository<TEntity>,
     IAsyncQueryRepository<TEntity, TKey>,
     IDisposable,
     IAsyncDisposable
-    where TEntity : IDbModel<TKey>
+    where TEntity : class, IDbModel<TKey>
     where TKey : notnull;
 
 /// <summary>
@@ -20,8 +21,5 @@ public interface ISqlRepository<TEntity, TKey> : IRepository<TEntity, TKey>,
 /// </summary>
 /// <typeparam name="TEntity">Entity type</typeparam>
 public interface ISqlRepository<TEntity> : IRepository<TEntity>,
-    ISqlRepositorySpecific<TEntity>,
-    IAsyncQueryRepository<TEntity, string>,
-    IDisposable,
-    IAsyncDisposable
-    where TEntity : IDbModel<string>;
+    ISqlRepository<TEntity, string>
+    where TEntity : class, IDbModel<string>;

@@ -14,18 +14,6 @@ namespace TTSS.Infra.Data.Sql;
 public interface ISqlRepositorySpecific<TEntity> : IRepositoryBase
 {
     /// <summary>
-    /// Specifies related entities to include in the query results. The navigation property to be included is specified starting with the type of entity being queried (<typeparamref name="TEntity" />).
-    /// </summary>
-    /// <remarks>
-    /// See <see href="https://aka.ms/efcore-docs-load-related-data">Loading related entities</see> for more information and examples.
-    /// </remarks>
-    /// <typeparam name="TProperty">The type of the related entity to be included</typeparam>
-    /// <param name="navigationPropertyPath">
-    /// A lambda expression representing the navigation property to be included (<c>t => t.Property1</c>).
-    /// </param>
-    ISqlRepositorySpecific<TEntity> Include<TProperty>(Expression<Func<TEntity, TProperty?>> navigationPropertyPath) where TProperty : class;
-
-    /// <summary>
     /// Load a reference property.
     /// </summary>
     /// <typeparam name="TProperty">The reference property type</typeparam>
@@ -134,11 +122,4 @@ public interface ISqlRepositorySpecific<TEntity> : IRepositoryBase
     /// <param name="transactionId">The unique identifier for the transaction.</param>
     /// <returns>A <see cref="IDbContextTransaction" /> that encapsulates the given transaction</returns>
     Task<IDbContextTransaction?> UseTransactionAsync(DbTransaction? transaction, Guid transactionId);
-
-    /// <summary>
-    /// Filters the elements of an System.Linq.IQueryable based on a specified type.
-    /// </summary>
-    /// <typeparam name="TResult">The type to filter the elements of the sequence on</typeparam>
-    /// <returns>A collection that contains the elements from source that have type TResult</returns>
-    IQueryable<TResult> OfType<TResult>();
 }

@@ -12,7 +12,7 @@ public interface IRepository<TEntity, TKey> : IRepositoryBase,
     IDeletableRepository<TEntity, TKey>,
     IUpsertRepository<TEntity, TKey>,
     IInsertBulkRepository<TEntity>
-    where TEntity : IDbModel<TKey>
+    where TEntity : class, IDbModel<TKey>
     where TKey : notnull;
 
 /// <summary>
@@ -20,4 +20,4 @@ public interface IRepository<TEntity, TKey> : IRepositoryBase,
 /// </summary>
 /// <typeparam name="TEntity">Entity type</typeparam>
 public interface IRepository<TEntity> : IRepository<TEntity, string>
-    where TEntity : IDbModel<string>;
+    where TEntity : class, IDbModel<string>;

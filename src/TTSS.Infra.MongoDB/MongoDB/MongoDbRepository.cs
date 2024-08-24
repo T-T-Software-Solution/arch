@@ -10,7 +10,7 @@ namespace TTSS.Infra.Data.MongoDB;
 /// <typeparam name="TEntity">Entity type</typeparam>
 /// <typeparam name="TKey">Primary key type</typeparam>
 public class MongoDbRepository<TEntity, TKey> : IMongoDbRepository<TEntity, TKey>
-    where TEntity : IDbModel<TKey>
+    where TEntity : class, IDbModel<TKey>
     where TKey : notnull
 {
     #region Fields
@@ -256,4 +256,4 @@ public class MongoDbRepository<TEntity, TKey> : IMongoDbRepository<TEntity, TKey
 /// <param name="connectionStore">The connection store</param>
 public class MongoDbRepository<TEntity>(MongoDbConnectionStore connectionStore) : MongoDbRepository<TEntity, string>(connectionStore, it => it.Id),
     IMongoDbRepository<TEntity>
-    where TEntity : IDbModel<string>;
+    where TEntity : class, IDbModel<string>;

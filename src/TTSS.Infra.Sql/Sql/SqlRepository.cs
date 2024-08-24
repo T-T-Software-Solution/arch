@@ -16,12 +16,6 @@ public class SqlRepository<TEntity, TKey> : ISqlRepository<TEntity, TKey>
     where TEntity : class, IDbModel<TKey>
     where TKey : notnull
 {
-    #region Fields
-
-    private readonly List<string> _includePropertyPaths = [];
-
-    #endregion
-
     #region Properties
 
     /// <summary>
@@ -41,14 +35,18 @@ public class SqlRepository<TEntity, TKey> : ISqlRepository<TEntity, TKey>
     {
         get
         {
-            IQueryable<TEntity> query = Collection;
-            foreach (var path in _includePropertyPaths)
+            if (PreFilters.Count <= 0)
             {
-                query = query.Include(path);
+                return Collection;
             }
-            return query;
+
+            var aggregate = PreFilters
+                .Aggregate(Collection.AsQueryable(), (current, next) => next(current));
+            return aggregate;
         }
     }
+
+    internal List<Func<IQueryable<TEntity>, IQueryable<TEntity>>> PreFilters { get; set; } = [];
 
     #endregion
 
@@ -72,7 +70,7 @@ public class SqlRepository<TEntity, TKey> : ISqlRepository<TEntity, TKey>
     #region Methods
 
     /// <summary>
-    /// Get an entity by id.
+    /// Get an entity by Id.
     /// </summary>
     /// <param name="key">Target entity key</param>
     /// <param name="cancellationToken">Cancellation token</param>
@@ -299,25 +297,6 @@ public class SqlRepository<TEntity, TKey> : ISqlRepository<TEntity, TKey>
     #region ISqlRepositorySpecific members
 
     /// <summary>
-    /// Specifies related entities to include in the query results. The navigation property to be included is specified starting with the type of entity being queried (<typeparamref name="TEntity" />).
-    /// </summary>
-    /// <remarks>
-    /// See <see href="https://aka.ms/efcore-docs-load-related-data">Loading related entities</see> for more information and examples.
-    /// </remarks>
-    /// <typeparam name="TProperty">The type of the related entity to be included</typeparam>
-    /// <param name="navigationPropertyPath">
-    /// A lambda expression representing the navigation property to be included (<c>t => t.Property1</c>).
-    /// </param>
-    public ISqlRepositorySpecific<TEntity> Include<TProperty>(Expression<Func<TEntity, TProperty?>> navigationPropertyPath) where TProperty : class
-    {
-        if (navigationPropertyPath.Body is MemberExpression expression && false == _includePropertyPaths.Contains(expression.Member.Name))
-        {
-            _includePropertyPaths.Add(expression.Member.Name);
-        }
-        return this;
-    }
-
-    /// <summary>
     /// Load a reference property.
     /// </summary>
     /// <typeparam name="TProperty">The reference property type</typeparam>
@@ -354,6 +333,18 @@ public class SqlRepository<TEntity, TKey> : ISqlRepository<TEntity, TKey>
     /// <returns>Acknowledged</returns>
     public Task LoadReferenceAsync<TProperty>(TEntity entity, Expression<Func<TEntity, IEnumerable<TProperty>>> propertyExpression) where TProperty : class
         => Collection.Entry(entity).Collection(propertyExpression).LoadAsync();
+
+    #endregion
+
+    #region IConfigurableRepository members
+
+    /// <summary>
+    /// Configure the repository.
+    /// </summary>
+    /// <param name="collection">The collection</param>
+    /// <returns>The repository</returns>
+    public void Configure(Func<IQueryable<TEntity>, IQueryable<TEntity>> collection)
+        => PreFilters.Add(collection);
 
     #endregion
 
@@ -405,14 +396,6 @@ public class SqlRepository<TEntity, TKey> : ISqlRepository<TEntity, TKey>
     }
 
     #endregion
-
-    /// <summary>
-    /// Filters the elements of an System.Linq.IQueryable based on a specified type.
-    /// </summary>
-    /// <typeparam name="TResult">The type to filter the elements of the sequence on</typeparam>
-    /// <returns>A collection that contains the elements from source that have type TResult</returns>
-    public IQueryable<TResult> OfType<TResult>()
-        => Collection.OfType<TResult>();
 
     private async Task<bool> SaveChangedAsync(CancellationToken cancellationToken)
         => await DbContext.SaveChangesAsync(cancellationToken) > 0;
