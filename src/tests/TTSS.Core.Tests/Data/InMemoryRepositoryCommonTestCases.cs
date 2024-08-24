@@ -1,6 +1,8 @@
 ﻿using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
+using System.Reflection;
 using TTSS.Core.Data.Models;
+using TTSS.Core.Services;
 using TTSS.Tests;
 
 namespace TTSS.Core.Data;
@@ -9,6 +11,13 @@ public abstract class InMemoryRepositoryCommonTestCases : IoCTestBase
 {
     private IRepository<BasicDbModel> BasicSut => ServiceProvider.GetRequiredService<IRepository<BasicDbModel>>();
     private IRepository<CustomPrimaryKeyDbModel, int> CustomSut => ServiceProvider.GetRequiredService<IRepository<CustomPrimaryKeyDbModel, int>>();
+
+    protected override void RegisterServices(IServiceCollection services)
+    {
+        services
+           .AddAutoMapper(Assembly.GetExecutingAssembly())
+           .AddSingleton<IMappingStrategy, AutoMapperMappingStrategy>();
+    }
 
     [Fact]
     public void Resolve_InMemoryRepository_ShouldBeRegistered()

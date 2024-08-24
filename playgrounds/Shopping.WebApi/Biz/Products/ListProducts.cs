@@ -1,5 +1,4 @@
-﻿using AutoMapper;
-using Shopping.Shared.Entities;
+﻿using Shopping.Shared.Entities;
 using Shopping.Shared.Entities.ViewModels;
 using TTSS.Core.Data;
 using TTSS.Core.Messaging;
@@ -15,15 +14,14 @@ public sealed record ListProducts : IHttpRequesting<IPagingResponse<ProductVm>>,
     public string? Keyword { get; init; }
 }
 
-internal sealed class ListProductHandler(IRepository<Product> repository, IMapper mapper)
+internal sealed class ListProductHandler(IRepository<Product> repository)
     : HttpRequestHandlerAsync<ListProducts, IPagingResponse<ProductVm>>
 {
     public override async Task<IHttpResponse<IPagingResponse<ProductVm>>> HandleAsync(ListProducts request, CancellationToken cancellationToken = default)
     {
         var paging = await repository
             .ExcludeDelete()
-            .GetPagingAsync<Product, ProductVm>(it => true, 
-                d => d, request, mapper, cancellationToken);
+            .GetPagingAsync<ProductVm>(request.PageNo, request.PageSize, cancellationToken);
         return Response(System.Net.HttpStatusCode.OK, paging);
     }
 }

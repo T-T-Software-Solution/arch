@@ -1,6 +1,8 @@
 ﻿using MongoDB.Driver;
 using System.Linq.Expressions;
 using TTSS.Core.Data;
+using TTSS.Core.Models;
+using TTSS.Core.Services;
 
 namespace TTSS.Infra.Data.MongoDB;
 
@@ -13,7 +15,7 @@ public class MongoDbRepository<TEntity, TKey> : IMongoDbRepository<TEntity, TKey
     where TEntity : class, IDbModel<TKey>
     where TKey : notnull
 {
-    #region Fields
+    #region Properties
 
     /// <summary>
     /// Batch size for bulk insert.
@@ -26,16 +28,24 @@ public class MongoDbRepository<TEntity, TKey> : IMongoDbRepository<TEntity, TKey
     public bool BypassDocumentValidation { get; set; } = true;
 
     /// <summary>
+    /// Mapping strategy.
+    /// </summary>
+    protected IMappingStrategy MappingStrategy { get; }
+
+    /// <summary>
+    /// Id field selector.
+    /// </summary>
+    protected Expression<Func<TEntity, TKey>> IdField { get; }
+
+    /// <summary>
     /// Working with collection name.
     /// </summary>
-    protected internal readonly string CollectionName;
+    protected internal string CollectionName { get; }
 
     /// <summary>
     /// MongoDb collection.
     /// </summary>
-    protected internal readonly IMongoCollection<TEntity> Collection;
-
-    private readonly Expression<Func<TEntity, TKey>> _idField;
+    protected internal IMongoCollection<TEntity> Collection { get; }
 
     #endregion
 
@@ -45,16 +55,17 @@ public class MongoDbRepository<TEntity, TKey> : IMongoDbRepository<TEntity, TKey
     /// Initialize an instance of <see cref="MongoDbRepository{TEntity, TKey}"/>.
     /// </summary>
     /// <param name="connectionStore">The MongoDB connection store</param>
+    /// <param name="mappingStrategy">The mapping strategy</param>
     /// <param name="idField">The id field selector</param>
     /// <exception cref="ArgumentOutOfRangeException">The MongoDbConnectionStore's collection is required</exception>
     /// <exception cref="ArgumentNullException">The idField is required</exception>
-    public MongoDbRepository(MongoDbConnectionStore connectionStore, Expression<Func<TEntity, TKey>>? idField = default)
+    public MongoDbRepository(MongoDbConnectionStore connectionStore, IMappingStrategy mappingStrategy, Expression<Func<TEntity, TKey>>? idField = default)
     {
-        idField ??= it => it.Id;
+        MappingStrategy = mappingStrategy;
+        IdField = idField ??= it => it.Id;
         var (collectionName, collection) = connectionStore.GetCollection<TEntity>();
         Collection = collection ?? throw new ArgumentOutOfRangeException(nameof(connectionStore), $"The {nameof(collection)} must not be null.");
         CollectionName = collectionName ?? throw new ArgumentOutOfRangeException(nameof(connectionStore), $"The {nameof(collectionName)} must not be null.");
-        _idField = idField ?? throw new ArgumentNullException(nameof(idField));
     }
 
     #endregion
@@ -89,6 +100,18 @@ public class MongoDbRepository<TEntity, TKey> : IMongoDbRepository<TEntity, TKey
     /// <returns>The entities</returns>
     public IEnumerable<TEntity> Get(Expression<Func<TEntity, bool>> filter, CancellationToken cancellationToken = default)
         => new MongoDbQueryResult<TEntity>(Collection.Find(filter), cancellationToken);
+
+    Task<IPagingResponse<TViewModel>> IQueryRepository<TEntity, TKey>.GetPagingAsync<TViewModel>(int pageNo, int pageSize, CancellationToken cancellationToken)
+        => PagingService.GetPagingAsync<TEntity, TKey, TViewModel>(this, pageNo, pageSize, MappingStrategy, cancellationToken: cancellationToken);
+
+    Task<IPagingResponse<TViewModel>> IQueryRepository<TEntity, TKey>.GetPagingAsync<TViewModel>(int pageNo, int pageSize, Expression<Func<TEntity, bool>> filter, CancellationToken cancellationToken)
+        => PagingService.GetPagingAsync<TEntity, TKey, TViewModel>(this, pageNo, pageSize, MappingStrategy, filter, cancellationToken: cancellationToken);
+
+    Task<IPagingResponse<TViewModel>> IQueryRepository<TEntity, TKey>.GetPagingAsync<TViewModel>(int pageNo, int pageSize, Func<IPagingRepositoryResult<TEntity>, IPagingRepositoryResult<TEntity>> decorate, CancellationToken cancellationToken)
+        => PagingService.GetPagingAsync<TEntity, TKey, TViewModel>(this, pageNo, pageSize, MappingStrategy, decorate: decorate, cancellationToken: cancellationToken);
+
+    Task<IPagingResponse<TViewModel>> IQueryRepository<TEntity, TKey>.GetPagingAsync<TViewModel>(int pageNo, int pageSize, Expression<Func<TEntity, bool>> filter, Func<IPagingRepositoryResult<TEntity>, IPagingRepositoryResult<TEntity>> decorate, CancellationToken cancellationToken)
+        => PagingService.GetPagingAsync<TEntity, TKey, TViewModel>(this, pageNo, pageSize, MappingStrategy, filter, decorate, cancellationToken: cancellationToken);
 
     /// <summary>
     /// Convert to queryable.
@@ -241,7 +264,7 @@ public class MongoDbRepository<TEntity, TKey> : IMongoDbRepository<TEntity, TKey
     /// <param name="key">The key</param>
     /// <returns>Filter definition</returns>
     protected virtual FilterDefinition<TEntity> GetEntityFilter(TKey key)
-        => Builders<TEntity>.Filter.Eq(_idField, key);
+        => Builders<TEntity>.Filter.Eq(IdField, key);
 
     #endregion
 }
@@ -250,10 +273,11 @@ public class MongoDbRepository<TEntity, TKey> : IMongoDbRepository<TEntity, TKey
 /// MongoDb implementation of <see cref="IRepository{TEntity}"/>.
 /// </summary>
 /// <typeparam name="TEntity">Entity type</typeparam>
+/// <param name="mappingStrategy">The mapping strategy</param>
 /// <remarks>
 /// Initialize an instance of <see cref="MongoDbRepository{T}"/>.
 /// </remarks>
 /// <param name="connectionStore">The connection store</param>
-public class MongoDbRepository<TEntity>(MongoDbConnectionStore connectionStore) : MongoDbRepository<TEntity, string>(connectionStore, it => it.Id),
+public class MongoDbRepository<TEntity>(MongoDbConnectionStore connectionStore, IMappingStrategy mappingStrategy) : MongoDbRepository<TEntity, string>(connectionStore, mappingStrategy, it => it.Id),
     IMongoDbRepository<TEntity>
     where TEntity : class, IDbModel<string>;

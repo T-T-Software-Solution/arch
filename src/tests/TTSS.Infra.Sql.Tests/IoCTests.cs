@@ -20,6 +20,8 @@ public class IoCTests : CommonTestCases
         _connection = new SqliteConnection(connBuilder.ConnectionString);
 
         services
+            .AddAutoMapper(Assembly.GetExecutingAssembly())
+            .AddSingleton<IMappingStrategy, AutoMapperMappingStrategy>()
             .AddSingleton<IDateTimeService>(DateTimeService)
             .AddScoped<ICorrelationContext, CorrelationContext>(_ => Context)
             .SetupSqlDatabase(it => it.UseSqlite(_connection, opt => opt.MigrationsAssembly(Assembly.GetExecutingAssembly().FullName)))

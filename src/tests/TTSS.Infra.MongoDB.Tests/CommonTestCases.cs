@@ -32,6 +32,7 @@ public abstract class CommonTestCases : IoCTestBase, IDisposable
                 if (RunningInstances <= 0) DbRunner.Value.Dispose();
             });
         }
+        GC.SuppressFinalize(this);
     }
 
     #region Insert

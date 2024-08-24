@@ -1,4 +1,7 @@
-﻿namespace TTSS.Core.Data;
+﻿using System.Linq.Expressions;
+using TTSS.Core.Models;
+
+namespace TTSS.Core.Data;
 
 /// <summary>
 /// Contract for repository with query operations.
@@ -28,5 +31,65 @@ public interface IQueryRepository<TEntity, TKey> : IRepositoryBase
     /// <param name="filter">Entity filter</param>
     /// <param name="cancellationToken">Cancellation token</param>
     /// <returns>The entities</returns>
-    IEnumerable<TEntity> Get(System.Linq.Expressions.Expression<Func<TEntity, bool>> filter, CancellationToken cancellationToken = default);
+    IEnumerable<TEntity> Get(Expression<Func<TEntity, bool>> filter, CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Get paged data.
+    /// </summary>
+    /// <typeparam name="TViewModel">Output view model type</typeparam>
+    /// <param name="pageNo">Page number</param>
+    /// <param name="pageSize">Content size per page</param>
+    /// <param name="cancellationToken">Cancellation token</param>
+    /// <returns>Paging result</returns>
+    Task<IPagingResponse<TViewModel>> GetPagingAsync<TViewModel>(
+        int pageNo,
+        int pageSize,
+        CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Get paged data.
+    /// </summary>
+    /// <typeparam name="TViewModel">Output view model type</typeparam>
+    /// <param name="pageNo">Page number</param>
+    /// <param name="pageSize">Content size per page</param>
+    /// <param name="filter">Entity filter</param>
+    /// <param name="cancellationToken">Cancellation token</param>
+    /// <returns>Paging result</returns>
+    Task<IPagingResponse<TViewModel>> GetPagingAsync<TViewModel>(
+        int pageNo,
+        int pageSize,
+        Expression<Func<TEntity, bool>> filter,
+        CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Get paged data.
+    /// </summary>
+    /// <typeparam name="TViewModel">Output view model type</typeparam>
+    /// <param name="pageNo">Page number</param>
+    /// <param name="pageSize">Content size per page</param>
+    /// <param name="decorate">Decorate function</param>
+    /// <param name="cancellationToken">Cancellation token</param>
+    /// <returns>Paging result</returns>
+    Task<IPagingResponse<TViewModel>> GetPagingAsync<TViewModel>(
+        int pageNo,
+        int pageSize,
+        Func<IPagingRepositoryResult<TEntity>, IPagingRepositoryResult<TEntity>> decorate,
+        CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Get paged data.
+    /// </summary>
+    /// <typeparam name="TViewModel">Output view model type</typeparam>
+    /// <param name="pageNo">Page number</param>
+    /// <param name="pageSize">Content size per page</param>
+    /// /// <param name="filter">Entity filter</param>
+    /// <param name="decorate">Decorate function</param>
+    /// <param name="cancellationToken">Cancellation token</param>
+    /// <returns>Paging result</returns>
+    Task<IPagingResponse<TViewModel>> GetPagingAsync<TViewModel>(
+        int pageNo,
+        int pageSize,
+        Expression<Func<TEntity, bool>> filter,
+        Func<IPagingRepositoryResult<TEntity>, IPagingRepositoryResult<TEntity>> decorate,
+        CancellationToken cancellationToken = default);
 }

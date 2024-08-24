@@ -61,7 +61,7 @@
     </TypeIdentifier>
   </Class>
   <Class Name="TTSS.Core.Data.QueryResultExtensions">
-    <Position X="7.5" Y="8" Width="3.75" />
+    <Position X="7.5" Y="8.25" Width="3.75" />
     <TypeIdentifier>
       <HashCode>AAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIAAAAAA=</HashCode>
       <FileName>Data\QueryResultExtensions.cs</FileName>
@@ -83,7 +83,7 @@
     <Lollipop Position="0.2" />
   </Class>
   <Interface Name="TTSS.Core.Data.IAsyncQueryRepository&lt;TEntity, TKey&gt;">
-    <Position X="7.5" Y="5" Width="3.75" />
+    <Position X="7.5" Y="5.25" Width="3.75" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIAAAAAA=</HashCode>
       <FileName>Data\IAsyncQueryRepository.cs</FileName>
@@ -152,14 +152,14 @@
     </TypeIdentifier>
   </Interface>
   <Interface Name="TTSS.Core.Data.IQueryableRepository&lt;TEntity&gt;">
-    <Position X="7.5" Y="6.5" Width="3.75" />
+    <Position X="7.5" Y="6.75" Width="3.75" />
     <InheritanceLine Type="TTSS.Core.Data.IRepositoryBase" FixedToPoint="true">
       <Path>
         <Point X="5.5" Y="2.062" />
         <Point X="5.5" Y="2.302" />
         <Point X="11.625" Y="2.302" />
-        <Point X="11.625" Y="6.938" />
-        <Point X="11.25" Y="6.938" />
+        <Point X="11.625" Y="7.188" />
+        <Point X="11.25" Y="7.188" />
       </Path>
     </InheritanceLine>
     <TypeIdentifier>
@@ -174,12 +174,12 @@
         <Point X="5.5" Y="2.062" />
         <Point X="5.5" Y="2.302" />
         <Point X="11.625" Y="2.302" />
-        <Point X="11.625" Y="3.688" />
-        <Point X="11.25" Y="3.688" />
+        <Point X="11.625" Y="3.747" />
+        <Point X="11.25" Y="3.747" />
       </Path>
     </InheritanceLine>
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAIAA=</HashCode>
+      <HashCode>AAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAIgA=</HashCode>
       <FileName>Data\IQueryRepository.cs</FileName>
     </TypeIdentifier>
   </Interface>

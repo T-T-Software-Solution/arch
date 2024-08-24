@@ -1,12 +1,10 @@
-﻿using TTSS.Infra.Data.MongoDB.Documents;
+﻿using TTSS.Core.Services;
+using TTSS.Infra.Data.MongoDB.Documents;
 
 namespace TTSS.Infra.Data.MongoDB.Repositories;
 
-internal class PersonRepository : MongoDbRepository<Person, string>
+internal class PersonRepository(MongoDbConnectionStore connectionStore, IMappingStrategy mappingStrategy) : MongoDbRepository<Person, string>(connectionStore, mappingStrategy)
 {
-    public PersonRepository(MongoDbConnectionStore connectionStore) : base(connectionStore)
-    {
-    }
 }
 
 internal class PersonDbContext : IMongoDbContext

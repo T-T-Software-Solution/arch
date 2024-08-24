@@ -13,6 +13,7 @@ using TTSS.Core.AspNetCore;
 using TTSS.Core.AspNetCore.Pipelines;
 using TTSS.Core.Messaging;
 using TTSS.Core.Models;
+using TTSS.Core.Services;
 using TTSS.Infra.Data.Sql;
 
 namespace Shopping.WebApi;
@@ -40,6 +41,7 @@ public sealed class PlaygroundWebInitializer : WebInitializerBase
         services
             .RegisterWebModules()
             .RegisterCoreModules()
+            .AddSingleton<IMappingStrategy, AutoMapperMappingStrategy>()
             .AddScoped<ICorrelationContext, DEMO_Context>()
             .AddAutoMapper(assemblies)
             .RegisterMessagingModule(assemblies, pipelines);

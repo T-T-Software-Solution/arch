@@ -79,7 +79,7 @@
       <Method Name="SqlRepository" Hidden="true" />
     </Members>
     <TypeIdentifier>
-      <HashCode>gAEAAAABKiBAQIBAACAIQAEQBAAAhCgAAAAgIAAAIIA=</HashCode>
+      <HashCode>gAEAAAABKCBIQIBIACBIQAEQBAAAhCgAAAAgIAAAIoA=</HashCode>
       <FileName>Sql\SqlRepository.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
@@ -121,8 +121,8 @@
     <InheritanceLine Type="TTSS.Infra.Data.Sql.ISqlRepositorySpecific&lt;TEntity&gt;" FixedFromPoint="true" FixedToPoint="true">
       <Path>
         <Point X="0.938" Y="4.464" />
-        <Point X="0.938" Y="5.83" />
-        <Point X="1.25" Y="5.83" />
+        <Point X="0.938" Y="5.91" />
+        <Point X="1.25" Y="5.91" />
       </Path>
     </InheritanceLine>
     <TypeIdentifier>
@@ -134,8 +134,8 @@
     <Position X="4.25" Y="5" Width="2.5" />
     <InheritanceLine Type="TTSS.Infra.Data.Sql.ISqlRepository&lt;TEntity, TKey&gt;" FixedFromPoint="true">
       <Path>
-        <Point X="3.75" Y="5.554" />
-        <Point X="4.25" Y="5.554" />
+        <Point X="3.75" Y="5.608" />
+        <Point X="4.25" Y="5.608" />
       </Path>
     </InheritanceLine>
     <TypeIdentifier>

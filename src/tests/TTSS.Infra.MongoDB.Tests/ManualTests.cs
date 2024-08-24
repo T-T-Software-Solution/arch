@@ -1,14 +1,18 @@
 ﻿using AutoFixture;
 using AutoFixture.Xunit2;
+using AutoMapper;
 using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
 using TTSS.Core.Data;
+using TTSS.Core.Services;
 using TTSS.Infra.Data.MongoDB.Documents;
 
 namespace TTSS.Infra.Data.MongoDB;
 
 public class ManualTests : CommonTestCases
 {
+    private AutoMapperMappingStrategy _mappingStrategy;
+
     protected override void RegisterServices(IServiceCollection services)
     {
         var store = new MongoDbConnectionStoreBuilder()
@@ -16,10 +20,13 @@ public class ManualTests : CommonTestCases
                 .RegisterCollection<Person>()
                 .RegisterCollection<Student>()
             .Build();
-        var personRepository = new MongoDbRepository<Person>(store);
-        var studentRepository = new MongoDbRepository<Student>(store);
-        var personPrimitiveRepository = new MongoDbRepository<Person, string>(store, it => it.Id);
-        var studentPrimitiveRepository = new MongoDbRepository<Student, string>(store, it => it.Id);
+
+        var config = new Mapper(new MapperConfiguration(cfg => { }));
+        _mappingStrategy = new AutoMapperMappingStrategy(config);
+        var personRepository = new MongoDbRepository<Person>(store, _mappingStrategy);
+        var studentRepository = new MongoDbRepository<Student>(store, _mappingStrategy);
+        var personPrimitiveRepository = new MongoDbRepository<Person, string>(store, _mappingStrategy, it => it.Id);
+        var studentPrimitiveRepository = new MongoDbRepository<Student, string>(store, _mappingStrategy, it => it.Id);
         services
             .AddSingleton<IRepository<Person>>(personRepository)
             .AddSingleton<IRepository<Student>>(studentRepository)
@@ -43,7 +50,7 @@ public class ManualTests : CommonTestCases
             .SetupDatabase(Guid.NewGuid().ToString(), ConnectionString)
                 .RegisterCollection<Person>(noDiscriminator: true)
             .Build();
-        var sut = new MongoDbRepository<Person>(store);
+        var sut = new MongoDbRepository<Person>(store, _mappingStrategy);
         await InsertAndValidate(new Person
         {
             Id = id,
@@ -61,7 +68,7 @@ public class ManualTests : CommonTestCases
             .SetupDatabase(Guid.NewGuid().ToString(), ConnectionString)
                 .RegisterCollection<Person>("simple", noDiscriminator: true)
             .Build();
-        var sut = new MongoDbRepository<Person>(store);
+        var sut = new MongoDbRepository<Person>(store, _mappingStrategy);
         await InsertAndValidate(new Person
         {
             Id = id,
@@ -79,11 +86,11 @@ public class ManualTests : CommonTestCases
                 .RegisterCollection<Student>(collectionName, isChild: true)
             .Build();
 
-        var simpleSut = new MongoDbRepository<Person>(store);
+        var simpleSut = new MongoDbRepository<Person>(store, _mappingStrategy);
         var simpleData = Fixture.Create<Person>();
         await InsertAndValidate(simpleData, simpleSut, 1);
 
-        var studentSut = new MongoDbRepository<Student>(store);
+        var studentSut = new MongoDbRepository<Student>(store, _mappingStrategy);
         var studentData = Fixture.Create<Student>();
         await InsertAndValidate(studentData, studentSut, 1);
     }

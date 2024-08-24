@@ -4,6 +4,8 @@ using System.Data;
 using System.Data.Common;
 using System.Linq.Expressions;
 using TTSS.Core.Data;
+using TTSS.Core.Models;
+using TTSS.Core.Services;
 
 namespace TTSS.Infra.Data.Sql;
 
@@ -27,6 +29,11 @@ public class SqlRepository<TEntity, TKey> : ISqlRepository<TEntity, TKey>
     /// Entity framework core DbSet.
     /// </summary>
     protected internal DbSet<TEntity> Collection { get; }
+
+    /// <summary>
+    /// Mapping strategy.
+    /// </summary>
+    protected IMappingStrategy MappingStrategy { get; }
 
     /// <summary>
     /// Provides functionality to evaluate queries against a specific data source wherein the type of the data is known.
@@ -56,13 +63,15 @@ public class SqlRepository<TEntity, TKey> : ISqlRepository<TEntity, TKey>
     /// Initializes a new instance of the <see cref="SqlRepository{TEntity, TKey}"/> class.
     /// </summary>
     /// <param name="connectionStore">The connection store</param>
+    /// <param name="mappingStrategy">The mapping strategy</param>
     /// <param name="dbContextFactory">The DbContext factory</param>
     /// <exception cref="ArgumentOutOfRangeException">All parameters are required</exception>
-    public SqlRepository(SqlConnectionStore connectionStore, SqlDbContextFactory dbContextFactory)
+    public SqlRepository(SqlConnectionStore connectionStore, SqlDbContextFactory dbContextFactory, IMappingStrategy mappingStrategy)
     {
         var (collection, dbContext) = connectionStore.GetCollection<TEntity>(dbContextFactory);
         DbContext = dbContext ?? throw new ArgumentOutOfRangeException(nameof(connectionStore), $"The {nameof(dbContext)} must not be null.");
         Collection = collection ?? throw new ArgumentOutOfRangeException(nameof(connectionStore), $"The {nameof(collection)} must not be null.");
+        MappingStrategy = mappingStrategy;
     }
 
     #endregion
@@ -94,6 +103,18 @@ public class SqlRepository<TEntity, TKey> : ISqlRepository<TEntity, TKey>
     /// <returns>The entities</returns>
     public IEnumerable<TEntity> Get(Expression<Func<TEntity, bool>> filter, CancellationToken cancellationToken = default)
         => new SqlQueryResult<TEntity>(Queryable.Where(filter), cancellationToken);
+
+    Task<IPagingResponse<TViewModel>> IQueryRepository<TEntity, TKey>.GetPagingAsync<TViewModel>(int pageNo, int pageSize, CancellationToken cancellationToken)
+        => PagingService.GetPagingAsync<TEntity, TKey, TViewModel>(this, pageNo, pageSize, MappingStrategy, cancellationToken: cancellationToken);
+
+    Task<IPagingResponse<TViewModel>> IQueryRepository<TEntity, TKey>.GetPagingAsync<TViewModel>(int pageNo, int pageSize, Expression<Func<TEntity, bool>> filter, CancellationToken cancellationToken)
+        => PagingService.GetPagingAsync<TEntity, TKey, TViewModel>(this, pageNo, pageSize, MappingStrategy, filter, cancellationToken: cancellationToken);
+
+    Task<IPagingResponse<TViewModel>> IQueryRepository<TEntity, TKey>.GetPagingAsync<TViewModel>(int pageNo, int pageSize, Func<IPagingRepositoryResult<TEntity>, IPagingRepositoryResult<TEntity>> decorate, CancellationToken cancellationToken)
+        => PagingService.GetPagingAsync<TEntity, TKey, TViewModel>(this, pageNo, pageSize, MappingStrategy, decorate: decorate, cancellationToken: cancellationToken);
+
+    Task<IPagingResponse<TViewModel>> IQueryRepository<TEntity, TKey>.GetPagingAsync<TViewModel>(int pageNo, int pageSize, Expression<Func<TEntity, bool>> filter, Func<IPagingRepositoryResult<TEntity>, IPagingRepositoryResult<TEntity>> decorate, CancellationToken cancellationToken)
+        => PagingService.GetPagingAsync<TEntity, TKey, TViewModel>(this, pageNo, pageSize, MappingStrategy, filter, decorate, cancellationToken: cancellationToken);
 
     /// <summary>
     /// Convert to queryable.
@@ -418,6 +439,7 @@ public class SqlRepository<TEntity, TKey> : ISqlRepository<TEntity, TKey>
 /// </remarks>
 /// <param name="connectionStore">The connection store</param>
 /// <param name="dbContextFactory">The DbContext factory</param>
-public class SqlRepository<TEntity>(SqlConnectionStore connectionStore, SqlDbContextFactory dbContextFactory) : SqlRepository<TEntity, string>(connectionStore, dbContextFactory),
+/// <param name="mappingStrategy">The mapping strategy</param>
+public class SqlRepository<TEntity>(SqlConnectionStore connectionStore, SqlDbContextFactory dbContextFactory, IMappingStrategy mappingStrategy) : SqlRepository<TEntity, string>(connectionStore, dbContextFactory, mappingStrategy),
     ISqlRepository<TEntity>
     where TEntity : class, IDbModel<string>;

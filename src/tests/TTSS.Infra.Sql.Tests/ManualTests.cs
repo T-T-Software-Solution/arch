@@ -1,4 +1,5 @@
-﻿using Microsoft.Data.Sqlite;
+﻿using AutoMapper;
+using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using System.Reflection;
@@ -38,19 +39,21 @@ public class ManualTests : CommonTestCases
                 .RegisterCollection<SeriousLog>()
             .Build(interceptorBuilder);
 
+        var config = new Mapper(new MapperConfiguration(cfg => { }));
+        var mappingStrategy = new AutoMapperMappingStrategy(config);
         var lazyProvider = new Lazy<IServiceProvider>(() => services.BuildServiceProvider());
         var contextFactory = new SqlDbContextFactory(lazyProvider);
-        var apple = new Lazy<SqlRepository<Apple>>(() => new SqlRepository<Apple>(store, contextFactory));
-        var banana = new Lazy<SqlRepository<Banana>>(() => new SqlRepository<Banana>(store, contextFactory));
-        var teacher = new Lazy<SqlRepository<Teacher>>(() => new SqlRepository<Teacher>(store, contextFactory));
-        var student = new Lazy<SqlRepository<Student>>(() => new SqlRepository<Student>(store, contextFactory));
-        var principal = new Lazy<SqlRepository<Principal, int>>(() => new SqlRepository<Principal, int>(store, contextFactory));
-        var astronaut = new Lazy<SqlRepository<Astronaut>>(() => new SqlRepository<Astronaut>(store, contextFactory));
-        var spaceship = new Lazy<SqlRepository<Spaceship>>(() => new SqlRepository<Spaceship>(store, contextFactory));
-        var audit = new Lazy<SqlRepository<AuditLog>>(() => new SqlRepository<AuditLog>(store, contextFactory));
-        var sensitivitySpaceStation = new Lazy<SqlRepository<SensitivitySpaceStation>>(() => new SqlRepository<SensitivitySpaceStation>(store, contextFactory));
-        var maintenanceLog = new Lazy<SqlRepository<MaintenanceLog>>(() => new SqlRepository<MaintenanceLog>(store, contextFactory));
-        var seriousLog = new Lazy<SqlRepository<SeriousLog>>(() => new SqlRepository<SeriousLog>(store, contextFactory));
+        var apple = new Lazy<SqlRepository<Apple>>(() => new SqlRepository<Apple>(store, contextFactory, mappingStrategy));
+        var banana = new Lazy<SqlRepository<Banana>>(() => new SqlRepository<Banana>(store, contextFactory, mappingStrategy));
+        var teacher = new Lazy<SqlRepository<Teacher>>(() => new SqlRepository<Teacher>(store, contextFactory, mappingStrategy));
+        var student = new Lazy<SqlRepository<Student>>(() => new SqlRepository<Student>(store, contextFactory, mappingStrategy));
+        var principal = new Lazy<SqlRepository<Principal, int>>(() => new SqlRepository<Principal, int>(store, contextFactory, mappingStrategy));
+        var astronaut = new Lazy<SqlRepository<Astronaut>>(() => new SqlRepository<Astronaut>(store, contextFactory, mappingStrategy));
+        var spaceship = new Lazy<SqlRepository<Spaceship>>(() => new SqlRepository<Spaceship>(store, contextFactory, mappingStrategy));
+        var audit = new Lazy<SqlRepository<AuditLog>>(() => new SqlRepository<AuditLog>(store, contextFactory, mappingStrategy));
+        var sensitivitySpaceStation = new Lazy<SqlRepository<SensitivitySpaceStation>>(() => new SqlRepository<SensitivitySpaceStation>(store, contextFactory, mappingStrategy));
+        var maintenanceLog = new Lazy<SqlRepository<MaintenanceLog>>(() => new SqlRepository<MaintenanceLog>(store, contextFactory, mappingStrategy));
+        var seriousLog = new Lazy<SqlRepository<SeriousLog>>(() => new SqlRepository<SeriousLog>(store, contextFactory, mappingStrategy));
 
         var connBuilder = new SqliteConnectionStringBuilder { DataSource = ":memory:" };
         _connection = new SqliteConnection(connBuilder.ConnectionString);

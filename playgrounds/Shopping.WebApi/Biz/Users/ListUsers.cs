@@ -1,5 +1,4 @@
-﻿using AutoMapper;
-using Shopping.Shared.Entities;
+﻿using Shopping.Shared.Entities;
 using Shopping.Shared.Entities.ViewModels;
 using TTSS.Core.Data;
 using TTSS.Core.Messaging;
@@ -15,14 +14,17 @@ public sealed record ListUsers : IHttpRequesting<IPagingResponse<UserVm>>, IPagi
     public string? Keyword { get; init; }
 }
 
-internal sealed class ListUsersHandler(IRepository<User> repository, IMapper mapper)
+internal sealed class ListUsersHandler(IRepository<User> repository)
     : HttpRequestHandlerAsync<ListUsers, IPagingResponse<UserVm>>
 {
     public override async Task<IHttpResponse<IPagingResponse<UserVm>>> HandleAsync(ListUsers request, CancellationToken cancellationToken = default)
     {
         var shouldSkipSearch = string.IsNullOrEmpty(request.Keyword);
-        var paging = await repository.GetPagingAsync<User, UserVm>(it =>
-            shouldSkipSearch || (it.FirstName.Contains(request.Keyword) || it.LastName.Contains(request.Keyword)), d => d, request, mapper, cancellationToken);
+        var paging = await repository.GetPagingAsync<UserVm>(request.PageNo, request.PageSize,
+            it => shouldSkipSearch
+                || (null != it.FirstName && it.FirstName.Contains(request.Keyword!))
+                || (null != it.LastName && it.LastName.Contains(request.Keyword!)),
+            cancellationToken);
         return Response(System.Net.HttpStatusCode.OK, paging);
     }
 }

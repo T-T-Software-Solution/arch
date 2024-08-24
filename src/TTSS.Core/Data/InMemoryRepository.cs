@@ -1,5 +1,7 @@
 ﻿using System.Collections.Concurrent;
 using System.Linq.Expressions;
+using TTSS.Core.Models;
+using TTSS.Core.Services;
 
 namespace TTSS.Core.Data;
 
@@ -20,7 +22,15 @@ public class InMemoryRepository<TEntity, TKey> : IInMemoryRepository<TEntity, TK
 
     #region Properties
 
-    private Func<TEntity, TKey> GetKey { get; }
+    /// <summary>
+    /// Mapping strategy.
+    /// </summary>
+    protected IMappingStrategy MappingStrategy { get; }
+
+    /// <summary>
+    /// Get key selector.
+    /// </summary>
+    protected Func<TEntity, TKey> GetKey { get; }
 
     #endregion
 
@@ -29,12 +39,14 @@ public class InMemoryRepository<TEntity, TKey> : IInMemoryRepository<TEntity, TK
     /// <summary>
     /// Initialize an instance of <see cref="InMemoryRepository{TEntity, TKey}"/>.
     /// </summary>
+    /// <param name="mappingStrategy">The mapping strategy</param>
     /// <param name="idField">The id field selector</param>
     /// <exception cref="ArgumentNullException">The id field selector is required</exception>
-    public InMemoryRepository(Expression<Func<TEntity, TKey>> idField)
+    public InMemoryRepository(IMappingStrategy mappingStrategy, Expression<Func<TEntity, TKey>> idField)
     {
         ArgumentNullException.ThrowIfNull(idField);
         _dataDict = new();
+        MappingStrategy = mappingStrategy;
         GetKey = idField.Compile();
     }
 
@@ -67,6 +79,18 @@ public class InMemoryRepository<TEntity, TKey> : IInMemoryRepository<TEntity, TK
     /// <returns>The entities</returns>
     public IEnumerable<TEntity> Get(Expression<Func<TEntity, bool>> filter, CancellationToken cancellationToken = default)
         => new InMemoryQueryResult<TEntity>(_dataDict.Values.Where(filter.Compile()));
+
+    Task<IPagingResponse<TViewModel>> IQueryRepository<TEntity, TKey>.GetPagingAsync<TViewModel>(int pageNo, int pageSize, CancellationToken cancellationToken)
+        => PagingService.GetPagingAsync<TEntity, TKey, TViewModel>(this, pageNo, pageSize, MappingStrategy, cancellationToken: cancellationToken);
+
+    Task<IPagingResponse<TViewModel>> IQueryRepository<TEntity, TKey>.GetPagingAsync<TViewModel>(int pageNo, int pageSize, Expression<Func<TEntity, bool>> filter, CancellationToken cancellationToken)
+        => PagingService.GetPagingAsync<TEntity, TKey, TViewModel>(this, pageNo, pageSize, MappingStrategy, filter, cancellationToken: cancellationToken);
+
+    Task<IPagingResponse<TViewModel>> IQueryRepository<TEntity, TKey>.GetPagingAsync<TViewModel>(int pageNo, int pageSize, Func<IPagingRepositoryResult<TEntity>, IPagingRepositoryResult<TEntity>> decorate, CancellationToken cancellationToken)
+        => PagingService.GetPagingAsync<TEntity, TKey, TViewModel>(this, pageNo, pageSize, MappingStrategy, decorate: decorate, cancellationToken: cancellationToken);
+
+    Task<IPagingResponse<TViewModel>> IQueryRepository<TEntity, TKey>.GetPagingAsync<TViewModel>(int pageNo, int pageSize, Expression<Func<TEntity, bool>> filter, Func<IPagingRepositoryResult<TEntity>, IPagingRepositoryResult<TEntity>> decorate, CancellationToken cancellationToken)
+        => PagingService.GetPagingAsync<TEntity, TKey, TViewModel>(this, pageNo, pageSize, MappingStrategy, filter, decorate, cancellationToken: cancellationToken);
 
     /// <summary>
     /// Convert to queryable.
@@ -179,7 +203,8 @@ public class InMemoryRepository<TEntity, TKey> : IInMemoryRepository<TEntity, TK
 /// <remarks>
 /// Initialize an instance of <see cref="InMemoryRepository{TEntity}"/>.
 /// </remarks>
+/// <param name="mappingStrategy">The mapping strategy</param>
 /// <param name="idField">The id field selector</param>
-public class InMemoryRepository<TEntity>(Expression<Func<TEntity, string>> idField)
-    : InMemoryRepository<TEntity, string>(idField), IInMemoryRepository<TEntity>
+public class InMemoryRepository<TEntity>(IMappingStrategy mappingStrategy, Expression<Func<TEntity, string>> idField)
+    : InMemoryRepository<TEntity, string>(mappingStrategy, idField), IInMemoryRepository<TEntity>
     where TEntity : class, IDbModel<string>;

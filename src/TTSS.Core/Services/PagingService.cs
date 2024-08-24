@@ -1,33 +1,35 @@
-﻿using AutoMapper;
-using System.Linq.Expressions;
+﻿using System.Linq.Expressions;
+using TTSS.Core.Data;
 using TTSS.Core.Models;
 
-namespace TTSS.Core.Data;
+namespace TTSS.Core.Services;
 
-/// <summary>
-/// Entity extensions.
-/// </summary>
-public static class IRepositoryExtensions
+internal sealed class PagingService
 {
-    public static async Task<IPagingResponse<TViewModel>> GetPagingAsync<TEntity, TViewModel>(this IRepository<TEntity> target,
-        Expression<Func<TEntity, bool>> filter,
-        Func<IPagingRepositoryResult<TEntity>, IPagingRepositoryResult<TEntity>> decorate,
-        IPagingRequest request,
-        IMapper mapper,
+    public static async Task<IPagingResponse<TViewModel>> GetPagingAsync<TEntity, TKey, TViewModel>(IRepository<TEntity, TKey> repository,
+        int pageNo,
+        int pageSize,
+        IMappingStrategy mappingStrategy,
+        Expression<Func<TEntity, bool>>? filter = default,
+        Func<IPagingRepositoryResult<TEntity>, IPagingRepositoryResult<TEntity>>? decorate = default,
         CancellationToken cancellationToken = default)
-        where TEntity : class, IDbModel<string>
+        where TEntity : class, IDbModel<TKey>
+        where TKey : notnull
     {
-        var paging = target.Get(filter, cancellationToken)
-            .ToPaging(true, request.PageSize);
+        filter ??= (_ => true);
+        var paging = repository.Get(filter, cancellationToken)
+            .ToPaging(true, pageSize);
 
         const int Offset = 1;
-        var pageNo = request.PageNo - Offset;
+        pageNo -= Offset;
+        if (pageNo < 0) pageNo = 0;
+
         var page = await (decorate is null ? paging : decorate(paging))
             .GetPage(pageNo)
-            .ToPagingDataAsync();
+        .ToPagingDataAsync();
 
-        var itemNumber = pageNo * request.PageSize;
-        var vms = page.Result.Select(mapper.Map<TViewModel>).ToList();
+        var itemNumber = pageNo * pageSize;
+        var vms = page.Result.Select(mappingStrategy.Map<TEntity, TViewModel>).ToList();
         var orderableQry = vms
             .Where(it => it is IHaveOrderNumber)
             .Cast<IHaveOrderNumber>();
