@@ -31,12 +31,18 @@ public sealed class PlaygroundWebInitializer : WebInitializerBase
             Assembly.GetExecutingAssembly(),
         };
 
+        var pipelines = new[]
+        {
+            typeof(HttpUserIdentityPipelineBehavior<,>),
+            typeof(HttpPagingPipelineValidator<,>),
+        };
+
         services
             .RegisterWebModules()
             .RegisterCoreModules()
             .AddScoped<ICorrelationContext, DEMO_Context>()
             .AddAutoMapper(assemblies)
-            .RegisterMessagingModule(assemblies, [typeof(HttpUserIdentityPipelineBehavior<,>)]);
+            .RegisterMessagingModule(assemblies, pipelines);
 
         // Optional for setting up Authentication.
         services

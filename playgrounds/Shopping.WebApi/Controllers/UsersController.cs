@@ -5,6 +5,7 @@ using Shopping.WebApi.Biz.Users;
 using Shopping.WebApi.Biz.Users.ViewModels;
 using TTSS.Core.AspNetCore.Controllers;
 using TTSS.Core.Messaging;
+using TTSS.Core.Models;
 
 namespace Shopping.WebApi.Controllers;
 
@@ -19,8 +20,8 @@ public sealed class UsersController(IMessagingHub hub) : ApiControllerBase
         => hub.SendAsync(new GetUser(id)).ToActionResultAsync();
 
     [HttpGet("list")]
-    public Task<ActionResult<IEnumerable<UserVm>>> Liste()
-        => hub.SendAsync(new ListUsers()).ToActionResultAsync();
+    public Task<ActionResult<IPagingResponse<UserVm>>> Liste([FromQuery] int pageNo = 1, [FromQuery] int pageSize = 30, [FromQuery] string? keyword = default)
+        => hub.SendAsync(new ListUsers { PageNo = pageNo, PageSize = pageSize, Keyword = keyword }).ToActionResultAsync();
 
     [Authorize]
     [HttpPut("update/{id}")]

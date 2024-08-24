@@ -8,7 +8,7 @@ GET {{Host}}/api/auditlogs
 
 ###============================================================= User
 ###- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - List
-GET {{Host}}/api/users/list
+GET {{Host}}/api/users/list?pageNo=1&pageSize=3&keyword=n
 
 ###- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - Create
 # @name UserCreate

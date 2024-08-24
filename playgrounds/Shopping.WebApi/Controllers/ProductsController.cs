@@ -4,6 +4,7 @@ using Shopping.Shared.Entities.ViewModels;
 using Shopping.WebApi.Biz.Products;
 using TTSS.Core.AspNetCore.Controllers;
 using TTSS.Core.Messaging;
+using TTSS.Core.Models;
 
 namespace Shopping.WebApi.Controllers;
 
@@ -19,8 +20,8 @@ public sealed class ProductsController(IMessagingHub hub) : ApiControllerBase
         => hub.SendAsync(new GetProduct(id));
 
     [HttpGet("list")]
-    public Task<IEnumerable<ProductVm>> Liste()
-        => hub.SendAsync(new ListProducts());
+    public Task<ActionResult<IPagingResponse<ProductVm>>> Liste([FromQuery] int pageNo = 1, [FromQuery] int pageSize = 30, [FromQuery] string? keyword = default)
+        => hub.SendAsync(new ListProducts { PageNo = pageNo, PageSize = pageSize, Keyword = keyword }).ToActionResultAsync();
 
     [Authorize]
     [HttpPut("update/{id}")]

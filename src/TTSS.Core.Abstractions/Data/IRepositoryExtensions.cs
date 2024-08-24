@@ -9,6 +9,19 @@ public static class IRepositoryExtensions
     /// Exclude deleted entities before querying.
     /// </summary>
     /// <typeparam name="TEntity">Entity type</typeparam>
+    /// <param name="target">The target repository</param>
+    /// <returns>The repository</returns>
+    public static IRepository<TEntity> ExcludeDelete<TEntity>(this IRepository<TEntity> target)
+        where TEntity : class, IDbModel<string>, ITimeActivityEntity
+    {
+        ExcludeDelete<TEntity, string>(target);
+        return target;
+    }
+
+    /// <summary>
+    /// Exclude deleted entities before querying.
+    /// </summary>
+    /// <typeparam name="TEntity">Entity type</typeparam>
     /// <typeparam name="TKey">Primary key type</typeparam>
     /// <param name="target">The target repository</param>
     /// <returns>The repository</returns>
@@ -16,12 +29,11 @@ public static class IRepositoryExtensions
         where TEntity : class, IDbModel<TKey>, ITimeActivityEntity
         where TKey : notnull
     {
-        if (target is not IConfigurableRepository<TEntity> repository)
+        if (target is IConfigurableRepository<TEntity> repository)
         {
-            return target;
+            repository.Configure(table => table.Where(it => it.DeletedDate == null));
         }
 
-        repository.Configure(table => table.Where(it => it.DeletedDate == null));
         return target;
     }
 }
