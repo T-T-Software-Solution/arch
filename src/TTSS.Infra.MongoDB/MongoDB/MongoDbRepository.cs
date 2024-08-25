@@ -101,16 +101,16 @@ public class MongoDbRepository<TEntity, TKey> : IMongoDbRepository<TEntity, TKey
         => new MongoDbQueryResult<TEntity>(Collection.Find(filter), MappingStrategy, cancellationToken);
 
     PagingSet<TEntity> IQueryRepository<TEntity, TKey>.GetPaging(int pageNo, int pageSize)
-        => PagingService.GetPaging(this, pageNo, pageSize);
+        => PagingHelper.GetPaging(this, pageNo, pageSize);
 
     PagingSet<TEntity> IQueryRepository<TEntity, TKey>.GetPaging(int pageNo, int pageSize, Expression<Func<TEntity, bool>> filter)
-        => PagingService.GetPaging(this, pageNo, pageSize, filter);
+        => PagingHelper.GetPaging(this, pageNo, pageSize, filter);
 
     PagingSet<TEntity> IQueryRepository<TEntity, TKey>.GetPaging(int pageNo, int pageSize, Action<IPagingRepository<TEntity>> decorate)
-        => PagingService.GetPaging(this, pageNo, pageSize, decorate: decorate);
+        => PagingHelper.GetPaging(this, pageNo, pageSize, decorate: decorate);
 
     PagingSet<TEntity> IQueryRepository<TEntity, TKey>.GetPaging(int pageNo, int pageSize, Expression<Func<TEntity, bool>> filter, Action<IPagingRepository<TEntity>> decorate)
-        => PagingService.GetPaging(this, pageNo, pageSize, filter, decorate);
+        => PagingHelper.GetPaging(this, pageNo, pageSize, filter, decorate);
 
     /// <summary>
     /// Convert to queryable.

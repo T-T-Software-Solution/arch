@@ -33,32 +33,6 @@ Authorization: Bearer {{UserCreate.response.body.token}}
 
 
 
-
-###============================================================= Cart
-###- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - List
-GET {{Host}}/api/carts/list
-
-###- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - Create
-# @name CartCreate
-POST {{Host}}/api/carts/create
-Authorization: Bearer {{UserCreate.response.body.token}}
-
-###- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - Read
-GET {{Host}}/api/carts/{{CartCreate.response.body.id}}
-
-###- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - Update
-PUT {{Host}}/api/carts/update/{{CartCreate.response.body.id}}
-Content-Type: application/json
-Authorization: Bearer {{UserCreate.response.body.token}}
-
-{ "addProductId": "{{ProductCreate.response.body.id}}" }
-
-###- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - Delete
-DELETE {{Host}}/api/carts/delete/{{CartCreate.response.body.id}}
-Authorization: Bearer {{UserCreate.response.body.token}}
-
-
-
 ###========================================================== Product
 ###- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - List
 GET {{Host}}/api/products/list
@@ -83,6 +57,32 @@ Authorization: Bearer {{UserCreate.response.body.token}}
 
 ###- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - Delete
 DELETE {{Host}}/api/products/delete/{{ProductCreate.response.body.id}}
+Authorization: Bearer {{UserCreate.response.body.token}}
+
+
+
+
+###============================================================= Cart
+###- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - List
+GET {{Host}}/api/carts/list
+
+###- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - Create
+# @name CartCreate
+POST {{Host}}/api/carts/create
+Authorization: Bearer {{UserCreate.response.body.token}}
+
+###- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - Read
+GET {{Host}}/api/carts/{{CartCreate.response.body.id}}
+
+###- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - Update
+PUT {{Host}}/api/carts/update/{{CartCreate.response.body.id}}
+Content-Type: application/json
+Authorization: Bearer {{UserCreate.response.body.token}}
+
+{ "addProductId": "{{ProductCreate.response.body.id}}" }
+
+###- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - Delete
+DELETE {{Host}}/api/carts/delete/{{CartCreate.response.body.id}}
 Authorization: Bearer {{UserCreate.response.body.token}}
 
 

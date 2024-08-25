@@ -31,7 +31,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\TTSS.Core\TTSS.Core.csproj" />
+    <ProjectReference Include="..\TTSS.Core.Abstractions\TTSS.Core.Abstractions.csproj" />
   </ItemGroup>
 
 </Project>

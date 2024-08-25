@@ -8,12 +8,8 @@ using Shopping.Shared.DbContexts;
 using Shopping.Shared.Interceptors;
 using Shopping.WebApi.Biz.Tokens;
 using System.Reflection;
-using TTSS.Core;
 using TTSS.Core.AspNetCore;
 using TTSS.Core.AspNetCore.Pipelines;
-using TTSS.Core.Messaging;
-using TTSS.Core.Models;
-using TTSS.Core.Services;
 using TTSS.Infra.Data.Sql;
 
 namespace Shopping.WebApi;
@@ -32,20 +28,8 @@ public sealed class PlaygroundWebInitializer : WebInitializerBase
             Assembly.GetExecutingAssembly(),
         };
 
-        var pipelines = new[]
-        {
-            typeof(HttpUserIdentityPipelineBehavior<,>),
-            typeof(HttpPagingPipelineValidator<,>),
-        };
-
-        // TODO: Simplify this later
         services
-            .RegisterWebModules()
-            .RegisterCoreModules()
-            .AddSingleton<IMappingStrategy, AutoMapperMappingStrategy>()
-            .AddScoped<ICorrelationContext, DEMO_Context>()
-            .AddAutoMapper(assemblies)
-            .RegisterMessagingModule(assemblies, pipelines);
+            .RegisterTTSSCoreHttp<DEMO_Context>(assemblies);
 
         // Optional for setting up Authentication.
         services

@@ -80,16 +80,16 @@ public class InMemoryRepository<TEntity, TKey> : IInMemoryRepository<TEntity, TK
         => new InMemoryQueryResult<TEntity>(_dataDict.Values.Where(filter.Compile()), MappingStrategy);
 
     PagingSet<TEntity> IQueryRepository<TEntity, TKey>.GetPaging(int pageNo, int pageSize)
-        => PagingService.GetPaging(this, pageNo, pageSize);
+        => PagingHelper.GetPaging(this, pageNo, pageSize);
 
     PagingSet<TEntity> IQueryRepository<TEntity, TKey>.GetPaging(int pageNo, int pageSize, Expression<Func<TEntity, bool>> filter)
-        => PagingService.GetPaging(this, pageNo, pageSize, filter);
+        => PagingHelper.GetPaging(this, pageNo, pageSize, filter);
 
     PagingSet<TEntity> IQueryRepository<TEntity, TKey>.GetPaging(int pageNo, int pageSize, Action<IPagingRepository<TEntity>> decorate)
-        => PagingService.GetPaging(this, pageNo, pageSize, decorate: decorate);
+        => PagingHelper.GetPaging(this, pageNo, pageSize, decorate: decorate);
 
     PagingSet<TEntity> IQueryRepository<TEntity, TKey>.GetPaging(int pageNo, int pageSize, Expression<Func<TEntity, bool>> filter, Action<IPagingRepository<TEntity>> decorate)
-        => PagingService.GetPaging(this, pageNo, pageSize, filter, decorate);
+        => PagingHelper.GetPaging(this, pageNo, pageSize, filter, decorate);
 
     /// <summary>
     /// Convert to queryable.

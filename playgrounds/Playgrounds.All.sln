@@ -7,8 +7,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Shopping.WebApi", "Shopping
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "refs", "refs", "{6D568C0D-BC69-44FD-A3A7-1782957D55E6}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TTSS.Core.Messaging", "..\src\TTSS.Core.Messaging\TTSS.Core.Messaging.csproj", "{AB8D3434-8B3F-490A-AD88-6416B367BCED}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TTSS.Infra.Sql", "..\src\TTSS.Infra.Sql\TTSS.Infra.Sql.csproj", "{AE7B99C8-9206-4684-BF47-87234807BF3C}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TTSS.Core.Abstractions", "..\src\TTSS.Core.Abstractions\TTSS.Core.Abstractions.csproj", "{14406655-4F71-406E-978E-40F10DA0E6E9}"

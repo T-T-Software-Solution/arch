@@ -12,9 +12,8 @@ public static class ModuleInitializer
     /// </summary>
     /// <param name="target">The service collection</param>
     /// <returns>The service collection</returns>
-    public static IServiceCollection RegisterDataTimeService(this IServiceCollection target)
-    {
-        target.AddSingleton<IDateTimeService, DateTimeService>();
-        return target;
-    }
+    public static IServiceCollection RegisterCoreServiceModule(this IServiceCollection target)
+        => target
+            .AddSingleton<IDateTimeService, DateTimeService>()
+            .AddSingleton<IMappingStrategy, AutoMapperMappingStrategy>();
 }

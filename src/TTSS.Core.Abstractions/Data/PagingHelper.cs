@@ -1,13 +1,23 @@
 ﻿using System.Linq.Expressions;
-using TTSS.Core.Data;
 
-namespace TTSS.Core.Services;
+namespace TTSS.Core.Data;
 
-internal sealed class PagingService
+/// <summary>
+/// Paging helper.
+/// </summary>
+public static class PagingHelper
 {
-    private const int Offset = 1;
-    private const int MinimumPageNo = 0;
-
+    /// <summary>
+    /// Get paged set.
+    /// </summary>
+    /// <typeparam name="TEntity"></typeparam>
+    /// <typeparam name="TKey"></typeparam>
+    /// <param name="srcRepository"></param>
+    /// <param name="pageNo">Page number</param>
+    /// <param name="pageSize">Content size per page</param>
+    /// <param name="filter">Entity filter</param>
+    /// <param name="decorate">Decorate function</param>
+    /// <returns>Paging set</returns>
     public static PagingSet<TEntity> GetPaging<TEntity, TKey>(IRepository<TEntity, TKey> srcRepository,
         int pageNo,
         int pageSize,
@@ -16,7 +26,8 @@ internal sealed class PagingService
         where TEntity : class, IDbModel<TKey>
         where TKey : notnull
     {
-        pageNo -= Offset;
+        pageNo--;
+        const int MinimumPageNo = 0;
         if (pageNo < MinimumPageNo)
         {
             pageNo = MinimumPageNo;
