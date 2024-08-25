@@ -18,7 +18,7 @@ internal sealed class DeleteProductHandler(IRepository<Product> repository, IDat
         var entity = await repository.GetByIdAsync(request.ProductId, cancellationToken);
         if (entity is null)
         {
-            return Response(HttpStatusCode.NotFound);
+            return Response(HttpStatusCode.Gone, "Product not found");
         }
 
         entity.DeletedDate = dateTimeService.UtcNow;

@@ -35,7 +35,7 @@ internal class DeleteCartHandler(ICorrelationContext context,
             .FirstOrDefaultAsync(it => it.Id == request.CartId, cancellationToken);
         if (entity is null)
         {
-            return Response(HttpStatusCode.NotFound, "Cart not found");
+            return Response(HttpStatusCode.Gone, "Cart not found");
         }
 
         if (entity.Owner.Id != context.CurrentUserId)

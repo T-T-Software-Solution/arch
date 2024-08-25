@@ -34,7 +34,7 @@ internal sealed class UpdateUserHandler(ICorrelationContext context, IRepository
         var entity = await repository.GetByIdAsync(request.UserId!, cancellationToken);
         if (entity is null)
         {
-            return Response(HttpStatusCode.NotFound, "User not found");
+            return Response(HttpStatusCode.Gone, "User not found");
         }
 
         entity.FirstName = request.FirstName;

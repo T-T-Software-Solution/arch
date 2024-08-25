@@ -22,7 +22,7 @@ internal sealed class GetProductHandler(IRepository<Product> repository, IMapper
 
         if (entity is null)
         {
-            return Response(HttpStatusCode.NotFound, "User not found");
+            return Response(HttpStatusCode.Gone, "Product not found");
         }
 
         var vm = mapper.Map<ProductVm>(entity);

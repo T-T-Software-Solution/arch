@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 using Shopping.Shared.Entities;
 using Shopping.Shared.Entities.ViewModels;
 using System.Net;
@@ -22,10 +23,18 @@ internal class GetCartHandler(IRepository<Cart> repository, IMapper mapper)
             return Response(HttpStatusCode.BadRequest, "Invalid arguments");
         }
 
+        // TODO: Simplify this later
+        if (repository is IConfigurableRepository<Cart> confiure)
+        {
+            confiure.Configure(table => table
+                .Include(cart => cart.Owner)
+                .Include(cart => cart.Products));
+        }
+
         var entity = await repository.GetByIdAsync(request.CartId, cancellationToken);
         if (entity is null)
         {
-            return Response(HttpStatusCode.NotFound, "Cart not found");
+            return Response(HttpStatusCode.Gone, "Cart not found");
         }
 
         var vm = mapper.Map<CartVm>(entity);

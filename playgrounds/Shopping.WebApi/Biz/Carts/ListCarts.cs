@@ -26,7 +26,7 @@ internal sealed class ListCartsHandler(IRepository<Cart> repository)
         {
             confiure.Configure(table => table
                 .Include(cart => cart.Owner)
-                .Include(cart => cart.Products.Where(product => cart.DeletedDate == null)));
+                .Include(cart => cart.Products));
         }
         var paging = await repository
             .ExcludeDeleted()

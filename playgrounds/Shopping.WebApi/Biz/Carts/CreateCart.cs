@@ -27,7 +27,7 @@ internal sealed class CreateCartHandler(ICorrelationContext context,
         var user = await userRepository.GetByIdAsync(context.CurrentUserId, cancellationToken);
         if (user is null)
         {
-            return Response(HttpStatusCode.NotFound, "User not found");
+            return Response(HttpStatusCode.Gone, "User not found");
         }
 
         var entity = new Cart

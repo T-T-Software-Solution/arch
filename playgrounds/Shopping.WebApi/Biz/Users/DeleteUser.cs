@@ -28,7 +28,7 @@ internal class DeleteUserHandler(ICorrelationContext context, IRepository<User> 
         var entity = await repository.GetByIdAsync(request.UserId, cancellationToken);
         if (entity is null)
         {
-            return Response(HttpStatusCode.NotFound);
+            return Response(HttpStatusCode.Gone, "User not found");
         }
 
         await repository.DeleteAsync(entity.Id, cancellationToken);

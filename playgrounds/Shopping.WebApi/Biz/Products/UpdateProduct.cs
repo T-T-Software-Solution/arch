@@ -33,7 +33,7 @@ internal sealed class UpdateProductHandler(IRepository<Product> repository, IMap
         var entity = await repository.GetByIdAsync(request.ProductId!, cancellationToken);
         if (entity is null)
         {
-            return Response(HttpStatusCode.NotFound, "Product not found");
+            return Response(HttpStatusCode.Gone, "Product not found");
         }
 
         if (request.Name is not null)

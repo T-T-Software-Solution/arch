@@ -19,7 +19,7 @@ internal class GetUserHandler(IRepository<User> repository, IMapper mapper)
         var entity = await repository.GetByIdAsync(request.UserId, cancellationToken);
         if (entity is null)
         {
-            return Response(HttpStatusCode.NotFound, "User not found");
+            return Response(HttpStatusCode.Gone, "User not found");
         }
 
         var vm = mapper.Map<UserVm>(entity);

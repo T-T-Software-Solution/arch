@@ -2,7 +2,7 @@
 
 ###========================================================= AuditLog
 ###- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - List
-GET {{Host}}/api/auditlogs?pageNo=1&pageSize=3&keyword=
+GET {{Host}}/api/auditlogs?pageNo=1&pageSize=10&keyword=
 
 
 
@@ -15,20 +15,17 @@ GET {{Host}}/api/users/list?pageNo=1&pageSize=3&keyword=n
 POST {{Host}}/api/users/create
 Content-Type: application/json
 
-{
-  "firstName": "John",
-  "lastName": "Doe"
-}
+{ "firstName": "John", "lastName": "Doe" }
+
+###- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - Read
+GET {{Host}}/api/users/{{UserCreate.response.body.userInfo.id}}
 
 ###- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - Update
 PUT {{Host}}/api/users/update/{{UserCreate.response.body.userInfo.id}}
 Content-Type: application/json
 Authorization: Bearer {{UserCreate.response.body.token}}
 
-{
-  "firstName": "Mina",
-  "lastName": "Dixon"
-}
+{ "firstName": "Mina", "lastName": "Dixon" }
 
 ###- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - Delete
 DELETE {{Host}}/api/users/delete/{{UserCreate.response.body.userInfo.id}}
@@ -46,6 +43,16 @@ GET {{Host}}/api/carts/list
 POST {{Host}}/api/carts/create
 Authorization: Bearer {{UserCreate.response.body.token}}
 
+###- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - Read
+GET {{Host}}/api/carts/{{CartCreate.response.body.id}}
+
+###- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - Update
+PUT {{Host}}/api/carts/update/{{CartCreate.response.body.id}}
+Content-Type: application/json
+Authorization: Bearer {{UserCreate.response.body.token}}
+
+{ "addProductId": "{{ProductCreate.response.body.id}}" }
+
 ###- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - Delete
 DELETE {{Host}}/api/carts/delete/{{CartCreate.response.body.id}}
 Authorization: Bearer {{UserCreate.response.body.token}}
@@ -62,37 +69,25 @@ POST {{Host}}/api/products/create
 Content-Type: application/json
 Authorization: Bearer {{UserCreate.response.body.token}}
 
-{
-  "name": "iPhone 15 Pro",
-  "price": 39900
-}
+{ "name": "iPhone 15 Pro", "price": 39900 }
+
+###- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - Read
+GET {{Host}}/api/products/{{ProductCreate.response.body.id}}
 
 ###- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - Update
 PUT {{Host}}/api/products/update/{{ProductCreate.response.body.id}}
 Content-Type: application/json
 Authorization: Bearer {{UserCreate.response.body.token}}
 
-{
-  "name": "iPhone 15 Pro Max",
-  "price": 99999
-}
+{ "name": "iPhone 15 Pro Max", "price": 99999 }
 
 ###- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - Delete
 DELETE {{Host}}/api/products/delete/{{ProductCreate.response.body.id}}
 Authorization: Bearer {{UserCreate.response.body.token}}
 
-###
 
 
-###============================================================= Cart
-###- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - Update
-PUT {{Host}}/api/carts/update/{{CartCreate.response.body.id}}
-Content-Type: application/json
-Authorization: Bearer {{UserCreate.response.body.token}}
 
-{
-  "addProductId": "{{ProductCreate.response.body.id}}"
-}
 
 ###====================================================== Default API
 GET {{Host}}/api/learns/4/correlation

@@ -39,7 +39,7 @@ internal sealed class UpdateCartHandler(ICorrelationContext context,
         {
             confiure.Configure(table => table
                 .Include(cart => cart.Owner)
-                .Include(cart => cart.Products.Where(product => cart.DeletedDate == null)));
+                .Include(cart => cart.Products));
         }
 
         var entity = await cartRepository
@@ -47,12 +47,17 @@ internal sealed class UpdateCartHandler(ICorrelationContext context,
             .GetByIdAsync(request.CartId!, cancellationToken);
         if (entity is null)
         {
-            return Response(HttpStatusCode.NotFound, "Cart not found");
+            return Response(HttpStatusCode.Gone, "Cart not found");
         }
 
         if (entity.Owner.Id != context.CurrentUserId)
         {
-            return Response(HttpStatusCode.Forbidden, "You are not allowed to update this cart");
+            return Response(HttpStatusCode.Gone, "You are not allowed to update this cart");
+        }
+
+        if (entity.Products.Any(it => it.Id == request.AddProductId))
+        {
+            return Response(HttpStatusCode.BadRequest, "Product already exists in the cart");
         }
 
         if (false == string.IsNullOrWhiteSpace(request.AddProductId))
