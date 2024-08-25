@@ -32,7 +32,7 @@ public sealed class SqlConnectionStore
 
         var dbContext = dbContextFactory.GetDbContext(connection.DbContextDataType);
         var interceptors = (_builder is null) ? [] : dbContextFactory.GetInterceptors(this, _builder).ToList();
-        if (interceptors.Any() && dbContext is DbContextBase contextBase)
+        if (interceptors.Count > 0 && dbContext is DbContextBase contextBase)
         {
             contextBase.SetInterceptors(interceptors);
         }

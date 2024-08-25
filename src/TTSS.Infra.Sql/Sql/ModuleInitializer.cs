@@ -42,8 +42,9 @@ public static class ModuleInitializer
     /// <exception cref="ArgumentNullException">The connection store builder is required</exception>
     /// <exception cref="ArgumentOutOfRangeException">Entity models must implement <see cref="IDbModel"/> or <see cref="IDeletableRepository{TEntity, TKey}"/>.</exception>
     public static SqlSetup AddDbContext<TDbContext>(this SqlSetup target)
-        where TDbContext : DbContext
+        where TDbContext : DbContext, IDbWarmup
     {
+        target.ServiceCollection.AddScoped<IDbWarmup, TDbContext>();
         ArgumentNullException.ThrowIfNull(target);
         var builder = target.ConnectionStoreBuilder ?? throw new ArgumentNullException(nameof(target), $"The {nameof(target.ConnectionStoreBuilder)} must not be null.");
         var services = target.ServiceCollection ?? throw new ArgumentNullException(nameof(target), $"The {nameof(target.ServiceCollection)} must not be null.");

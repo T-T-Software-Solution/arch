@@ -130,6 +130,31 @@ public abstract class CommonTestCases : IoCTestBase, IDisposable
         ServiceProvider.GetService<SqlRepository<SeriousLog, string>>().Should().BeNull();
     }
 
+    [Fact]
+    public void Resolve_WarmupService_ShouldBeSuccessful()
+    {
+        var wampups = ServiceProvider.GetServices<IDbWarmup>();
+        wampups.Should().NotBeNull();
+        wampups.Should().HaveCount(3);
+        Type[] expectedTypes = [
+            typeof(FruitDbContext),
+            typeof(SchoolDbContext),
+            typeof(SpaceDbContext)
+        ];
+        wampups.All(it => expectedTypes.Contains(it.GetType()));
+    }
+
+    [Fact]
+    public async Task WarmupService_ShouldWorkWithoutException()
+    {
+        var wampups = ServiceProvider.GetServices<IDbWarmup>();
+        wampups.Should().HaveCountGreaterThanOrEqualTo(3);
+        foreach (var item in wampups)
+        {
+            await item.WarmupAsync();
+        }
+    }
+
     #endregion
 
     #region Insert

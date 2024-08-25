@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
+using TTSS.Core.Data;
 
 namespace TTSS.Infra.Data.Sql;
 
@@ -11,7 +12,7 @@ namespace TTSS.Infra.Data.Sql;
 /// Initializes a new instance of the <see cref="DbContextBase"/> class.
 /// </remarks>
 /// <param name="options">The options for this context</param>
-public abstract class DbContextBase(DbContextOptions options) : DbContext(options)
+public abstract class DbContextBase(DbContextOptions options) : DbContext(options), IDbWarmup
 {
     #region Fields
 
@@ -20,6 +21,12 @@ public abstract class DbContextBase(DbContextOptions options) : DbContext(option
     #endregion
 
     #region Methods
+
+    async Task IDbWarmup.WarmupAsync()
+    {
+        await Database.EnsureCreatedAsync();
+        await Database.ExecuteSqlRawAsync("SELECT 1"); // TODO: TBD alternative query
+    }
 
     /// <summary>
     /// Configure the database (and other options) to be used for this context.

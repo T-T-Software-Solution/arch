@@ -59,6 +59,9 @@ public class ManualTests : CommonTestCases
         _connection = new SqliteConnection(connBuilder.ConnectionString);
         var assemblyName = Assembly.GetExecutingAssembly().FullName;
         services
+            .AddScoped<IDbWarmup, FruitDbContext>()
+            .AddScoped<IDbWarmup, SchoolDbContext>()
+            .AddScoped<IDbWarmup, SpaceDbContext>()
             .AddSingleton<IDateTimeService>(DateTimeService)
             .AddScoped<SqlDbContextFactory>(_ => contextFactory)
             .AddScoped<Lazy<IServiceProvider>>(_ => lazyProvider)

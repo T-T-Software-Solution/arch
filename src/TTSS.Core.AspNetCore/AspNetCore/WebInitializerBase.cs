@@ -1,5 +1,6 @@
 ﻿using TTSS.Core.AspNetCore.Pipelines;
 using TTSS.Core.Configurations;
+using TTSS.Core.Data;
 
 namespace TTSS.Core.AspNetCore;
 
@@ -66,8 +67,16 @@ public abstract class WebInitializerBase
     /// Post-build asynchronous  actions.
     /// </summary>
     /// <param name="app">The web application used to configure the HTTP pipeline, and routes</param>
-    public virtual Task PostBuildAsync(WebApplication app)
-        => Task.CompletedTask;
+    public virtual async Task PostBuildAsync(WebApplication app)
+    {
+        await using var scope = app.Services.CreateAsyncScope();
+        var serviceProviderScope = scope.ServiceProvider;
+        var warmups = serviceProviderScope.GetServices<IDbWarmup>();
+        foreach (var item in warmups)
+        {
+            await item.WarmupAsync();
+        }
+    }
 
     /// <summary>
     /// Registers databases into the <see cref="IServiceCollection"/>.
