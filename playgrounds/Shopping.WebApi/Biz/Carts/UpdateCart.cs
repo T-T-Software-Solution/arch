@@ -34,15 +34,9 @@ internal sealed class UpdateCartHandler(ICorrelationContext context,
             return Response(HttpStatusCode.BadRequest, "Invalid arguments");
         }
 
-        // TODO: Simplify this later
-        if (cartRepository is IConfigurableRepository<Cart> confiure)
-        {
-            confiure.Configure(table => table
-                .Include(cart => cart.Owner)
-                .Include(cart => cart.Products));
-        }
-
         var entity = await cartRepository
+            .Include(it => it.Owner)
+            .Include(it => it.Products)
             .ExcludeDeleted()
             .GetByIdAsync(request.CartId!, cancellationToken);
         if (entity is null)

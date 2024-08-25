@@ -9,7 +9,6 @@ using Shopping.Shared.Interceptors;
 using Shopping.WebApi.Biz.Tokens;
 using System.Reflection;
 using TTSS.Core.AspNetCore;
-using TTSS.Core.AspNetCore.Pipelines;
 using TTSS.Infra.Data.Sql;
 
 namespace Shopping.WebApi;

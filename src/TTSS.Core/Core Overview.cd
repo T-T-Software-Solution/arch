@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <ClassDiagram MajorVersion="1" MinorVersion="1" MembersFormat="NameAndType">
   <Comment CommentText="Loggings">
-    <Position X="13.004" Y="0.5" Height="0.291" Width="3.267" />
+    <Position X="13.504" Y="0.5" Height="0.291" Width="3.267" />
   </Comment>
   <Comment CommentText="Database">
     <Position X="0.5" Y="0.5" Height="0.291" Width="8.527" />
@@ -13,16 +13,34 @@
     <Position X="3.771" Y="1.021" Height="0.291" Width="5.246" />
   </Comment>
   <Comment CommentText="Services">
-    <Position X="16.768" Y="0.5" Height="0.291" Width="3.208" />
+    <Position X="17.268" Y="0.5" Height="0.291" Width="3.208" />
   </Comment>
   <Comment CommentText="Securities">
-    <Position X="9.5" Y="0.5" Height="0.291" Width="3.005" />
+    <Position X="10" Y="0.5" Height="0.291" Width="3.005" />
   </Comment>
-  <Class Name="TTSS.Core.Data.InMemoryPagingResult&lt;TEntity&gt;" Collapsed="true" BaseTypeListCollapsed="true">
+  <Comment CommentText="Messaging">
+    <Position X="0.5" Y="9" Height="0.291" Width="22.731" />
+  </Comment>
+  <Comment CommentText="Handlers">
+    <Position X="4.25" Y="11.5" Height="0.291" Width="8.812" />
+  </Comment>
+  <Comment CommentText="Requesting (Local)">
+    <Position X="0.5" Y="11.5" Height="0.291" Width="3.354" />
+  </Comment>
+  <Comment CommentText="Requesting (Remote)">
+    <Position X="0.5" Y="16.125" Height="0.291" Width="3.354" />
+  </Comment>
+  <Comment CommentText="Handlers">
+    <Position X="4.25" Y="16.125" Height="0.291" Width="8.812" />
+  </Comment>
+  <Comment CommentText="Pipelines">
+    <Position X="13.563" Y="11.5" Height="0.291" Width="9.635" />
+  </Comment>
+  <Class Name="TTSS.Core.Data.InMemoryPagingRepository&lt;TEntity&gt;" Collapsed="true" BaseTypeListCollapsed="true">
     <Position X="3.75" Y="1.75" Width="2.5" />
     <TypeIdentifier>
-      <HashCode>AIAAAAAAAACYAIAAAAAAAAAAAAQQAAAAAABAAAAAQAQ=</HashCode>
-      <FileName>Data\InMemoryPagingResult.cs</FileName>
+      <HashCode>AIAAAAAAAACYAIAAAAAAAAAAAAQQAAAAIABAAAAAQAQ=</HashCode>
+      <FileName>Data\InMemoryPagingRepository.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
   </Class>
@@ -42,13 +60,13 @@
       <Method Name="InMemoryRepository" Hidden="true" />
     </Members>
     <TypeIdentifier>
-      <HashCode>AAUAAAAACAAAAABAAAAIAAQAAAAAACgAAAAAAAAAIIA=</HashCode>
+      <HashCode>AAUAAAAACAAAAABAAAAIAAUAABAAACgAAAAAAAAAIIA=</HashCode>
       <FileName>Data\InMemoryRepository.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
   </Class>
   <Class Name="TTSS.Core.Data.InMemoryRepository&lt;TEntity&gt;" Collapsed="true">
-    <Position X="0.5" Y="6.75" Width="3" />
+    <Position X="0.5" Y="7.25" Width="3" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Data\InMemoryRepository.cs</FileName>
@@ -63,7 +81,7 @@
     </TypeIdentifier>
   </Class>
   <Class Name="TTSS.Core.Securities.JsonWebTokenDescriber" BaseTypeListCollapsed="true">
-    <Position X="9.5" Y="3.5" Width="3" />
+    <Position X="10" Y="3.5" Width="3" />
     <Members>
       <Field Name="_dateTimeService" Hidden="true" />
       <Method Name="JsonWebTokenDescriber" Hidden="true" />
@@ -75,14 +93,14 @@
     <Lollipop Position="0.2" />
   </Class>
   <Class Name="TTSS.Core.Securities.ModuleInitializer">
-    <Position X="9.5" Y="5" Width="3" />
+    <Position X="10" Y="5" Width="3" />
     <TypeIdentifier>
-      <HashCode>AAACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <HashCode>AAAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Securities\ModuleInitializer.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="TTSS.Core.Services.DateTimeService" Collapsed="true" BaseTypeListCollapsed="true">
-    <Position X="16.75" Y="1.25" Width="3.25" />
+    <Position X="17.25" Y="1.25" Width="3.25" />
     <TypeIdentifier>
       <HashCode>AAAwAAAAAAAAAAAAAAAAAAAEAAABAIEAKAAEEAEAAAA=</HashCode>
       <FileName>Services\DateTimeService.cs</FileName>
@@ -90,21 +108,21 @@
     <Lollipop Position="0.2" />
   </Class>
   <Class Name="TTSS.Core.Services.ModuleInitializer">
-    <Position X="16.75" Y="2" Width="3.25" />
+    <Position X="17.25" Y="2" Width="3.25" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAAAAA=</HashCode>
       <FileName>Services\ModuleInitializer.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="TTSS.Core.Loggings.ActivityExtensions">
-    <Position X="13" Y="3.25" Width="3.25" />
+    <Position X="13.5" Y="3.25" Width="3.25" />
     <TypeIdentifier>
       <HashCode>CgAAAAAAAAAAAAAAAAAAAAAAIQABAAAAAAAAAAAAAgA=</HashCode>
       <FileName>Loggings\ActivityExtensions.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="TTSS.Core.Loggings.ActivityFactory" Collapsed="true" BaseTypeListCollapsed="true">
-    <Position X="13" Y="1.25" Width="1.5" />
+    <Position X="13.5" Y="1.25" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAABAAAAAAAAAAAgAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Loggings\ActivityFactory.cs</FileName>
@@ -112,35 +130,183 @@
     <Lollipop Position="0.2" />
   </Class>
   <Class Name="TTSS.Core.Loggings.ActivityFactoryExtensions">
-    <Position X="13" Y="2" Width="3.25" />
+    <Position X="13.5" Y="2" Width="3.25" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Loggings\ActivityFactoryExtensions.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="TTSS.Core.Loggings.ActivityLogger" Collapsed="true" BaseTypeListCollapsed="true">
-    <Position X="14.75" Y="1.25" Width="1.5" />
+    <Position X="15.25" Y="1.25" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>IAAEAAAQQCBCAAFAAAAAAAACIBoEAAAAAgABAEAAAAA=</HashCode>
+      <HashCode>IAAEAAAQQCBCAAFAAAAAAAACYBoEAAAAAgABAEAAAAA=</HashCode>
       <FileName>Loggings\ActivityLogger.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
   </Class>
   <Class Name="TTSS.Core.Loggings.ModuleInitializer">
-    <Position X="13" Y="5.5" Width="3.25" />
+    <Position X="13.5" Y="5.5" Width="3.25" />
     <TypeIdentifier>
-      <HashCode>AAAAAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAAAAA=</HashCode>
       <FileName>Loggings\ModuleInitializer.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="TTSS.Core.Securities.JsonWebTokenDescriptor">
-    <Position X="9.5" Y="1.25" Width="3" />
+    <Position X="10" Y="1.25" Width="3" />
     <Members>
       <Property Name="CurrentTime" Hidden="true" />
     </Members>
     <TypeIdentifier>
       <HashCode>AAAAIAAAAAAAAAAAAAgAAAAAEAAAACAAACAAgAAAAAA=</HashCode>
       <FileName>Securities\JsonWebTokenDescriptor.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="TTSS.Core.Messaging.Handlers.HttpRequestHandler&lt;TRequest&gt;" Collapsed="true">
+    <Position X="5" Y="14.25" Width="3.25" />
+    <InheritanceLine Type="TTSS.Core.Messaging.Handlers.RequestHandler&lt;TRequest, TResponse&gt;" FixedFromPoint="true" FixedToPoint="true">
+      <Path>
+        <Point X="4.562" Y="13.812" />
+        <Point X="4.562" Y="14.625" />
+        <Point X="5" Y="14.625" />
+      </Path>
+    </InheritanceLine>
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Messaging\Handlers\HttpRequestHandler.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TTSS.Core.Messaging.Handlers.HttpRequestHandler&lt;TRequest, TResponse&gt;" Collapsed="true">
+    <Position X="5" Y="15" Width="3.25" />
+    <InheritanceLine Type="TTSS.Core.Messaging.Handlers.RequestHandler&lt;TRequest, TResponse&gt;" FixedFromPoint="true" FixedToPoint="true">
+      <Path>
+        <Point X="4.562" Y="13.812" />
+        <Point X="4.562" Y="15.312" />
+        <Point X="5" Y="15.312" />
+      </Path>
+    </InheritanceLine>
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Messaging\Handlers\HttpRequestHandler.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TTSS.Core.Messaging.Handlers.HttpRequestHandlerAsync&lt;TRequest&gt;" Collapsed="true">
+    <Position X="9.25" Y="14.25" Width="3.5" />
+    <InheritanceLine Type="TTSS.Core.Messaging.Handlers.RequestHandlerAsync&lt;TRequest, TResponse&gt;" FixedFromPoint="true" FixedToPoint="true">
+      <Path>
+        <Point X="8.938" Y="13.812" />
+        <Point X="8.938" Y="14.625" />
+        <Point X="9.25" Y="14.625" />
+      </Path>
+    </InheritanceLine>
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Messaging\Handlers\HttpRequestHandlerAsync.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TTSS.Core.Messaging.Handlers.HttpRequestHandlerAsync&lt;TRequest, TResponse&gt;" Collapsed="true">
+    <Position X="9.25" Y="15" Width="3.5" />
+    <InheritanceLine Type="TTSS.Core.Messaging.Handlers.RequestHandlerAsync&lt;TRequest, TResponse&gt;" FixedFromPoint="true">
+      <Path>
+        <Point X="8.938" Y="13.812" />
+        <Point X="8.938" Y="15.346" />
+        <Point X="9.25" Y="15.346" />
+      </Path>
+    </InheritanceLine>
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Messaging\Handlers\HttpRequestHandlerAsync.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TTSS.Core.Messaging.Handlers.PublicationHandler&lt;TPublication&gt;" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="4.25" Y="16.75" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIAAABAAAAAAAA=</HashCode>
+      <FileName>Messaging\Handlers\PublicationHandler.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="TTSS.Core.Messaging.Handlers.PublicationHandlerAsync&lt;TPublication&gt;" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="8.5" Y="16.75" Width="2.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAABAAAAAAAA=</HashCode>
+      <FileName>Messaging\Handlers\PublicationHandlerAsync.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="TTSS.Core.Messaging.Handlers.RequestHandler&lt;TRequest&gt;" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="4.25" Y="12.25" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIABAAAAAAAAAA=</HashCode>
+      <FileName>Messaging\Handlers\RequestHandler.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="TTSS.Core.Messaging.Handlers.RequestHandler&lt;TRequest, TResponse&gt;" Collapsed="true">
+    <Position X="4.25" Y="13.25" Width="2.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAEAAAAAAAAAAAAAAAAAAAAAAIAAAAAAAAAAAA=</HashCode>
+      <FileName>Messaging\Handlers\RequestHandler.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="TTSS.Core.Messaging.Handlers.RequestHandlerAsync&lt;TRequest&gt;" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="8.5" Y="12.25" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAABAAAAAAAAAAAAAAAAABAAAAAAAAAA=</HashCode>
+      <FileName>Messaging\Handlers\RequestHandlerAsync.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="TTSS.Core.Messaging.Handlers.RequestHandlerAsync&lt;TRequest, TResponse&gt;" Collapsed="true">
+    <Position X="8.5" Y="13.25" Width="3" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAEAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Messaging\Handlers\RequestHandlerAsync.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="TTSS.Core.Messaging.Pipelines.CorrelationPipelineBehaviorAsync&lt;TRequest, TResponse&gt;" Collapsed="true">
+    <Position X="19" Y="14.25" Width="4" />
+    <InheritanceLine Type="TTSS.Core.Messaging.Pipelines.PipelineBehaviorAsync&lt;TRequest, TResponse&gt;" FixedFromPoint="true" FixedToPoint="true">
+      <Path>
+        <Point X="18.875" Y="14.062" />
+        <Point X="18.875" Y="14.687" />
+        <Point X="19" Y="14.687" />
+      </Path>
+    </InheritanceLine>
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Messaging\Pipelines\CorrelationPipelineBehaviorAsync.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TTSS.Core.Messaging.Pipelines.ExceptionPiplineBehaviorAsync&lt;TRequest, TResponse&gt;" Collapsed="true">
+    <Position X="14.25" Y="14.25" Width="3.75" />
+    <InheritanceLine Type="TTSS.Core.Messaging.Pipelines.PipelineBehavior&lt;TRequest, TResponse&gt;" FixedFromPoint="true" FixedToPoint="true">
+      <Path>
+        <Point X="14.125" Y="14.062" />
+        <Point X="14.125" Y="14.75" />
+        <Point X="14.25" Y="14.75" />
+      </Path>
+    </InheritanceLine>
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIAAAAAAAAAAAA=</HashCode>
+      <FileName>Messaging\Pipelines\ExceptionPiplineBehaviorAsync.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TTSS.Core.Messaging.Pipelines.PipelineBehavior&lt;TRequest, TResponse&gt;" Collapsed="true">
+    <Position X="13.75" Y="13.5" Width="2.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIAAAAAAAAABAA=</HashCode>
+      <FileName>Messaging\Pipelines\PipelineBehavior.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="TTSS.Core.Messaging.Pipelines.PipelineBehaviorAsync&lt;TRequest, TResponse&gt;" Collapsed="true">
+    <Position X="18.5" Y="13.5" Width="3" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAABAA=</HashCode>
+      <FileName>Messaging\Pipelines\PipelineBehaviorAsync.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
   </Class>
@@ -156,6 +322,69 @@
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Data\IInMemoryRepository.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="TTSS.Core.Messaging.IHttpRequesting" Collapsed="true">
+    <Position X="1.25" Y="14.25" Width="2" />
+    <InheritanceLine Type="TTSS.Core.Messaging.IRequesting&lt;TResponse&gt;" FixedFromPoint="true" FixedToPoint="true">
+      <Path>
+        <Point X="0.75" Y="14.07" />
+        <Point X="0.75" Y="14.625" />
+        <Point X="1.25" Y="14.625" />
+      </Path>
+    </InheritanceLine>
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Messaging\IHttpRequesting.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="TTSS.Core.Messaging.IHttpRequesting&lt;TResponse&gt;" Collapsed="true">
+    <Position X="1.25" Y="15" Width="2.5" />
+    <InheritanceLine Type="TTSS.Core.Messaging.IRequesting&lt;TResponse&gt;" FixedFromPoint="true">
+      <Path>
+        <Point X="0.75" Y="14.07" />
+        <Point X="0.75" Y="15.346" />
+        <Point X="1.25" Y="15.346" />
+      </Path>
+    </InheritanceLine>
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Messaging\IHttpRequesting.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="TTSS.Core.Messaging.IMessagingHub">
+    <Position X="0.5" Y="9.5" Width="2.75" />
+    <TypeIdentifier>
+      <HashCode>AARAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Messaging\IMessagingHub.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="TTSS.Core.Messaging.IPipelineBehaviorBase&lt;TRequest, TResponse&gt;" Collapsed="true">
+    <Position X="13.75" Y="12.25" Width="3.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Messaging\IPipelineBehaviorBase.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="TTSS.Core.Messaging.IPublication" Collapsed="true">
+    <Position X="0.5" Y="16.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Messaging\IPublication.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="TTSS.Core.Messaging.IRequesting" Collapsed="true">
+    <Position X="0.5" Y="12.25" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Messaging\IRequesting.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="TTSS.Core.Messaging.IRequesting&lt;TResponse&gt;" Collapsed="true">
+    <Position X="0.5" Y="13.25" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Messaging\IRequesting.cs</FileName>
     </TypeIdentifier>
   </Interface>
   <Font Name="Segoe UI" Size="9" />

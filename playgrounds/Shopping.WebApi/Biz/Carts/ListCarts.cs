@@ -21,14 +21,9 @@ internal sealed class ListCartsHandler(IRepository<Cart> repository)
 {
     public override async Task<IHttpResponse<Paging<CartVm>>> HandleAsync(ListCarts request, CancellationToken cancellationToken = default)
     {
-        // TODO: Simplify this later
-        if (repository is IConfigurableRepository<Cart> confiure)
-        {
-            confiure.Configure(table => table
-                .Include(cart => cart.Owner)
-                .Include(cart => cart.Products));
-        }
         var paging = await repository
+            .Include(it => it.Owner)
+            .Include(it => it.Products)
             .ExcludeDeleted()
             .GetPaging(request.PageNo, request.PageSize)
             .ExecuteAsync<CartVm>();

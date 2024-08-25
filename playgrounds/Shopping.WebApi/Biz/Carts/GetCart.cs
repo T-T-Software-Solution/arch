@@ -23,15 +23,10 @@ internal class GetCartHandler(IRepository<Cart> repository, IMapper mapper)
             return Response(HttpStatusCode.BadRequest, "Invalid arguments");
         }
 
-        // TODO: Simplify this later
-        if (repository is IConfigurableRepository<Cart> confiure)
-        {
-            confiure.Configure(table => table
-                .Include(cart => cart.Owner)
-                .Include(cart => cart.Products));
-        }
-
-        var entity = await repository.GetByIdAsync(request.CartId, cancellationToken);
+        var entity = await repository
+            .Include(it => it.Owner)
+            .Include(it => it.Products)
+            .GetByIdAsync(request.CartId, cancellationToken);
         if (entity is null)
         {
             return Response(HttpStatusCode.Gone, "Cart not found");

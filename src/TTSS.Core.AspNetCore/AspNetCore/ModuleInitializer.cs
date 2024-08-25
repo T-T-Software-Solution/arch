@@ -1,9 +1,10 @@
 ﻿using System.Reflection;
 using TTSS.Core.AspNetCore.Models;
+using TTSS.Core.AspNetCore.Pipelines;
 using TTSS.Core.Messaging;
 using TTSS.Core.Models;
 
-namespace TTSS.Core.AspNetCore.Pipelines;
+namespace TTSS.Core.AspNetCore;
 
 /// <summary>
 /// Helper extension methods for the register TTSS AspNetCore services.
