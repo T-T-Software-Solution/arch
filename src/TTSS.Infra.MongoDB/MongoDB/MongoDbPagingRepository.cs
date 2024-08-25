@@ -63,10 +63,14 @@ internal sealed class MongoDbPagingRepository<TEntity> : IPagingRepository<TEnti
     }
 
     private async Task<IEnumerable<TEntity>> GetPageDataInternal(int pageNo)
-        => await _findResult
-        .Skip(pageNo * _pageSize)
-        .Limit(_pageSize)
-        .ToListAsync(_cancellationToken);
+    {
+        const int MinPageNo = 0;
+        pageNo = pageNo <= MinPageNo ? MinPageNo : --pageNo;
+        return await _findResult
+            .Skip(pageNo * _pageSize)
+            .Limit(_pageSize)
+            .ToListAsync(_cancellationToken);
+    }
 
     #endregion
 }

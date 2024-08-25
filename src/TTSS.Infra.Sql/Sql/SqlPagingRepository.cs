@@ -60,7 +60,14 @@ internal sealed class SqlPagingRepository<TEntity> : IPagingRepository<TEntity>
     }
 
     private Task<IEnumerable<TEntity>> GetPageDataInternal(int pageNo)
-        => _findResult.Skip(pageNo * _pageSize).Take(_pageSize).GetAsync<TEntity>();
+    {
+        const int MinPageNo = 0;
+        pageNo = pageNo <= MinPageNo ? MinPageNo : --pageNo;
+        return _findResult
+            .Skip(pageNo * _pageSize)
+            .Take(_pageSize)
+            .GetAsync();
+    }
 
     #endregion
 }

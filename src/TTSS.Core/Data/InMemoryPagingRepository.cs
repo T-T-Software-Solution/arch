@@ -59,7 +59,13 @@ internal sealed class InMemoryPagingRepository<TEntity> : IPagingRepository<TEnt
     }
 
     private IEnumerable<TEntity> GetPageDataInternal(int pageNo)
-        => _entities.Skip(pageNo * _pageSize).Take(_pageSize);
+    {
+        const int MinPageNo = 0;
+        pageNo = pageNo <= MinPageNo ? MinPageNo : --pageNo;
+        return _entities
+            .Skip(pageNo * _pageSize)
+            .Take(_pageSize);
+    }
 
     #endregion
 }

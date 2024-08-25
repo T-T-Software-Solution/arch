@@ -113,11 +113,11 @@ public sealed class PagingSet<TEntity>(Task<IEnumerable<TEntity>> resultTask, in
 
     private Paging<TData> CreateDisplayablePaging<TData>(IEnumerable<TData> result)
     {
-        var itemNumber = currentPage * pageSize;
         var contents = result.ToList();
 
         if (typeof(TData).IsAssignableTo(typeof(IHaveOrderNumber)))
         {
+            var itemNumber = currentPage * pageSize;
             var orderableQry = contents
                 .Where(it => it is IHaveOrderNumber)
                 .Cast<IHaveOrderNumber>();
@@ -127,18 +127,14 @@ public sealed class PagingSet<TEntity>(Task<IEnumerable<TEntity>> resultTask, in
             }
         }
 
-        const int Offset = 1;
-        var pageCount = PageCount == default ? Offset : PageCount;
-        var nextPage = NextPage == default ? default : NextPage + Offset;
-        var previousPage = PreviousPage == default && CurrentPage != Offset ? default : PreviousPage + Offset;
         return new()
         {
-            CurrentPage = CurrentPage + Offset,
+            CurrentPage = CurrentPage,
             PageSize = pageSize,
             TotalCount = TotalCount,
-            PageCount = pageCount,
-            NextPage = nextPage,
-            PreviousPage = previousPage,
+            PageCount = PageCount,
+            NextPage = NextPage,
+            PreviousPage = PreviousPage,
             HasNextPage = HasNextPage,
             HasPreviousPage = HasPreviousPage,
             Contents = contents ?? [],
@@ -147,18 +143,19 @@ public sealed class PagingSet<TEntity>(Task<IEnumerable<TEntity>> resultTask, in
 
     private void ComputeParameters()
     {
-        if (_hasComputeParameters) return;
+        if (_hasComputeParameters)
+        {
+            return;
+        }
         _hasComputeParameters = true;
 
-        const int PageOffset = 1;
-        const int MinimumPage = 0;
         var totalCount = TotalCount;
-        _pageCount = pageSize <= MinimumPage ? MinimumPage : totalCount / pageSize + (totalCount % pageSize > MinimumPage ? PageOffset : MinimumPage);
-        var lastPage = Math.Max(MinimumPage, _pageCount - PageOffset);
-        _hasNextPage = CurrentPage < _pageCount - PageOffset;
-        _nextPage = HasNextPage ? Math.Min(lastPage, Math.Max(-PageOffset, CurrentPage) + PageOffset) : lastPage;
-        _hasPreviousPage = CurrentPage > MinimumPage;
-        _previousPage = HasPreviousPage ? Math.Max(MinimumPage, Math.Min(lastPage + PageOffset, CurrentPage) - PageOffset) : MinimumPage;
+        var currentPage = CurrentPage > 0 ? CurrentPage : 1;
+        _pageCount = totalCount > pageSize ? ((int)Math.Ceiling((double)totalCount / pageSize)) : 1;
+        _hasNextPage = _pageCount > currentPage;
+        _nextPage = _hasNextPage ? currentPage + 1 : _pageCount;
+        _hasPreviousPage = currentPage > 1;
+        _previousPage = _hasPreviousPage ? (currentPage - 1 > NextPage ? NextPage : currentPage - 1) : 1;
     }
 
     #endregion
