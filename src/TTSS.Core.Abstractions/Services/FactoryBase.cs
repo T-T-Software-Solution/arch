@@ -14,7 +14,10 @@ public abstract class FactoryBase(Lazy<IServiceProvider> serviceProvider)
 {
     #region Properties
 
-    private Lazy<IServiceProvider> ServiceProvider => serviceProvider ?? throw new ArgumentNullException(nameof(serviceProvider));
+    /// <summary>
+    /// The service provider.
+    /// </summary>
+    protected IServiceProvider ServiceProvider => serviceProvider?.Value ?? throw new ArgumentNullException(nameof(serviceProvider));
 
     #endregion
 
@@ -26,7 +29,7 @@ public abstract class FactoryBase(Lazy<IServiceProvider> serviceProvider)
     /// <typeparam name="TService">Service type</typeparam>
     /// <returns>The service</returns>
     protected TService? GetOrCreate<TService>()
-        => ServiceProvider.Value.GetService<TService>();
+        => ServiceProvider.GetService<TService>();
 
     /// <summary>
     /// Get or create service.
@@ -34,7 +37,7 @@ public abstract class FactoryBase(Lazy<IServiceProvider> serviceProvider)
     /// <param name="serviceType">Service type</param>
     /// <returns>The service</returns>
     protected object? GetOrCreate(Type serviceType)
-        => ServiceProvider.Value.GetService(serviceType);
+        => ServiceProvider.GetService(serviceType);
 
     #endregion
 }
