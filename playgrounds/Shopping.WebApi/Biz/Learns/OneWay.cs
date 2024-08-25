@@ -12,5 +12,5 @@ public sealed record OneWay : IRequesting
 internal sealed class OneWayHandler(ILogger<OneWayHandler> logger, ICorrelationContext context) : RequestHandler<OneWay>
 {
     public override void Handle(OneWay request)
-        => logger.LogInformation($"(CorrelationId: {context.CorrelationId}), (UserId: {context.CurrentUserId}), Received: {request.Input}");
+        => logger.LogInformation("(CorrelationId: {@CorrelationId}), (UserId: {@CurrentUserId}), Received: {@Input}", context.CorrelationId, context.CurrentUserId, request.Input);
 }

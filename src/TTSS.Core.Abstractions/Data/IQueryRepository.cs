@@ -64,7 +64,7 @@ public interface IQueryRepository<TEntity, TKey> : IRepositoryBase
     PagingSet<TEntity> GetPaging(
         int pageNo,
         int pageSize,
-        Func<IPagingRepository<TEntity>, IPagingRepository<TEntity>> decorate);
+        Action<IPagingRepository<TEntity>> decorate);
 
     /// <summary>
     /// Get paged set.
@@ -78,5 +78,5 @@ public interface IQueryRepository<TEntity, TKey> : IRepositoryBase
         int pageNo,
         int pageSize,
         Expression<Func<TEntity, bool>> filter,
-        Func<IPagingRepository<TEntity>, IPagingRepository<TEntity>> decorate);
+        Action<IPagingRepository<TEntity>> decorate);
 }

@@ -19,8 +19,8 @@ internal sealed class CreateTokenHandler : RequestHandler<CreateToken, string>
     public const string Issuer = "demo";
     public const string Audience = "demo";
     private static readonly SecurityKey SigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes("bf967e82cd8fe8ceb6596a395a9561ed3a14311a04c48bde41ac4039f3c7a1e1"));
-    private static readonly JwtSecurityTokenHandler JwtTokenHandler = new JwtSecurityTokenHandler();
-    public static readonly SigningCredentials SigningCreds = new SigningCredentials(SigningKey, SecurityAlgorithms.HmacSha256);
+    private static readonly JwtSecurityTokenHandler JwtTokenHandler = new();
+    public static readonly SigningCredentials SigningCreds = new(SigningKey, SecurityAlgorithms.HmacSha256);
 
     public override string Handle(CreateToken request)
         => JwtTokenHandler.WriteToken(JwtTokenHandler.CreateJwtSecurityToken(

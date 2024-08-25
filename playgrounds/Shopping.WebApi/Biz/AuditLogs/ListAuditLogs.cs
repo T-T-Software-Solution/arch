@@ -23,11 +23,14 @@ internal sealed class ListAuditLogsHandler(IRepository<AuditLog> repository)
     {
         Expression<Func<AuditLog, bool>> filter = it => string.IsNullOrEmpty(request.Keyword)
             || (null != it.Description && it.Description.Contains(request.Keyword));
-        var ordering = (IPagingRepository<AuditLog> it) => it.OrderByDescending(d => d.CreatedDate);
+
         var paging = await repository
             .ExcludeDeleted()
-            .GetPaging(request.PageNo, request.PageSize, filter, ordering)
+            .GetPaging(request.PageNo, request.PageSize, filter, Ordering)
             .ExecuteAsync<AuditLogVm>();
         return Response(HttpStatusCode.OK, paging);
+
     }
+    static void Ordering(IPagingRepository<AuditLog> page)
+        => page.OrderByDescending(it => it.CreatedDate);
 }

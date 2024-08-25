@@ -14,8 +14,8 @@ internal sealed class ChainCallHandler(IMessagingHub hub, ILogger<ChainCallHandl
 {
     public override async Task<Response> HandleAsync(ChainCalls request, CancellationToken cancellationToken = default)
     {
-        logger.LogInformation($"(CorrelationId: {context.CorrelationId}), (UserId: {context.CurrentUserId})");
-        await hub.SendAsync(new OneWay { Input = $"Hi from {GetType().Name}" });
-        return await hub.SendAsync(new TwoWay { FirstValue = request.FirstValue, SecondValue = request.SecondValue });
+        logger.LogInformation("(CorrelationId: {@CorrelationId}), (UserId: {@CurrentUserId})", context.CorrelationId, context.CurrentUserId);
+        await hub.SendAsync(new OneWay { Input = $"Hi from {GetType().Name}" }, cancellationToken);
+        return await hub.SendAsync(new TwoWay { FirstValue = request.FirstValue, SecondValue = request.SecondValue }, cancellationToken);
     }
 }

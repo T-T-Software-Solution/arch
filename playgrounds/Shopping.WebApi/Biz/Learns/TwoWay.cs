@@ -15,8 +15,7 @@ internal sealed class TwoWayHandler(ILogger<TwoWayHandler> logger, ICorrelationC
     public override Response Handle(TwoWay request)
     {
         var result = request.FirstValue + request.SecondValue;
-        var message = $"(CorrelationId: {context.CorrelationId}), (UserId: {context.CurrentUserId}), Sum of {request.FirstValue} and {request.SecondValue} is {result}";
-        logger.LogInformation(message);
-        return new() { Message = message };
+        logger.LogInformation("(CorrelationId: {@CorrelationId}), (UserId: {@CurrentUserId}), Sum of {@FirstValue} and {@SecondValue} is {@result}", context.CorrelationId, context.CurrentUserId, request.FirstValue, request.SecondValue, result);
+        return new() { Message = $"(CorrelationId: {context.CorrelationId}), (UserId: {context.CurrentUserId}), Sum of {request.FirstValue} and {request.SecondValue} is {result}" };
     }
 }

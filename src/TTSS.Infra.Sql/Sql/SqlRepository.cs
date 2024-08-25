@@ -109,10 +109,10 @@ public class SqlRepository<TEntity, TKey> : ISqlRepository<TEntity, TKey>
     PagingSet<TEntity> IQueryRepository<TEntity, TKey>.GetPaging(int pageNo, int pageSize, Expression<Func<TEntity, bool>> filter)
         => PagingService.GetPaging(this, pageNo, pageSize, filter);
 
-    PagingSet<TEntity> IQueryRepository<TEntity, TKey>.GetPaging(int pageNo, int pageSize, Func<IPagingRepository<TEntity>, IPagingRepository<TEntity>> decorate)
+    PagingSet<TEntity> IQueryRepository<TEntity, TKey>.GetPaging(int pageNo, int pageSize, Action<IPagingRepository<TEntity>> decorate)
         => PagingService.GetPaging(this, pageNo, pageSize, decorate: decorate);
 
-    PagingSet<TEntity> IQueryRepository<TEntity, TKey>.GetPaging(int pageNo, int pageSize, Expression<Func<TEntity, bool>> filter, Func<IPagingRepository<TEntity>, IPagingRepository<TEntity>> decorate)
+    PagingSet<TEntity> IQueryRepository<TEntity, TKey>.GetPaging(int pageNo, int pageSize, Expression<Func<TEntity, bool>> filter, Action<IPagingRepository<TEntity>> decorate)
         => PagingService.GetPaging(this, pageNo, pageSize, filter, decorate);
 
     /// <summary>

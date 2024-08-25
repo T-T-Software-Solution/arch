@@ -38,6 +38,7 @@ public sealed class PlaygroundWebInitializer : WebInitializerBase
             typeof(HttpPagingPipelineValidator<,>),
         };
 
+        // TODO: Simplify this later
         services
             .RegisterWebModules()
             .RegisterCoreModules()
