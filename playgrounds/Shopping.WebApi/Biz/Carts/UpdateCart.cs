@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Shopping.Shared.Entities;
 using Shopping.Shared.Entities.ViewModels;
+using System.Net;
 using System.Text.Json.Serialization;
 using TTSS.Core.Data;
 using TTSS.Core.Messaging;
@@ -10,7 +11,7 @@ using TTSS.Core.Models;
 
 namespace Shopping.WebApi.Biz.Carts;
 
-public sealed record UpdateCart : IRequesting<CartVm>
+public sealed record UpdateCart : IHttpRequesting<CartVm>
 {
     [JsonIgnore]
     public string? CartId { get; init; }
@@ -21,30 +22,37 @@ public sealed record UpdateCart : IRequesting<CartVm>
 internal sealed class UpdateCartHandler(ICorrelationContext context,
     IRepository<Cart> cartRepository,
     IRepository<Product> productRepository,
-    IMapper mapper) : RequestHandlerAsync<UpdateCart, CartVm>
+    IMapper mapper)
+    : HttpRequestHandlerAsync<UpdateCart, CartVm>
 {
-    public override async Task<CartVm> HandleAsync(UpdateCart request, CancellationToken cancellationToken = default)
+    public override async Task<IHttpResponse<CartVm>> HandleAsync(UpdateCart request, CancellationToken cancellationToken = default)
     {
         var areArgumentsValid = !string.IsNullOrWhiteSpace(request.CartId)
             && (false == string.IsNullOrWhiteSpace(request.AddProductId) || false == string.IsNullOrWhiteSpace(request.RemoveProductId));
         if (!areArgumentsValid)
         {
-            return null;
+            return Response(HttpStatusCode.BadRequest, "Invalid arguments");
+        }
+
+        // TODO: Simplify this later
+        if (cartRepository is IConfigurableRepository<Cart> confiure)
+        {
+            confiure.Configure(table => table
+                .Include(cart => cart.Owner)
+                .Include(cart => cart.Products.Where(product => cart.DeletedDate == null)));
         }
 
         var entity = await cartRepository
-            .Query(cancellationToken)
-            .Include(it => it.Owner)
-            .Include(it => it.Products)
-            .FirstOrDefaultAsync(it => it.Id == request.CartId, cancellationToken);
+            .ExcludeDeleted()
+            .GetByIdAsync(request.CartId!, cancellationToken);
         if (entity is null)
         {
-            return null;
+            return Response(HttpStatusCode.NotFound, "Cart not found");
         }
 
         if (entity.Owner.Id != context.CurrentUserId)
         {
-            return null;
+            return Response(HttpStatusCode.Forbidden, "You are not allowed to update this cart");
         }
 
         if (false == string.IsNullOrWhiteSpace(request.AddProductId))
@@ -65,7 +73,13 @@ internal sealed class UpdateCartHandler(ICorrelationContext context,
             }
         }
 
-        await cartRepository.UpdateAsync(entity, cancellationToken);
-        return mapper.Map<CartVm>(entity);
+        var ack = await cartRepository.UpdateAsync(entity, cancellationToken);
+        if (ack is false)
+        {
+            return Response(HttpStatusCode.InternalServerError, "Failed to update cart");
+        }
+
+        var vm = mapper.Map<CartVm>(entity);
+        return Response(HttpStatusCode.OK, vm);
     }
 }

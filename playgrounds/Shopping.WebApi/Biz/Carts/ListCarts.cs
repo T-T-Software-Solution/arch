@@ -1,24 +1,38 @@
-﻿using AutoMapper;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Shopping.Shared.Entities;
 using Shopping.Shared.Entities.ViewModels;
+using System.Net;
 using TTSS.Core.Data;
 using TTSS.Core.Messaging;
 using TTSS.Core.Messaging.Handlers;
+using TTSS.Core.Models;
 
 namespace Shopping.WebApi.Biz.Carts;
 
-public sealed record ListCarts : IRequesting<IEnumerable<CartVm>>;
-
-internal sealed class ListCartsHandler(IRepository<Cart> repository, IMapper mapper) : RequestHandlerAsync<ListCarts, IEnumerable<CartVm>>
+public sealed record ListCarts : IHttpRequesting<Paging<CartVm>>, IPagingRequest
 {
-    public override async Task<IEnumerable<CartVm>> HandleAsync(ListCarts request, CancellationToken cancellationToken = default)
-    {
-        var entities = await repository.Query(cancellationToken)
-            .Include(it => it.Owner)
-            .Include(it => it.Products)
-            .GetAsync();
+    public required int PageNo { get; init; }
+    public required int PageSize { get; init; }
+    public string? Keyword { get; init; }
+}
 
-        return entities.Select(mapper.Map<CartVm>);
+internal sealed class ListCartsHandler(IRepository<Cart> repository)
+    : HttpRequestHandlerAsync<ListCarts, Paging<CartVm>>
+{
+    public override async Task<IHttpResponse<Paging<CartVm>>> HandleAsync(ListCarts request, CancellationToken cancellationToken = default)
+    {
+        // TODO: Simplify this later
+        if (repository is IConfigurableRepository<Cart> confiure)
+        {
+            confiure.Configure(table => table
+                .Include(cart => cart.Owner)
+                .Include(cart => cart.Products.Where(product => cart.DeletedDate == null)));
+        }
+        var paging = await repository
+            .ExcludeDeleted()
+            .GetPaging(request.PageNo, request.PageSize)
+            .ExecuteAsync<CartVm>();
+
+        return Response(HttpStatusCode.OK, paging);
     }
 }

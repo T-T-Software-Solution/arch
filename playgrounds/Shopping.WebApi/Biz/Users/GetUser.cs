@@ -11,7 +11,8 @@ namespace Shopping.WebApi.Biz.Users;
 
 public sealed record GetUser(string UserId) : IHttpRequesting<UserVm>;
 
-internal class GetUserHandler(IRepository<User> repository, IMapper mapper) : HttpRequestHandlerAsync<GetUser, UserVm>
+internal class GetUserHandler(IRepository<User> repository, IMapper mapper)
+    : HttpRequestHandlerAsync<GetUser, UserVm>
 {
     public override async Task<IHttpResponse<UserVm>> HandleAsync(GetUser request, CancellationToken cancellationToken = default)
     {

@@ -1,14 +1,16 @@
 ﻿using AutoMapper;
 using Shopping.Shared.Entities;
 using Shopping.Shared.Entities.ViewModels;
+using System.Net;
 using System.Text.Json.Serialization;
 using TTSS.Core.Data;
 using TTSS.Core.Messaging;
 using TTSS.Core.Messaging.Handlers;
+using TTSS.Core.Models;
 
 namespace Shopping.WebApi.Biz.Products;
 
-public sealed record UpdateProduct : IRequesting<ProductVm>
+public sealed record UpdateProduct : IHttpRequesting<ProductVm>
 {
     [JsonIgnore]
     public string? ProductId { get; init; }
@@ -16,20 +18,22 @@ public sealed record UpdateProduct : IRequesting<ProductVm>
     public double? Price { get; init; }
 }
 
-internal sealed class UpdateProductHandler(IRepository<Product> repository, IMapper mapper) : RequestHandlerAsync<UpdateProduct, ProductVm>
+internal sealed class UpdateProductHandler(IRepository<Product> repository, IMapper mapper)
+    : HttpRequestHandlerAsync<UpdateProduct, ProductVm>
 {
-    public override async Task<ProductVm> HandleAsync(UpdateProduct request, CancellationToken cancellationToken = default)
+    public override async Task<IHttpResponse<ProductVm>> HandleAsync(UpdateProduct request, CancellationToken cancellationToken = default)
     {
-        var areArgumentsValid = !string.IsNullOrWhiteSpace(request.ProductId);
+        var areArgumentsValid = !string.IsNullOrWhiteSpace(request.ProductId)
+            && (!string.IsNullOrWhiteSpace(request.Name) || request.Price is not null);
         if (!areArgumentsValid)
         {
-            return null;
+            return Response(HttpStatusCode.BadRequest, "Invalid arguments");
         }
 
-        var entity = await repository.GetByIdAsync(request.ProductId, cancellationToken);
+        var entity = await repository.GetByIdAsync(request.ProductId!, cancellationToken);
         if (entity is null)
         {
-            return null;
+            return Response(HttpStatusCode.NotFound, "Product not found");
         }
 
         if (request.Name is not null)
@@ -42,7 +46,13 @@ internal sealed class UpdateProductHandler(IRepository<Product> repository, IMap
             entity.Price = request.Price.Value;
         }
 
-        await repository.UpdateAsync(entity, cancellationToken);
-        return mapper.Map<ProductVm>(entity);
+        var ack = await repository.UpdateAsync(entity, cancellationToken);
+        if (ack is false)
+        {
+            return Response(HttpStatusCode.InternalServerError, "Failed to update product");
+        }
+
+        var vm = mapper.Map<ProductVm>(entity);
+        return Response(HttpStatusCode.OK, vm);
     }
 }

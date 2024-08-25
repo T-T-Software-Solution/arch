@@ -2,7 +2,7 @@
 
 ###========================================================= AuditLog
 ###- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - List
-GET {{Host}}/api/auditlogs
+GET {{Host}}/api/auditlogs?pageNo=1&pageSize=3&keyword=
 
 
 

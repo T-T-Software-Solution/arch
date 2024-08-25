@@ -3,6 +3,7 @@ using Shopping.Shared.Entities;
 using Shopping.Shared.Entities.ViewModels;
 using Shopping.WebApi.Biz.Tokens;
 using Shopping.WebApi.Biz.Users.ViewModels;
+using System.Net;
 using TTSS.Core.Annotations;
 using TTSS.Core.Data;
 using TTSS.Core.Messaging;
@@ -18,7 +19,8 @@ public sealed record CreateUser : IHttpRequesting<CreateUserResult>
     public string? LastName { get; init; }
 }
 
-internal sealed class CreateUserHandler(IRepository<User> repository, IMessagingHub hub, IMapper mapper) : HttpRequestHandlerAsync<CreateUser, CreateUserResult>
+internal sealed class CreateUserHandler(IRepository<User> repository, IMessagingHub hub, IMapper mapper)
+    : HttpRequestHandlerAsync<CreateUser, CreateUserResult>
 {
     public override async Task<IHttpResponse<CreateUserResult>> HandleAsync(CreateUser request, CancellationToken cancellationToken = default)
     {
@@ -37,6 +39,6 @@ internal sealed class CreateUserHandler(IRepository<User> repository, IMessaging
             FullName = $"{entity.FirstName} {entity.LastName}",
         }, cancellationToken);
         var result = new CreateUserResult(vm, token);
-        return Response(System.Net.HttpStatusCode.OK, result);
+        return Response(HttpStatusCode.OK, result);
     }
 }

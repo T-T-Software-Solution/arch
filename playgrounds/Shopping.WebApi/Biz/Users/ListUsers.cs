@@ -1,6 +1,7 @@
 ﻿using Shopping.Shared.Entities;
 using Shopping.Shared.Entities.ViewModels;
 using System.Linq.Expressions;
+using System.Net;
 using TTSS.Core.Data;
 using TTSS.Core.Messaging;
 using TTSS.Core.Messaging.Handlers;
@@ -27,7 +28,7 @@ internal sealed class ListUsersHandler(IRepository<User> repository)
         var paging = await repository
             .GetPaging(request.PageNo, request.PageSize, filter)
             .ExecuteAsync<UserVm>();
-        return Response(System.Net.HttpStatusCode.OK, paging);
+        return Response(HttpStatusCode.OK, paging);
     }
 
 }

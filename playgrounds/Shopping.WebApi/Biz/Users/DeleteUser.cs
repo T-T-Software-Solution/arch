@@ -9,15 +9,20 @@ namespace Shopping.WebApi.Biz.Users;
 
 public sealed record DeleteUser(string UserId) : IHttpRequesting;
 
-internal class DeleteUserHandler(ICorrelationContext context, IRepository<User> repository) : HttpRequestHandlerAsync<DeleteUser>
+internal class DeleteUserHandler(ICorrelationContext context, IRepository<User> repository)
+    : HttpRequestHandlerAsync<DeleteUser>
 {
     public override async Task<IHttpResponse> HandleAsync(DeleteUser request, CancellationToken cancellationToken = default)
     {
-        var areArgumentsValid = !string.IsNullOrWhiteSpace(request.UserId)
-            && context.CurrentUserId == request.UserId;
+        var areArgumentsValid = !string.IsNullOrWhiteSpace(request.UserId);
         if (!areArgumentsValid)
         {
             return Response(HttpStatusCode.BadRequest);
+        }
+
+        if (context.CurrentUserId != request.UserId)
+        {
+            return Response(HttpStatusCode.Forbidden);
         }
 
         var entity = await repository.GetByIdAsync(request.UserId, cancellationToken);
