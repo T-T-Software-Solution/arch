@@ -25,8 +25,8 @@ internal sealed class MongoDbQueryResult<TEntity>(IFindFluent<TEntity, TEntity> 
     public async Task<IEnumerable<TEntity>> GetAsync()
         => await _findResult.ToListAsync(_cancellationToken);
 
-    public IPagingRepositoryResult<TEntity> ToPaging(bool totalCount = false, int pageSize = 0)
-        => new MongoDbPagingResult<TEntity>(_findResult, mappingStrategy, _cancellationToken, totalCount, pageSize);
+    public IPagingRepository<TEntity> ToPaging(bool totalCount = false, int pageSize = 0)
+        => new MongoDbPagingRepository<TEntity>(_findResult, mappingStrategy, _cancellationToken, totalCount, pageSize);
 
     public IEnumerator<TEntity> GetEnumerator()
         => _findResult.ToEnumerable(_cancellationToken).GetEnumerator();

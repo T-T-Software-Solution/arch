@@ -7,7 +7,7 @@ using TTSS.Core.Models;
 
 namespace Shopping.WebApi.Biz.Products;
 
-public sealed record ListProducts : IHttpRequesting<IPagingResponse<ProductVm>>, IPagingRequest
+public sealed record ListProducts : IHttpRequesting<Paging<ProductVm>>, IPagingRequest
 {
     public required int PageNo { get; init; }
     public required int PageSize { get; init; }
@@ -15,14 +15,14 @@ public sealed record ListProducts : IHttpRequesting<IPagingResponse<ProductVm>>,
 }
 
 internal sealed class ListProductHandler(IRepository<Product> repository)
-    : HttpRequestHandlerAsync<ListProducts, IPagingResponse<ProductVm>>
+    : HttpRequestHandlerAsync<ListProducts, Paging<ProductVm>>
 {
-    public override async Task<IHttpResponse<IPagingResponse<ProductVm>>> HandleAsync(ListProducts request, CancellationToken cancellationToken = default)
+    public override async Task<IHttpResponse<Paging<ProductVm>>> HandleAsync(ListProducts request, CancellationToken cancellationToken = default)
     {
-        var paging = repository
-            .ExcludeDelete()
-            .GetPaging(request.PageNo, request.PageSize);
-        var vm = await paging.ToPagingDataAsync<ProductVm>();
-        return Response(System.Net.HttpStatusCode.OK, vm);
+        var paging = await repository
+            .ExcludeDeleted()
+            .GetPaging(request.PageNo, request.PageSize)
+            .ExecuteAsync<ProductVm>();
+        return Response(System.Net.HttpStatusCode.OK, paging);
     }
 }

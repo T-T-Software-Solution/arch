@@ -1,34 +1,22 @@
-﻿using TTSS.Core.Models;
-
-namespace TTSS.Core.Data.Models;
+﻿namespace TTSS.Core.Models;
 
 /// <summary>
-/// Paging data.
+/// Paging result.
 /// </summary>
 /// <typeparam name="TEntity">Entity type</typeparam>
-public sealed class PagingData<TEntity> : IPagingResponse<TEntity>
+public sealed class Paging<TEntity>
 {
     #region Properties
-
-    /// <summary>
-    /// Current page number.
-    /// </summary>
-    public required int CurrentPage { get; init; }
-
-    /// <summary>
-    /// Total entities on the current page.
-    /// </summary>
-    public required int PageSize { get; init; }
-
-    /// <summary>
-    /// Total entities.
-    /// </summary>
-    public required int TotalCount { get; init; }
 
     /// <summary>
     /// Total pages.
     /// </summary>
     public required int PageCount { get; init; }
+
+    /// <summary>
+    /// Current page number.
+    /// </summary>
+    public required int CurrentPage { get; init; }
 
     /// <summary>
     /// Next page number.
@@ -51,9 +39,19 @@ public sealed class PagingData<TEntity> : IPagingResponse<TEntity>
     public required bool HasPreviousPage { get; init; }
 
     /// <summary>
+    /// Total entities on the current page.
+    /// </summary>
+    public required int PageSize { get; init; }
+
+    /// <summary>
+    /// Total entities.
+    /// </summary>
+    public required int TotalCount { get; init; }
+
+    /// <summary>
     /// Entities.
     /// </summary>
-    public required IEnumerable<TEntity> Result { get; init; }
+    public required IEnumerable<TEntity> Contents { get; init; }
 
     #endregion
 }

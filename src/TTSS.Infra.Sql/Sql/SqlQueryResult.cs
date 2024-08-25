@@ -24,8 +24,8 @@ internal sealed class SqlQueryResult<TEntity>(IQueryable<TEntity> findResult, IM
     public async Task<IEnumerable<TEntity>> GetAsync()
         => await _findResult.ToListAsync(cancellationToken);
 
-    public IPagingRepositoryResult<TEntity> ToPaging(bool totalCount = false, int pageSize = 0)
-        => new SqlPagingResult<TEntity>(_findResult, mappingStrategy, totalCount, pageSize);
+    public IPagingRepository<TEntity> ToPaging(bool totalCount = false, int pageSize = 0)
+        => new SqlPagingRepository<TEntity>(_findResult, mappingStrategy, totalCount, pageSize);
 
     public IEnumerator<TEntity> GetEnumerator()
         => _findResult.GetEnumerator();

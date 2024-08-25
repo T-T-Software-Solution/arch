@@ -8,11 +8,11 @@ internal sealed class PagingService
     private const int Offset = 1;
     private const int MinimumPageNo = 0;
 
-    public static PagingResult<TEntity> GetPaging<TEntity, TKey>(IRepository<TEntity, TKey> repository,
+    public static PagingSet<TEntity> GetPaging<TEntity, TKey>(IRepository<TEntity, TKey> repository,
         int pageNo,
         int pageSize,
         Expression<Func<TEntity, bool>>? filter = default,
-        Func<IPagingRepositoryResult<TEntity>, IPagingRepositoryResult<TEntity>>? decorate = default)
+        Func<IPagingRepository<TEntity>, IPagingRepository<TEntity>>? decorate = default)
         where TEntity : class, IDbModel<TKey>
         where TKey : notnull
     {

@@ -11,10 +11,10 @@ public static class IRepositoryExtensions
     /// <typeparam name="TEntity">Entity type</typeparam>
     /// <param name="target">The target repository</param>
     /// <returns>The repository</returns>
-    public static IRepository<TEntity> ExcludeDelete<TEntity>(this IRepository<TEntity> target)
+    public static IRepository<TEntity> ExcludeDeleted<TEntity>(this IRepository<TEntity> target)
         where TEntity : class, IDbModel<string>, ITimeActivityEntity
     {
-        ExcludeDelete<TEntity, string>(target);
+        ExcludeDeleted<TEntity, string>(target);
         return target;
     }
 
@@ -25,7 +25,7 @@ public static class IRepositoryExtensions
     /// <typeparam name="TKey">Primary key type</typeparam>
     /// <param name="target">The target repository</param>
     /// <returns>The repository</returns>
-    public static IRepository<TEntity, TKey> ExcludeDelete<TEntity, TKey>(this IRepository<TEntity, TKey> target)
+    public static IRepository<TEntity, TKey> ExcludeDeleted<TEntity, TKey>(this IRepository<TEntity, TKey> target)
         where TEntity : class, IDbModel<TKey>, ITimeActivityEntity
         where TKey : notnull
     {

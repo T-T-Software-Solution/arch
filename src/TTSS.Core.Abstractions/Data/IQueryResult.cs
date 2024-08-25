@@ -23,5 +23,5 @@ public interface IQueryResult<TEntity> : IEnumerable<TEntity>
     /// <param name="totalCount">Force calculation of total entities or not</param>
     /// <param name="pageSize">Total entities per paging result</param>
     /// <returns>The paging result</returns>
-    IPagingRepositoryResult<TEntity> ToPaging(bool totalCount = false, int pageSize = 0);
+    IPagingRepository<TEntity> ToPaging(bool totalCount = false, int pageSize = 0);
 }

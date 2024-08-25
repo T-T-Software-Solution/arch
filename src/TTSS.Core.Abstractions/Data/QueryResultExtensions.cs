@@ -25,7 +25,7 @@ public static class QueryResultExtensions
     /// <param name="pageSize">Total entities per paging result</param>
     /// <returns>The paging result</returns>
     /// <exception cref="NotSupportedException">The result parameter must implement <see cref="IQueryResult{T}"/>.</exception>
-    public static IPagingRepositoryResult<TEntity> ToPaging<TEntity>(this IEnumerable<TEntity> result, bool totalCount = false, int pageSize = 0)
+    public static IPagingRepository<TEntity> ToPaging<TEntity>(this IEnumerable<TEntity> result, bool totalCount = false, int pageSize = 0)
         => result is IQueryResult<TEntity> qresult
         ? qresult.ToPaging(totalCount, pageSize)
         : throw new NotSupportedException("The underlying result is not paging-enabled.");

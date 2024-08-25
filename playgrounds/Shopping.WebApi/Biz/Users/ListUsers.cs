@@ -1,5 +1,6 @@
 ﻿using Shopping.Shared.Entities;
 using Shopping.Shared.Entities.ViewModels;
+using System.Linq.Expressions;
 using TTSS.Core.Data;
 using TTSS.Core.Messaging;
 using TTSS.Core.Messaging.Handlers;
@@ -7,7 +8,7 @@ using TTSS.Core.Models;
 
 namespace Shopping.WebApi.Biz.Users;
 
-public sealed record ListUsers : IHttpRequesting<IPagingResponse<UserVm>>, IPagingRequest
+public sealed record ListUsers : IHttpRequesting<Paging<UserVm>>, IPagingRequest
 {
     public required int PageNo { get; init; }
     public required int PageSize { get; init; }
@@ -15,16 +16,18 @@ public sealed record ListUsers : IHttpRequesting<IPagingResponse<UserVm>>, IPagi
 }
 
 internal sealed class ListUsersHandler(IRepository<User> repository)
-    : HttpRequestHandlerAsync<ListUsers, IPagingResponse<UserVm>>
+    : HttpRequestHandlerAsync<ListUsers, Paging<UserVm>>
 {
-    public override async Task<IHttpResponse<IPagingResponse<UserVm>>> HandleAsync(ListUsers request, CancellationToken cancellationToken = default)
+    public override async Task<IHttpResponse<Paging<UserVm>>> HandleAsync(ListUsers request, CancellationToken cancellationToken = default)
     {
         var shouldSkipSearch = string.IsNullOrEmpty(request.Keyword);
-        var paging = repository.GetPaging(request.PageNo, request.PageSize,
-            it => shouldSkipSearch
-                || (null != it.FirstName && it.FirstName.Contains(request.Keyword!))
-                || (null != it.LastName && it.LastName.Contains(request.Keyword!)));
-        var vm = await paging.ToPagingDataAsync<UserVm>();
-        return Response(System.Net.HttpStatusCode.OK, vm);
+        Expression<Func<User, bool>> filter = it => shouldSkipSearch
+            || (null != it.FirstName && it.FirstName.Contains(request.Keyword!))
+            || (null != it.LastName && it.LastName.Contains(request.Keyword!));
+        var paging = await repository
+            .GetPaging(request.PageNo, request.PageSize, filter)
+            .ExecuteAsync<UserVm>();
+        return Response(System.Net.HttpStatusCode.OK, paging);
     }
+
 }

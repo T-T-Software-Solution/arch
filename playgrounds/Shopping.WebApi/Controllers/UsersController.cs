@@ -20,7 +20,7 @@ public sealed class UsersController(IMessagingHub hub) : ApiControllerBase
         => hub.SendAsync(new GetUser(id)).ToActionResultAsync();
 
     [HttpGet("list")]
-    public Task<ActionResult<IPagingResponse<UserVm>>> Liste([FromQuery] int pageNo = 1, [FromQuery] int pageSize = 30, [FromQuery] string? keyword = default)
+    public Task<ActionResult<Paging<UserVm>>> Liste([FromQuery] int pageNo = 1, [FromQuery] int pageSize = 30, [FromQuery] string? keyword = default)
         => hub.SendAsync(new ListUsers { PageNo = pageNo, PageSize = pageSize, Keyword = keyword }).ToActionResultAsync();
 
     [Authorize]

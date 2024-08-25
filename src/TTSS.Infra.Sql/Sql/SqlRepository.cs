@@ -103,16 +103,16 @@ public class SqlRepository<TEntity, TKey> : ISqlRepository<TEntity, TKey>
     public IEnumerable<TEntity> Get(Expression<Func<TEntity, bool>> filter, CancellationToken cancellationToken = default)
         => new SqlQueryResult<TEntity>(Queryable.Where(filter), MappingStrategy, cancellationToken);
 
-    PagingResult<TEntity> IQueryRepository<TEntity, TKey>.GetPaging(int pageNo, int pageSize)
+    PagingSet<TEntity> IQueryRepository<TEntity, TKey>.GetPaging(int pageNo, int pageSize)
         => PagingService.GetPaging(this, pageNo, pageSize);
 
-    PagingResult<TEntity> IQueryRepository<TEntity, TKey>.GetPaging(int pageNo, int pageSize, Expression<Func<TEntity, bool>> filter)
+    PagingSet<TEntity> IQueryRepository<TEntity, TKey>.GetPaging(int pageNo, int pageSize, Expression<Func<TEntity, bool>> filter)
         => PagingService.GetPaging(this, pageNo, pageSize, filter);
 
-    PagingResult<TEntity> IQueryRepository<TEntity, TKey>.GetPaging(int pageNo, int pageSize, Func<IPagingRepositoryResult<TEntity>, IPagingRepositoryResult<TEntity>> decorate)
+    PagingSet<TEntity> IQueryRepository<TEntity, TKey>.GetPaging(int pageNo, int pageSize, Func<IPagingRepository<TEntity>, IPagingRepository<TEntity>> decorate)
         => PagingService.GetPaging(this, pageNo, pageSize, decorate: decorate);
 
-    PagingResult<TEntity> IQueryRepository<TEntity, TKey>.GetPaging(int pageNo, int pageSize, Expression<Func<TEntity, bool>> filter, Func<IPagingRepositoryResult<TEntity>, IPagingRepositoryResult<TEntity>> decorate)
+    PagingSet<TEntity> IQueryRepository<TEntity, TKey>.GetPaging(int pageNo, int pageSize, Expression<Func<TEntity, bool>> filter, Func<IPagingRepository<TEntity>, IPagingRepository<TEntity>> decorate)
         => PagingService.GetPaging(this, pageNo, pageSize, filter, decorate);
 
     /// <summary>

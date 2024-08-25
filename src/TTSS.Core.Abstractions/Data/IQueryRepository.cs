@@ -33,50 +33,50 @@ public interface IQueryRepository<TEntity, TKey> : IRepositoryBase
     IEnumerable<TEntity> Get(Expression<Func<TEntity, bool>> filter, CancellationToken cancellationToken = default);
 
     /// <summary>
-    /// Get paged data.
+    /// Get paged set.
     /// </summary>
     /// <param name="pageNo">Page number</param>
     /// <param name="pageSize">Content size per page</param>
-    /// <returns>Paging result</returns>
-    PagingResult<TEntity> GetPaging(
+    /// <returns>Paging set</returns>
+    PagingSet<TEntity> GetPaging(
         int pageNo,
         int pageSize);
 
     /// <summary>
-    /// Get paged data.
+    /// Get paged set.
     /// </summary>
     /// <param name="pageNo">Page number</param>
     /// <param name="pageSize">Content size per page</param>
     /// <param name="filter">Entity filter</param>
-    /// <returns>Paging result</returns>
-    PagingResult<TEntity> GetPaging(
+    /// <returns>Paging set</returns>
+    PagingSet<TEntity> GetPaging(
         int pageNo,
         int pageSize,
         Expression<Func<TEntity, bool>> filter);
 
     /// <summary>
-    /// Get paged data.
+    /// Get paged set.
     /// </summary>
     /// <param name="pageNo">Page number</param>
     /// <param name="pageSize">Content size per page</param>
     /// <param name="decorate">Decorate function</param>
-    /// <returns>Paging result</returns>
-    PagingResult<TEntity> GetPaging(
+    /// <returns>Paging set</returns>
+    PagingSet<TEntity> GetPaging(
         int pageNo,
         int pageSize,
-        Func<IPagingRepositoryResult<TEntity>, IPagingRepositoryResult<TEntity>> decorate);
+        Func<IPagingRepository<TEntity>, IPagingRepository<TEntity>> decorate);
 
     /// <summary>
-    /// Get paged data.
+    /// Get paged set.
     /// </summary>
     /// <param name="pageNo">Page number</param>
     /// <param name="pageSize">Content size per page</param>
     /// /// <param name="filter">Entity filter</param>
     /// <param name="decorate">Decorate function</param>
-    /// <returns>Paging result</returns>
-    PagingResult<TEntity> GetPaging(
+    /// <returns>Paging set</returns>
+    PagingSet<TEntity> GetPaging(
         int pageNo,
         int pageSize,
         Expression<Func<TEntity, bool>> filter,
-        Func<IPagingRepositoryResult<TEntity>, IPagingRepositoryResult<TEntity>> decorate);
+        Func<IPagingRepository<TEntity>, IPagingRepository<TEntity>> decorate);
 }

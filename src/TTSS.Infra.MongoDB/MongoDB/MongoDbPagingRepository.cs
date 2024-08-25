@@ -5,7 +5,7 @@ using TTSS.Core.Services;
 
 namespace TTSS.Infra.Data.MongoDB;
 
-internal sealed class MongoDbPagingResult<TEntity> : IPagingRepositoryResult<TEntity>
+internal sealed class MongoDbPagingRepository<TEntity> : IPagingRepository<TEntity>
 {
     #region Fields
 
@@ -19,7 +19,7 @@ internal sealed class MongoDbPagingResult<TEntity> : IPagingRepositoryResult<TEn
 
     #region Constructors
 
-    public MongoDbPagingResult(IFindFluent<TEntity, TEntity> findResult, IMappingStrategy mappingStrategy, CancellationToken cancellationToken, bool totalCount = false, int pageSize = 0)
+    public MongoDbPagingRepository(IFindFluent<TEntity, TEntity> findResult, IMappingStrategy mappingStrategy, CancellationToken cancellationToken, bool totalCount = false, int pageSize = 0)
     {
         _findResult = findResult;
         _mappingStrategy = mappingStrategy;
@@ -32,31 +32,31 @@ internal sealed class MongoDbPagingResult<TEntity> : IPagingRepositoryResult<TEn
 
     #region Methods
 
-    public PagingResult<TEntity> GetPage(int pageNo)
+    public PagingSet<TEntity> GetPage(int pageNo)
         => new(GetPageDataInternal(pageNo), _pageSize, pageNo, () => _totalCount, _mappingStrategy);
 
     public Task<IEnumerable<TEntity>> GetDataAsync(int pageNo)
         => GetPageDataInternal(pageNo);
 
-    public IPagingRepositoryResult<TEntity> OrderBy(Expression<Func<TEntity, object>> keySelector)
+    public IPagingRepository<TEntity> OrderBy(Expression<Func<TEntity, object>> keySelector)
     {
         _findResult = _findResult.SortBy(keySelector);
         return this;
     }
 
-    public IPagingRepositoryResult<TEntity> OrderByDescending(Expression<Func<TEntity, object>> keySelector)
+    public IPagingRepository<TEntity> OrderByDescending(Expression<Func<TEntity, object>> keySelector)
     {
         _findResult = _findResult.SortByDescending(keySelector);
         return this;
     }
 
-    public IPagingRepositoryResult<TEntity> ThenBy(Expression<Func<TEntity, object>> keySelector)
+    public IPagingRepository<TEntity> ThenBy(Expression<Func<TEntity, object>> keySelector)
     {
         _findResult = _findResult.SortBy(keySelector);
         return this;
     }
 
-    public IPagingRepositoryResult<TEntity> ThenByDescending(Expression<Func<TEntity, object>> keySelector)
+    public IPagingRepository<TEntity> ThenByDescending(Expression<Func<TEntity, object>> keySelector)
     {
         _findResult = _findResult.SortByDescending(keySelector);
         return this;

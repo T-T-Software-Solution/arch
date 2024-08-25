@@ -1269,7 +1269,7 @@ public abstract class CommonTestCases : IoCTestBase, IDisposable
         pagingResult.PageCount.Should().Be(expectedPageCount);
         (await pagingResult.GetDataAsync()).Should().HaveCount(expectedDataElements);
 
-        var pagingData = await pagingResult.ToPagingDataAsync();
+        var pagingData = await pagingResult.ExecuteAsync();
         pagingData.CurrentPage.Should().Be(getPageNo);
         pagingData.PreviousPage.Should().Be(expectedPrevPage);
         pagingData.NextPage.Should().Be(expectedNextPage);
@@ -1277,8 +1277,8 @@ public abstract class CommonTestCases : IoCTestBase, IDisposable
         pagingData.HasNextPage.Should().Be(expectedHasNextPage);
         pagingData.TotalCount.Should().Be(contents);
         pagingData.PageCount.Should().Be(expectedPageCount);
-        pagingData.Result.Should().HaveCount(expectedDataElements);
-        pagingData.Result.Should().BeEquivalentTo((await pagingResult.GetDataAsync()).ToList());
+        pagingData.Contents.Should().HaveCount(expectedDataElements);
+        pagingData.Contents.Should().BeEquivalentTo((await pagingResult.GetDataAsync()).ToList());
     }
 
     #endregion
