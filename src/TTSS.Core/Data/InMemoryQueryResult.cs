@@ -2,24 +2,17 @@
 
 namespace TTSS.Core.Data;
 
-internal sealed class InMemoryQueryResult<TEntity> : IQueryResult<TEntity>
+internal sealed class InMemoryQueryResult<TEntity>(IEnumerable<TEntity> entities) : IQueryResult<TEntity>
 {
     #region Fields
 
-    private readonly IEnumerable<TEntity> _entities;
+    private readonly IEnumerable<TEntity> _entities = entities;
 
     #endregion
 
     #region Properties
 
     public long TotalCount => _entities.Count();
-
-    #endregion
-
-    #region Constructors
-
-    public InMemoryQueryResult(IEnumerable<TEntity> entities)
-        => _entities = entities;
 
     #endregion
 

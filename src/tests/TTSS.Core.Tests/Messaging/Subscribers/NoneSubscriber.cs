@@ -2,5 +2,5 @@
 
 public class NoneSubscriber : IPublication
 {
-    public List<string> HandlerNames { get; set; } = new();
+    public List<string> HandlerNames { get; set; } = [];
 }

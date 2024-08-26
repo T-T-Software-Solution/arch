@@ -26,6 +26,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\TTSS.Core.Messaging\TTSS.Core.Messaging.csproj" />
     <ProjectReference Include="..\TTSS.Core\TTSS.Core.csproj" />
   </ItemGroup>
 

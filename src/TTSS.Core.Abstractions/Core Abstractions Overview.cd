@@ -34,7 +34,7 @@
     <Position X="0.5" Y="2.75" Height="0.291" Width="2.767" />
   </Comment>
   <Comment CommentText="Models">
-    <Position X="14" Y="6.25" Height="0.291" Width="1.767" />
+    <Position X="14" Y="6.75" Height="0.291" Width="6.496" />
   </Comment>
   <Class Name="TTSS.Core.Data.Models.PagingData&lt;TEntity&gt;">
     <Position X="4.5" Y="12.75" Width="2.25" />
@@ -51,16 +51,12 @@
       <Field Name="_hasPreviousPage" Hidden="true" />
       <Field Name="_nextPage" Hidden="true" />
       <Field Name="_pageCount" Hidden="true" />
-      <Field Name="_pageSize" Hidden="true" />
       <Field Name="_previousPage" Hidden="true" />
-      <Field Name="_result" Hidden="true" />
       <Field Name="_totalCount" Hidden="true" />
-      <Field Name="_totalCountFn" Hidden="true" />
       <Method Name="ComputeParameters" Hidden="true" />
-      <Method Name="PagingResult" Hidden="true" />
     </Members>
     <TypeIdentifier>
-      <HashCode>AAAAAAAEAAARBAACAEEAAAKUAiwAAAAAAAAAgAACABY=</HashCode>
+      <HashCode>AAAAAAAEAAARBAAAAEEAAAKUAigAAAAAAAAAgAACAAY=</HashCode>
       <FileName>Data\PagingResult.cs</FileName>
     </TypeIdentifier>
   </Class>
@@ -73,14 +69,22 @@
   </Class>
   <Class Name="TTSS.Core.Services.FactoryBase">
     <Position X="22.5" Y="4" Width="3.5" />
-    <Members>
-      <Field Name="_serviceProvider" Hidden="true" />
-      <Method Name="FactoryBase" Hidden="true" />
-    </Members>
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAgAAAAAAAAAAAAAAAAAAAAAAAAAAABAAA=</HashCode>
+      <HashCode>AAAAAAAAAAAgAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAA=</HashCode>
       <FileName>Services\FactoryBase.cs</FileName>
     </TypeIdentifier>
+  </Class>
+  <Class Name="TTSS.Core.Models.CorrelationContext">
+    <Position X="16" Y="9" Width="2.25" />
+    <Members>
+      <Field Name="_correlationId" Hidden="true" />
+      <Field Name="_currentUserId" Hidden="true" />
+    </Members>
+    <TypeIdentifier>
+      <HashCode>AAAAAEAAAICAAAAAAAAAAGAQAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Models\CorrelationContext.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
   </Class>
   <Interface Name="TTSS.Core.Data.IAsyncQueryRepository&lt;TEntity, TKey&gt;">
     <Position X="7.5" Y="5" Width="3.75" />
@@ -207,7 +211,7 @@
   <Interface Name="TTSS.Core.Loggings.IActivity">
     <Position X="19.5" Y="2.25" Width="2.5" />
     <TypeIdentifier>
-      <HashCode>IAAEAAAQQAAAAAFAAAAAAAACAAoEAAAAAgABAAAAAAA=</HashCode>
+      <HashCode>IAAEAAAQQAAAAAFAAAAAAAACQAoEAAAAAgABAEAAAAA=</HashCode>
       <FileName>Loggings\IActivity.cs</FileName>
     </TypeIdentifier>
   </Interface>
@@ -273,21 +277,21 @@
     </TypeIdentifier>
   </Interface>
   <Interface Name="TTSS.Core.Models.IHaveNonce">
-    <Position X="14" Y="6.75" Width="1.75" />
+    <Position X="14" Y="7.25" Width="1.75" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAA=</HashCode>
       <FileName>Models\IHaveNonce.cs</FileName>
     </TypeIdentifier>
   </Interface>
   <Interface Name="TTSS.Core.Models.IResponse">
-    <Position X="14" Y="8.75" Width="1.75" />
+    <Position X="14" Y="9.25" Width="1.75" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIAAAAAA=</HashCode>
       <FileName>Models\IResponse.cs</FileName>
     </TypeIdentifier>
   </Interface>
   <Interface Name="TTSS.Core.Models.IResponse&lt;TData&gt;">
-    <Position X="14" Y="10.25" Width="1.75" />
+    <Position X="14" Y="10.75" Width="1.75" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAA=</HashCode>
       <FileName>Models\IResponse.cs</FileName>
@@ -337,7 +341,7 @@
     </TypeIdentifier>
   </Interface>
   <Interface Name="TTSS.Core.Models.IRequest" Collapsed="true">
-    <Position X="14" Y="8" Width="1.75" />
+    <Position X="14" Y="8.5" Width="1.75" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Models\IRequest.cs</FileName>
@@ -348,6 +352,20 @@
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Data\IRepositoryCache.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="TTSS.Core.Models.ICorrelationContext">
+    <Position X="16" Y="7.25" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAACAAAAAAAAAACAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Models\ICorrelationContext.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="TTSS.Core.Models.ISetterCorrelationContext">
+    <Position X="18.25" Y="7.25" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAgAAAAAAAAAAgAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Models\ISetterCorrelationContext.cs</FileName>
     </TypeIdentifier>
   </Interface>
   <Font Name="Segoe UI" Size="9" />

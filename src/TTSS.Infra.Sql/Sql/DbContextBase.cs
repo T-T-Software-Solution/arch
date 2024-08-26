@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Diagnostics;
 
 namespace TTSS.Infra.Data.Sql;
 
@@ -6,22 +7,51 @@ namespace TTSS.Infra.Data.Sql;
 /// A DbContextBase instance represents a session with the database and can be used to
 /// query and save instances of your entities.
 /// </summary>
-/// <typeparam name="TEntity">Entity type</typeparam>
-public abstract class DbContextBase<TEntity> : DbContext
-    where TEntity : DbContextBase<TEntity>
+/// <remarks>
+/// Initializes a new instance of the <see cref="DbContextBase"/> class.
+/// </remarks>
+/// <param name="options">The options for this context</param>
+public abstract class DbContextBase(DbContextOptions options) : DbContext(options)
 {
-    #region Constructors
+    #region Fields
 
-    /// <summary>
-    /// Initializes a new instance of the <see cref="DbContextBase{T}"/> class.
-    /// </summary>
-    /// <param name="options">The options for this context</param>
-    public DbContextBase(DbContextOptions<TEntity> options) : base(options)
-    {
-    }
+    private IEnumerable<IInterceptor>? _interceptors;
 
     #endregion
 
+    #region Methods
+
+    /// <summary>
+    /// Configure the database (and other options) to be used for this context.
+    /// </summary>
+    /// <param name="optionsBuilder">A builder used to create or modify options for this context</param>
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+    {
+        if (_interceptors?.Any() ?? false)
+        {
+            optionsBuilder.AddInterceptors(_interceptors);
+        }
+        base.OnConfiguring(optionsBuilder);
+    }
+
+    internal void SetInterceptors(IEnumerable<IInterceptor> interceptors)
+        => _interceptors ??= interceptors;
+
+    #endregion
+}
+
+/// <summary>
+/// A DbContextBase instance represents a session with the database and can be used to
+/// query and save instances of your entities.
+/// </summary>
+/// <typeparam name="TEntity">Entity type</typeparam>
+/// <remarks>
+/// Initializes a new instance of the <see cref="DbContextBase{T}"/> class.
+/// </remarks>
+/// <param name="options">The options for this context</param>
+public abstract class DbContextBase<TEntity>(DbContextOptions<TEntity> options) : DbContextBase(options)
+    where TEntity : DbContextBase<TEntity>
+{
     #region Methods
 
     /// <summary>
@@ -29,7 +59,10 @@ public abstract class DbContextBase<TEntity> : DbContext
     /// </summary>
     /// <param name="modelBuilder">The model builder</param>
     protected override void OnModelCreating(ModelBuilder modelBuilder)
-        => modelBuilder.ApplyConfigurationsFromAssembly(typeof(TEntity).Assembly);
+    {
+        base.OnModelCreating(modelBuilder);
+        modelBuilder.ApplyConfigurationsFromAssembly(typeof(TEntity).Assembly);
+    }
 
     #endregion
 }

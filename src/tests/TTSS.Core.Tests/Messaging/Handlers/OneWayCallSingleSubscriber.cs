@@ -5,28 +5,19 @@ namespace TTSS.Core.Messaging.Handlers;
 public class OneWayCallSingleSubscriber : IRequesting
 {
     public required string Name { get; set; }
-    public List<string> NotificationHandlerNames { get; set; } = new();
+    public List<string> NotificationHandlerNames { get; set; } = [];
 }
 
-public class OneWayCallSingleSubscriberHandler : RequestHandler<OneWayCallSingleSubscriber>
+public class OneWayCallSingleSubscriberHandler(ITestInterface testInterface, IMessagingHub messagingHub) : RequestHandler<OneWayCallSingleSubscriber>
 {
-    private readonly IMessagingHub _messagingHub;
-    private readonly ITestInterface _testInterface;
-
-    public OneWayCallSingleSubscriberHandler(ITestInterface testInterface, IMessagingHub messagingHub)
-    {
-        _testInterface = testInterface;
-        _messagingHub = messagingHub;
-    }
-
     public override void Handle(OneWayCallSingleSubscriber request)
     {
-        _testInterface.Execute(request);
+        testInterface.Execute(request);
         request.Name = GetType().Name;
 
         var noti = new SingleSubscriber();
-        var response = _messagingHub.PublishAsync(noti);
-        Task.WaitAll(response);
+        var response = messagingHub.PublishAsync(noti);
+        response.Wait();
 
         request.NotificationHandlerNames.AddRange(noti.HandlerNames);
     }

@@ -36,10 +36,14 @@ public sealed record SqlConnection
     public SqlConnection(Type entityType, Type dbContextType)
     {
         if (false == (entityType?.IsAssignableTo(typeof(IDbModel)) ?? false))
+        {
             throw new ArgumentOutOfRangeException($"{nameof(entityType)} must implement IDbModel.");
+        }
 
         if (false == (dbContextType?.IsSubclassOf(typeof(DbContext)) ?? false))
+        {
             throw new ArgumentOutOfRangeException($"{nameof(DbContextDataType)} must be a subclass of DbContext.");
+        }
 
         TypeName = entityType.Name;
         DbContextDataType = dbContextType;

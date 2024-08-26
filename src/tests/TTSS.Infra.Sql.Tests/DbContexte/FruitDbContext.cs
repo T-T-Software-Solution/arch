@@ -3,14 +3,10 @@ using TTSS.Infra.Data.Sql.Models;
 
 namespace TTSS.Infra.Data.Sql.DbContexte;
 
-internal class FruitDbContext : DbContextBase<FruitDbContext>
+internal class FruitDbContext(DbContextOptions<FruitDbContext> options) : DbContextBase<FruitDbContext>(options)
 {
     public DbSet<Apple> Apple { get; set; }
     public DbSet<Banana> Banana { get; set; }
-
-    public FruitDbContext(DbContextOptions<FruitDbContext> options) : base(options)
-    {
-    }
 }
 
 internal abstract class FruitBase : SqlModelBase

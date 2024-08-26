@@ -4,8 +4,10 @@ using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using TTSS.Core.Data;
+using TTSS.Infra.Data.Sql.Contexts;
 using TTSS.Infra.Data.Sql.DbContexte;
 using TTSS.Infra.Data.Sql.DbModels;
+using TTSS.Infra.Data.Sql.Interceptors;
 using TTSS.Infra.Data.Sql.Models;
 using TTSS.Tests;
 
@@ -13,6 +15,9 @@ namespace TTSS.Infra.Data.Sql;
 
 public abstract class CommonTestCases : IoCTestBase, IDisposable
 {
+    protected abstract bool IsManual { get; }
+    protected TestContext Context = new(Guid.NewGuid().ToString());
+
     public abstract void Dispose();
 
     #region Resolve
@@ -24,6 +29,12 @@ public abstract class CommonTestCases : IoCTestBase, IDisposable
         ServiceProvider.GetRequiredService<IRepository<Banana>>().Should().NotBeNull();
         ServiceProvider.GetRequiredService<IRepository<Student>>().Should().NotBeNull();
         ServiceProvider.GetRequiredService<IRepository<Teacher>>().Should().NotBeNull();
+        ServiceProvider.GetRequiredService<IRepository<Astronaut>>().Should().NotBeNull();
+        ServiceProvider.GetRequiredService<IRepository<Spaceship>>().Should().NotBeNull();
+        ServiceProvider.GetRequiredService<IRepository<AuditLog>>().Should().NotBeNull();
+        ServiceProvider.GetRequiredService<IRepository<SensitivitySpaceStation>>().Should().NotBeNull();
+        ServiceProvider.GetRequiredService<IRepository<MaintenanceLog>>().Should().NotBeNull();
+        ServiceProvider.GetRequiredService<IRepository<SeriousLog>>().Should().NotBeNull();
     }
 
     [Fact]
@@ -34,6 +45,12 @@ public abstract class CommonTestCases : IoCTestBase, IDisposable
         ServiceProvider.GetRequiredService<IRepository<Student, string>>().Should().NotBeNull();
         ServiceProvider.GetRequiredService<IRepository<Teacher, string>>().Should().NotBeNull();
         ServiceProvider.GetRequiredService<IRepository<Principal, int>>().Should().NotBeNull();
+        ServiceProvider.GetRequiredService<IRepository<Astronaut, string>>().Should().NotBeNull();
+        ServiceProvider.GetRequiredService<IRepository<Spaceship, string>>().Should().NotBeNull();
+        ServiceProvider.GetRequiredService<IRepository<AuditLog, string>>().Should().NotBeNull();
+        ServiceProvider.GetRequiredService<IRepository<SensitivitySpaceStation, string>>().Should().NotBeNull();
+        ServiceProvider.GetRequiredService<IRepository<MaintenanceLog, string>>().Should().NotBeNull();
+        ServiceProvider.GetRequiredService<IRepository<SeriousLog, string>>().Should().NotBeNull();
     }
 
     [Fact]
@@ -43,6 +60,12 @@ public abstract class CommonTestCases : IoCTestBase, IDisposable
         ServiceProvider.GetRequiredService<ISqlRepository<Banana>>().Should().NotBeNull();
         ServiceProvider.GetRequiredService<ISqlRepository<Student>>().Should().NotBeNull();
         ServiceProvider.GetRequiredService<ISqlRepository<Teacher>>().Should().NotBeNull();
+        ServiceProvider.GetRequiredService<ISqlRepository<Astronaut>>().Should().NotBeNull();
+        ServiceProvider.GetRequiredService<ISqlRepository<Spaceship>>().Should().NotBeNull();
+        ServiceProvider.GetRequiredService<ISqlRepository<AuditLog>>().Should().NotBeNull();
+        ServiceProvider.GetRequiredService<ISqlRepository<SensitivitySpaceStation>>().Should().NotBeNull();
+        ServiceProvider.GetRequiredService<ISqlRepository<MaintenanceLog>>().Should().NotBeNull();
+        ServiceProvider.GetRequiredService<ISqlRepository<SeriousLog>>().Should().NotBeNull();
     }
 
     [Fact]
@@ -53,6 +76,12 @@ public abstract class CommonTestCases : IoCTestBase, IDisposable
         ServiceProvider.GetRequiredService<ISqlRepository<Student, string>>().Should().NotBeNull();
         ServiceProvider.GetRequiredService<ISqlRepository<Teacher, string>>().Should().NotBeNull();
         ServiceProvider.GetRequiredService<ISqlRepository<Principal, int>>().Should().NotBeNull();
+        ServiceProvider.GetRequiredService<ISqlRepository<Astronaut, string>>().Should().NotBeNull();
+        ServiceProvider.GetRequiredService<ISqlRepository<Spaceship, string>>().Should().NotBeNull();
+        ServiceProvider.GetRequiredService<ISqlRepository<AuditLog, string>>().Should().NotBeNull();
+        ServiceProvider.GetRequiredService<ISqlRepository<SensitivitySpaceStation, string>>().Should().NotBeNull();
+        ServiceProvider.GetRequiredService<ISqlRepository<MaintenanceLog, string>>().Should().NotBeNull();
+        ServiceProvider.GetRequiredService<ISqlRepository<SeriousLog, string>>().Should().NotBeNull();
     }
 
     [Fact]
@@ -62,6 +91,12 @@ public abstract class CommonTestCases : IoCTestBase, IDisposable
         ServiceProvider.GetService<ISqlRepositorySpecific<Banana>>().Should().BeNull();
         ServiceProvider.GetService<ISqlRepositorySpecific<Student>>().Should().BeNull();
         ServiceProvider.GetService<ISqlRepositorySpecific<Teacher>>().Should().BeNull();
+        ServiceProvider.GetService<ISqlRepositorySpecific<Astronaut>>().Should().BeNull();
+        ServiceProvider.GetService<ISqlRepositorySpecific<Spaceship>>().Should().BeNull();
+        ServiceProvider.GetService<ISqlRepositorySpecific<AuditLog>>().Should().BeNull();
+        ServiceProvider.GetService<ISqlRepositorySpecific<SensitivitySpaceStation>>().Should().BeNull();
+        ServiceProvider.GetService<ISqlRepositorySpecific<MaintenanceLog>>().Should().BeNull();
+        ServiceProvider.GetService<ISqlRepositorySpecific<SeriousLog>>().Should().BeNull();
     }
 
     [Fact]
@@ -71,6 +106,12 @@ public abstract class CommonTestCases : IoCTestBase, IDisposable
         ServiceProvider.GetService<SqlRepository<Banana>>().Should().BeNull();
         ServiceProvider.GetService<SqlRepository<Student>>().Should().BeNull();
         ServiceProvider.GetService<SqlRepository<Teacher>>().Should().BeNull();
+        ServiceProvider.GetService<SqlRepository<Astronaut>>().Should().BeNull();
+        ServiceProvider.GetService<SqlRepository<Spaceship>>().Should().BeNull();
+        ServiceProvider.GetService<SqlRepository<AuditLog>>().Should().BeNull();
+        ServiceProvider.GetService<SqlRepository<SensitivitySpaceStation>>().Should().BeNull();
+        ServiceProvider.GetService<SqlRepository<MaintenanceLog>>().Should().BeNull();
+        ServiceProvider.GetService<SqlRepository<SeriousLog>>().Should().BeNull();
     }
 
     [Fact]
@@ -81,6 +122,12 @@ public abstract class CommonTestCases : IoCTestBase, IDisposable
         ServiceProvider.GetService<SqlRepository<Student, string>>().Should().BeNull();
         ServiceProvider.GetService<SqlRepository<Teacher, string>>().Should().BeNull();
         ServiceProvider.GetService<SqlRepository<Principal, int>>().Should().BeNull();
+        ServiceProvider.GetService<SqlRepository<Astronaut, string>>().Should().BeNull();
+        ServiceProvider.GetService<SqlRepository<Spaceship, string>>().Should().BeNull();
+        ServiceProvider.GetService<SqlRepository<AuditLog, string>>().Should().BeNull();
+        ServiceProvider.GetService<SqlRepository<SensitivitySpaceStation, string>>().Should().BeNull();
+        ServiceProvider.GetService<SqlRepository<MaintenanceLog, string>>().Should().BeNull();
+        ServiceProvider.GetService<SqlRepository<SeriousLog, string>>().Should().BeNull();
     }
 
     #endregion
@@ -122,10 +169,10 @@ public abstract class CommonTestCases : IoCTestBase, IDisposable
         var appleRepo = ServiceProvider.GetRequiredService<IRepository<Apple>>();
         var appleList = new[]
         {
-                Fixture.Create<Apple>(),
-                Fixture.Create<Apple>(),
-                Fixture.Create<Apple>(),
-            };
+            Fixture.Create<Apple>(),
+            Fixture.Create<Apple>(),
+            Fixture.Create<Apple>(),
+        };
         foreach (var item in appleList)
         {
             await appleRepo.InsertAsync(item);
@@ -134,12 +181,12 @@ public abstract class CommonTestCases : IoCTestBase, IDisposable
         var bananaRepo = ServiceProvider.GetRequiredService<IRepository<Banana>>();
         var bananaList = new[]
         {
-                Fixture.Create<Banana>(),
-                Fixture.Create<Banana>(),
-                Fixture.Create<Banana>(),
-                Fixture.Create<Banana>(),
-                Fixture.Create<Banana>(),
-            };
+            Fixture.Create<Banana>(),
+            Fixture.Create<Banana>(),
+            Fixture.Create<Banana>(),
+            Fixture.Create<Banana>(),
+            Fixture.Create<Banana>(),
+        };
         foreach (var item in bananaList)
         {
             await bananaRepo.InsertAsync(item);
@@ -209,6 +256,209 @@ public abstract class CommonTestCases : IoCTestBase, IDisposable
         };
         await action.Should().ThrowAsync<InvalidOperationException>().WithMessage("*same key*");
         sut.Get().Should().HaveCount(1).And.BeEquivalentTo(new[] { firstRecord });
+    }
+
+    [Fact(DisplayName = "เพิ่มข้อมูลที่มี interceptor ระบบสามารถจับการบันทึกข้อมูลได้ถูกต้อง")]
+    public async Task Insert_With_DbSaveInterceptor_ThenTheInterceptorMustWorkAsExpected()
+    {
+        SetupInterceptors();
+
+        var astronaut = Fixture.Create<Astronaut>();
+        var astronautRepo = ServiceProvider.GetRequiredService<IRepository<Astronaut>>();
+        await astronautRepo.InsertAsync(astronaut);
+
+        var spaceship = Fixture.Create<Spaceship>();
+        var spaceshipRepo = ServiceProvider.GetRequiredService<IRepository<Spaceship>>();
+        await spaceshipRepo.InsertAsync(spaceship);
+
+        CreationEvents.Should().HaveCount(2);
+        CreationEvents.First().entity.Should().BeEquivalentTo(astronaut);
+        CreationEvents.First().properties.Should().BeEquivalentTo([
+            new SqlPropertyInfo
+            {
+                ColumnName = "Id",
+                Value = astronaut.Id,
+                Remark = null,
+            },
+            new SqlPropertyInfo
+            {
+                ColumnName = "Name",
+                Value = astronaut.Name,
+                Remark = "Name of the astronaut",
+            },
+            new SqlPropertyInfo
+            {
+                ColumnName = "Size",
+                Value = astronaut.Size.ToString(),
+                Remark = "Size of the astronaut",
+            }]);
+
+        CreationEvents.Last().entity.Should().BeEquivalentTo(spaceship);
+        CreationEvents.Last().properties.Should().BeEquivalentTo([
+            new SqlPropertyInfo
+            {
+                ColumnName = "Id",
+                Value = spaceship.Id,
+                Remark = null,
+            },
+            new SqlPropertyInfo
+            {
+                ColumnName = "Name",
+                Value = spaceship.Name,
+                Remark = "Name of the spaceship",
+            },
+            new SqlPropertyInfo
+            {
+                ColumnName = "Power",
+                Value = spaceship.Power.ToString(),
+                Remark = null,
+            }]);
+
+        AuditEvents.Should().HaveCount(2);
+        ValidateAuditEvnet(0, "Create", nameof(Astronaut));
+        ValidateAuditEvnet(1, "Create", nameof(Spaceship));
+
+        var auditRepo = ServiceProvider.GetRequiredService<IRepository<AuditLog>>();
+        var auditRecords = auditRepo.Get().ToList();
+        auditRecords.Should().HaveCount(2);
+        ValidateAuditRecord(auditRecords, 0, "Create", nameof(Astronaut));
+        ValidateAuditRecord(auditRecords, 1, "Create", nameof(Spaceship));
+    }
+
+    [Fact(DisplayName = "เพิ่มข้อมูลรายที่เป็น audit โดยใช้ช่องทางปรกติ ระบบสามารถบันทึกข้อมูลได้ถูกต้อง โดยไม่มีการแจ้งไปยัง interceptor")]
+    public async Task Insert_AuditRecordDirectly_TheSystemMustInsertItWithTheSpecialPathForAudit()
+    {
+        SetupInterceptors();
+
+        var audit = Fixture.Create<AuditLog>();
+        var auditRepo = ServiceProvider.GetRequiredService<IRepository<AuditLog>>();
+        await auditRepo.InsertAsync(audit);
+
+        var actual = await auditRepo.GetByIdAsync(audit.Id);
+        actual.Should().BeEquivalentTo(audit);
+        actual.Id.Should().Be(audit.Id);
+        actual.Message.Should().Be(audit.Message);
+        auditRepo.Get().Should().BeEquivalentTo(new[] { audit });
+
+        const int NoEvent = 0;
+        AuditEvents.Should().HaveCount(NoEvent);
+        CreationEvents.Should().HaveCount(NoEvent);
+        DeletionEvents.Should().HaveCount(NoEvent);
+        UpdationEvents.Should().HaveCount(NoEvent);
+    }
+
+    [Fact(DisplayName = "เพิ่มข้อมูลที่มีความสามารถในการทำ masking ระบบสามารถจับการบันทึกข้อมูลได้ถูกต้อง")]
+    public async Task Insert_With_MaskableEntity_ThenTheMaskingMustWorkAsExpected()
+    {
+        SetupInterceptors();
+
+        var station = new SensitivitySpaceStation { Id = "1", Secret = "Hello" };
+        var stationRepo = ServiceProvider.GetRequiredService<IRepository<SensitivitySpaceStation>>();
+        await stationRepo.InsertAsync(station);
+
+        CreationEvents.Should().HaveCount(1);
+        CreationEvents.First().entity.Should().BeEquivalentTo(station);
+        CreationEvents.First().properties.Should().BeEquivalentTo([
+            new SqlPropertyInfo
+            {
+                ColumnName = "Id",
+                Value = station.Id,
+                Remark = null,
+            },
+            new SqlPropertyInfo
+            {
+                ColumnName = "Secret",
+                Value = "olleH",
+                Remark = "Secret of the space station",
+            }]);
+
+        AuditEvents.Should().HaveCount(1);
+        ValidateAuditEvnet(0, "Create", nameof(SensitivitySpaceStation));
+
+        var auditRepo = ServiceProvider.GetRequiredService<IRepository<AuditLog>>();
+        var auditRecords = auditRepo.Get().ToList();
+        auditRecords.Should().HaveCount(1);
+        ValidateAuditRecord(auditRecords, 0, "Create", nameof(SensitivitySpaceStation));
+    }
+
+    [Fact(DisplayName = "เพิ่มข้อมูลที่มีความสามารถในการทำ TimeActivityLog ระบบสามารถจับการบันทึกข้อมูลได้ถูกต้อง")]
+    public async Task Insert_With_TimeActivityLog_ThenTheActivityLogMustWorkAsExpected()
+    {
+        SetupInterceptors();
+
+        var maintenanceLog = new MaintenanceLog { Id = "1", Attempt = 5 };
+        var maintenanceLogRepo = ServiceProvider.GetRequiredService<IRepository<MaintenanceLog>>();
+        await maintenanceLogRepo.InsertAsync(maintenanceLog);
+
+        maintenanceLog.CreatedDate.Should().BeCloseTo(CurrentTime, TimeSpan.FromSeconds(1));
+        maintenanceLog.LastUpdatedDate.Should().BeNull();
+        maintenanceLog.DeletedDate.Should().BeNull();
+
+        CreationEvents.Should().HaveCount(1);
+        CreationEvents.First().entity.Should().BeEquivalentTo(maintenanceLog);
+        CreationEvents.First().properties.Should().BeEquivalentTo([
+            new SqlPropertyInfo
+            {
+                ColumnName = "Id",
+                Value = maintenanceLog.Id,
+                Remark = null,
+            },
+            new SqlPropertyInfo
+            {
+                ColumnName = "Attempt",
+                Value = maintenanceLog.Attempt.ToString(),
+                Remark = null,
+            }]);
+
+        AuditEvents.Should().HaveCount(1);
+        ValidateAuditEvnet(0, "Create", nameof(MaintenanceLog));
+
+        var auditRepo = ServiceProvider.GetRequiredService<IRepository<AuditLog>>();
+        var auditRecords = auditRepo.Get().ToList();
+        auditRecords.Should().HaveCount(1);
+        ValidateAuditRecord(auditRecords, 0, "Create", nameof(MaintenanceLog));
+    }
+
+    [Fact(DisplayName = "เพิ่มข้อมูลที่มีความสามารถในการทำ UserActivityLog ระบบสามารถจับการบันทึกข้อมูลได้ถูกต้อง")]
+    public async Task Insert_With_UserActivityLog_ThenTheActivityLogMustWorkAsExpected()
+    {
+        SetupInterceptors();
+
+        var seriousLog = new SeriousLog { Id = "1", Attempt = 5 };
+        var seriousLogRepo = ServiceProvider.GetRequiredService<IRepository<SeriousLog>>();
+        await seriousLogRepo.InsertAsync(seriousLog);
+
+        seriousLog.CreatedDate.Should().BeCloseTo(CurrentTime, TimeSpan.FromSeconds(1));
+        seriousLog.LastUpdatedDate.Should().BeNull();
+        seriousLog.DeletedDate.Should().BeNull();
+
+        seriousLog.CreatedById.Should().Be(Context.CurrentUserId);
+        seriousLog.LastUpdatedById.Should().BeNull();
+        seriousLog.DeletedById.Should().BeNull();
+
+        CreationEvents.Should().HaveCount(1);
+        CreationEvents.First().entity.Should().BeEquivalentTo(seriousLog);
+        CreationEvents.First().properties.Should().BeEquivalentTo([
+            new SqlPropertyInfo
+            {
+                ColumnName = "Id",
+                Value = seriousLog.Id,
+                Remark = null,
+            },
+            new SqlPropertyInfo
+            {
+                ColumnName = "Attempt",
+                Value = seriousLog.Attempt.ToString(),
+                Remark = null,
+            }]);
+
+        AuditEvents.Should().HaveCount(1);
+        ValidateAuditEvnet(0, "Create", nameof(SeriousLog));
+
+        var auditRepo = ServiceProvider.GetRequiredService<IRepository<AuditLog>>();
+        var auditRecords = auditRepo.Get().ToList();
+        auditRecords.Should().HaveCount(1);
+        ValidateAuditRecord(auditRecords, 0, "Create", nameof(SeriousLog));
     }
 
     #region Key is a number
@@ -389,6 +639,182 @@ public abstract class CommonTestCases : IoCTestBase, IDisposable
         sut.Get().Should().HaveCount(1);
     }
 
+    [Fact(DisplayName = "อัพโดยใส่เดทข้อมูลที่มี Interceptor ถูกต้อง ระบบสามารถจับการอัพเดทข้อมูลได้ถูกต้อง")]
+    public async Task Update_WithDbInterceptor_ThenTheUpdateMustWorkAsExpected()
+    {
+        SetupInterceptors();
+        var astronautRepo = ServiceProvider.GetRequiredService<IRepository<Astronaut>>();
+        var astronaut = Fixture.Create<Astronaut>();
+        await astronautRepo.InsertAsync(astronaut);
+        var astronautOriginalName = astronaut.Name;
+        var astronautOriginalSize = astronaut.Size;
+        astronaut.Name = Fixture.Create<string>();
+        astronaut.Size = Fixture.Create<int>();
+        await astronautRepo.UpdateAsync(astronaut);
+
+        var spaceship = Fixture.Create<Spaceship>();
+        var spaceshipRepo = ServiceProvider.GetRequiredService<IRepository<Spaceship>>();
+        await spaceshipRepo.InsertAsync(spaceship);
+        var spaceshipOriginalPower = spaceship.Power;
+        spaceship.Power = Fixture.Create<double>();
+        await spaceshipRepo.UpdateAsync(spaceship);
+
+        UpdationEvents.Should().HaveCount(2);
+        UpdationEvents.First().entity.Should().BeEquivalentTo(astronaut);
+        UpdationEvents.First().properties.Should().BeEquivalentTo([
+                new SqlUpdatePropertyInfo
+                {
+                    ColumnName = "Name",
+                    NewValue = astronaut.Name,
+                    Value = astronautOriginalName,
+                    Remark = "Name of the astronaut",
+                },
+                new SqlUpdatePropertyInfo
+                {
+                    ColumnName = "Size",
+                    NewValue = astronaut.Size.ToString(),
+                    Value = astronautOriginalSize.ToString(),
+                    Remark = "Size of the astronaut",
+                }]);
+        UpdationEvents.Last().entity.Should().BeEquivalentTo(spaceship);
+        UpdationEvents.Last().properties.Should().BeEquivalentTo([
+                new SqlUpdatePropertyInfo
+                {
+                    ColumnName = "Power",
+                    NewValue = spaceship.Power.ToString(),
+                    Value = spaceshipOriginalPower.ToString(),
+                    Remark = null,
+                }]);
+
+        AuditEvents.Should().HaveCount(4);
+        ValidateAuditEvnet(0, "Create", nameof(Astronaut));
+        ValidateAuditEvnet(1, "Update", nameof(Astronaut));
+        ValidateAuditEvnet(2, "Create", nameof(Spaceship));
+        ValidateAuditEvnet(3, "Update", nameof(Spaceship));
+
+        var auditRepo = ServiceProvider.GetRequiredService<IRepository<AuditLog>>();
+        var auditRecords = auditRepo.Get().ToList();
+        auditRecords.Should().HaveCount(4);
+        ValidateAuditRecord(auditRecords, 0, "Create", nameof(Astronaut));
+        ValidateAuditRecord(auditRecords, 1, "Update", nameof(Astronaut));
+        ValidateAuditRecord(auditRecords, 2, "Create", nameof(Spaceship));
+        ValidateAuditRecord(auditRecords, 3, "Update", nameof(Spaceship));
+    }
+
+    [Fact(DisplayName = "อัพโดยใส่เดทข้อมูลที่มีความสามารถ masking data ระบบสามารถจับการอัพเดทข้อมูลได้ถูกต้อง")]
+    public async Task Update_With_MaskableEntity_ThenTheUpdateMustWorkAsExpected()
+    {
+        SetupInterceptors();
+        var stationRepo = ServiceProvider.GetRequiredService<IRepository<SensitivitySpaceStation>>();
+        var station = new SensitivitySpaceStation { Id = "1", Secret = "Hello" };
+        await stationRepo.InsertAsync(station);
+
+        station.Secret = "World";
+        await stationRepo.UpdateAsync(station);
+
+        UpdationEvents.Should().HaveCount(1);
+        UpdationEvents.First().entity.Should().BeEquivalentTo(station);
+        UpdationEvents.First().properties.Should().BeEquivalentTo([
+                new SqlUpdatePropertyInfo
+                {
+                    ColumnName = "Secret",
+                    NewValue = "dlroW",
+                    Value = "olleH",
+                    Remark = "Secret of the space station",
+                }]);
+
+        AuditEvents.Should().HaveCount(2);
+        ValidateAuditEvnet(0, "Create", nameof(SensitivitySpaceStation));
+        ValidateAuditEvnet(1, "Update", nameof(SensitivitySpaceStation));
+
+        var auditRepo = ServiceProvider.GetRequiredService<IRepository<AuditLog>>();
+        var auditRecords = auditRepo.Get().ToList();
+        auditRecords.Should().HaveCount(2);
+        ValidateAuditRecord(auditRecords, 0, "Create", nameof(SensitivitySpaceStation));
+        ValidateAuditRecord(auditRecords, 1, "Update", nameof(SensitivitySpaceStation));
+    }
+
+    [Fact(DisplayName = "อัพโดยใส่เดทข้อมูลที่มีความสามารถ TimeActivityLog ระบบสามารถจับการอัพเดทข้อมูลได้ถูกต้อง")]
+    public async Task Update_With_TimeActivityLog_ThenTheUpdateMustWorkAsExpected()
+    {
+        SetupInterceptors();
+        var maintenanceLogRepo = ServiceProvider.GetRequiredService<IRepository<MaintenanceLog>>();
+        var maintenanceLog = new MaintenanceLog { Id = "1", Attempt = 5 };
+        await maintenanceLogRepo.InsertAsync(maintenanceLog);
+
+        maintenanceLog.Attempt = 99;
+        await maintenanceLogRepo.UpdateAsync(maintenanceLog);
+
+        UpdationEvents.Should().HaveCount(1);
+        UpdationEvents.First().entity.Should().BeEquivalentTo(maintenanceLog);
+        UpdationEvents.First().properties.Should().BeEquivalentTo([
+                new SqlUpdatePropertyInfo
+                {
+                    ColumnName = "Attempt",
+                    NewValue = "99",
+                    Value = "5",
+                    Remark = null,
+                }]);
+
+        maintenanceLog.CreatedDate.Should().BeCloseTo(CurrentTime, TimeSpan.FromSeconds(1));
+        maintenanceLog.LastUpdatedDate.Should().BeCloseTo(CurrentTime, TimeSpan.FromSeconds(1));
+        maintenanceLog.DeletedDate.Should().BeNull();
+
+        AuditEvents.Should().HaveCount(2);
+        ValidateAuditEvnet(0, "Create", nameof(MaintenanceLog));
+        ValidateAuditEvnet(1, "Update", nameof(MaintenanceLog));
+
+        var auditRepo = ServiceProvider.GetRequiredService<IRepository<AuditLog>>();
+        var auditRecords = auditRepo.Get().ToList();
+        auditRecords.Should().HaveCount(2);
+        ValidateAuditRecord(auditRecords, 0, "Create", nameof(MaintenanceLog));
+        ValidateAuditRecord(auditRecords, 1, "Update", nameof(MaintenanceLog));
+    }
+
+    [Fact(DisplayName = "อัพโดยใส่เดทข้อมูลที่มีความสามารถ UserActivityLog ระบบสามารถจับการอัพเดทข้อมูลได้ถูกต้อง")]
+    public async Task Update_With_UserActivityLog_ThenTheUpdateMustWorkAsExpected()
+    {
+        SetupInterceptors();
+        var seriousLogRepo = ServiceProvider.GetRequiredService<IRepository<SeriousLog>>();
+        var seriousLog = new SeriousLog { Id = "1", Attempt = 5 };
+        await seriousLogRepo.InsertAsync(seriousLog);
+
+        seriousLog.Attempt = 99;
+        var originalCreateByUserId = Context.CurrentUserId;
+        var newUpdateByUserId = Guid.NewGuid().ToString();
+        Context.SetCurrentUserId(newUpdateByUserId);
+        await seriousLogRepo.UpdateAsync(seriousLog);
+
+        UpdationEvents.Should().HaveCount(1);
+        UpdationEvents.First().entity.Should().BeEquivalentTo(seriousLog);
+        UpdationEvents.First().properties.Should().BeEquivalentTo([
+                new SqlUpdatePropertyInfo
+                {
+                    ColumnName = "Attempt",
+                    NewValue = "99",
+                    Value = "5",
+                    Remark = null,
+                }]);
+
+        seriousLog.CreatedDate.Should().BeCloseTo(CurrentTime, TimeSpan.FromSeconds(1));
+        seriousLog.LastUpdatedDate.Should().BeCloseTo(CurrentTime, TimeSpan.FromSeconds(1));
+        seriousLog.DeletedDate.Should().BeNull();
+
+        seriousLog.CreatedById.Should().Be(originalCreateByUserId);
+        seriousLog.LastUpdatedById.Should().Be(newUpdateByUserId);
+        seriousLog.DeletedById.Should().BeNull();
+
+        AuditEvents.Should().HaveCount(2);
+        ValidateAuditEvnet(0, "Create", nameof(SeriousLog));
+        ValidateAuditEvnet(1, "Update", nameof(SeriousLog));
+
+        var auditRepo = ServiceProvider.GetRequiredService<IRepository<AuditLog>>();
+        var auditRecords = auditRepo.Get().ToList();
+        auditRecords.Should().HaveCount(2);
+        ValidateAuditRecord(auditRecords, 0, "Create", nameof(SeriousLog));
+        ValidateAuditRecord(auditRecords, 1, "Update", nameof(SeriousLog));
+    }
+
     #endregion
 
     #endregion
@@ -459,6 +885,136 @@ public abstract class CommonTestCases : IoCTestBase, IDisposable
         operationResult.Should().BeFalse();
 
         sut.Get().Should().HaveCount(3);
+    }
+
+    [Fact(DisplayName = "ลบข้อมูลที่มี Interceptor ถูกต้อง ระบบสามารถจับการลบรายการที่เลือกได้ถูกต้อง")]
+    public async Task Delete_AllDataValid_WithInterceptor_ThenTheInterceptorMustWorkAsExpected()
+    {
+        SetupInterceptors();
+        var astronautRepo = ServiceProvider.GetRequiredService<IRepository<Astronaut>>();
+        var astronaut = Fixture.Create<Astronaut>();
+        await astronautRepo.InsertAsync(astronaut);
+        await astronautRepo.DeleteAsync(astronaut.Id);
+
+        DeletionEvents.Should().HaveCount(1);
+        DeletionEvents.First().entity.Should().BeEquivalentTo(astronaut);
+        DeletionEvents.First().properties.Should().BeEquivalentTo([
+            new SqlPropertyInfo
+            {
+                ColumnName = "Id",
+                Value = astronaut.Id,
+                Remark = null,
+            },
+            new SqlPropertyInfo
+            {
+                ColumnName = "Name",
+                Value = astronaut.Name,
+                Remark = "Name of the astronaut",
+            },
+            new SqlPropertyInfo
+            {
+                ColumnName = "Size",
+                Value = astronaut.Size.ToString(),
+                Remark = "Size of the astronaut",
+            }]);
+
+        AuditEvents.Should().HaveCount(2);
+        ValidateAuditEvnet(0, "Create", nameof(Astronaut));
+        ValidateAuditEvnet(1, "Delete", nameof(Astronaut));
+
+        var auditRepo = ServiceProvider.GetRequiredService<IRepository<AuditLog>>();
+        var auditRecords = auditRepo.Get().ToList();
+        auditRecords.Should().HaveCount(2);
+        ValidateAuditRecord(auditRecords, 0, "Create", nameof(Astronaut));
+        ValidateAuditRecord(auditRecords, 1, "Delete", nameof(Astronaut));
+    }
+
+    [Fact(DisplayName = "ลบข้อมูลที่มี TimeActivityLog ถูกต้อง ระบบสามารถจับการลบรายการที่เลือกได้ถูกต้อง")]
+    public async Task Delete_AllDataValid_With_TimeActivityLog_ThenTheInterceptorMustWorkAsExpected()
+    {
+        SetupInterceptors();
+        var maintenanceLogRepo = ServiceProvider.GetRequiredService<IRepository<MaintenanceLog>>();
+        var maintenanceLog = new MaintenanceLog { Id = "1", Attempt = 5 };
+        await maintenanceLogRepo.InsertAsync(maintenanceLog);
+        await maintenanceLogRepo.DeleteAsync(maintenanceLog.Id);
+
+        DeletionEvents.Should().HaveCount(1);
+        DeletionEvents.First().entity.Should().BeEquivalentTo(maintenanceLog);
+        DeletionEvents.First().properties.Should().BeEquivalentTo([
+            new SqlPropertyInfo
+            {
+                ColumnName = "Id",
+                Value = maintenanceLog.Id,
+                Remark = null,
+            },
+            new SqlPropertyInfo
+            {
+                ColumnName = "Attempt",
+                Value = "5",
+                Remark = null,
+            }]);
+
+        maintenanceLog.CreatedDate.Should().BeCloseTo(CurrentTime, TimeSpan.FromSeconds(1));
+        maintenanceLog.LastUpdatedDate.Should().BeNull();
+        maintenanceLog.DeletedDate.Should().BeCloseTo(CurrentTime, TimeSpan.FromSeconds(1));
+
+        AuditEvents.Should().HaveCount(2);
+        ValidateAuditEvnet(0, "Create", nameof(MaintenanceLog));
+        ValidateAuditEvnet(1, "Delete", nameof(MaintenanceLog));
+
+        var auditRepo = ServiceProvider.GetRequiredService<IRepository<AuditLog>>();
+        var auditRecords = auditRepo.Get().ToList();
+        auditRecords.Should().HaveCount(2);
+        ValidateAuditRecord(auditRecords, 0, "Create", nameof(MaintenanceLog));
+        ValidateAuditRecord(auditRecords, 1, "Delete", nameof(MaintenanceLog));
+    }
+
+    [Fact(DisplayName = "ลบข้อมูลที่มี UserActivityLog ถูกต้อง ระบบสามารถจับการลบรายการที่เลือกได้ถูกต้อง")]
+    public async Task Delete_AllDataValid_With_UserActivityLog_ThenTheInterceptorMustWorkAsExpected()
+    {
+        SetupInterceptors();
+        var seriousLogRepo = ServiceProvider.GetRequiredService<IRepository<SeriousLog>>();
+        var seriousLog = new SeriousLog { Id = "1", Attempt = 5 };
+        await seriousLogRepo.InsertAsync(seriousLog);
+
+        var originalCreateByUserId = Context.CurrentUserId;
+        var newDeleteByUserId = Guid.NewGuid().ToString();
+        Context.SetCurrentUserId(newDeleteByUserId);
+        await seriousLogRepo.DeleteAsync(seriousLog.Id);
+
+        DeletionEvents.Should().HaveCount(1);
+        DeletionEvents.First().entity.Should().BeEquivalentTo(seriousLog);
+        DeletionEvents.First().properties.Should().BeEquivalentTo([
+            new SqlPropertyInfo
+            {
+                ColumnName = "Id",
+                Value = seriousLog.Id,
+                Remark = null,
+            },
+            new SqlPropertyInfo
+            {
+                ColumnName = "Attempt",
+                Value = "5",
+                Remark = null,
+            }]);
+
+        seriousLog.CreatedDate.Should().BeCloseTo(CurrentTime, TimeSpan.FromSeconds(1));
+        seriousLog.LastUpdatedDate.Should().BeNull();
+        seriousLog.DeletedDate.Should().BeCloseTo(CurrentTime, TimeSpan.FromSeconds(1));
+
+        seriousLog.CreatedById.Should().Be(originalCreateByUserId);
+        seriousLog.LastUpdatedById.Should().BeNull();
+        seriousLog.DeletedById.Should().Be(newDeleteByUserId);
+
+        AuditEvents.Should().HaveCount(2);
+        ValidateAuditEvnet(0, "Create", nameof(SeriousLog));
+        ValidateAuditEvnet(1, "Delete", nameof(SeriousLog));
+
+        var auditRepo = ServiceProvider.GetRequiredService<IRepository<AuditLog>>();
+        var auditRecords = auditRepo.Get().ToList();
+        auditRecords.Should().HaveCount(2);
+        ValidateAuditRecord(auditRecords, 0, "Create", nameof(SeriousLog));
+        ValidateAuditRecord(auditRecords, 1, "Delete", nameof(SeriousLog));
     }
 
     #region Key is a number
@@ -693,4 +1249,36 @@ public abstract class CommonTestCases : IoCTestBase, IDisposable
     }
 
     #endregion
+
+    private IEnumerable<AuditLog> AuditEvents => _auditEntities.Where(it => it.isManual == IsManual).Select(it => it.entity).Cast<AuditLog>();
+    private IEnumerable<(object entity, IEnumerable<SqlPropertyInfo> properties)> CreationEvents => _creationEvents.Where(it => it.isManual == IsManual).Select(it => (it.entity, it.properties));
+    private IEnumerable<(object entity, IEnumerable<SqlPropertyInfo> properties)> DeletionEvents => _deletionEvents.Where(it => it.isManual == IsManual).Select(it => (it.entity, it.properties));
+    private IEnumerable<(object entity, IEnumerable<SqlUpdatePropertyInfo> properties)> UpdationEvents => _updationEvents.Where(it => it.isManual == IsManual).Select(it => (it.entity, it.properties));
+
+    private readonly List<(object entity, bool isManual)> _auditEntities = [];
+    private readonly List<(object entity, bool isManual, IEnumerable<SqlPropertyInfo> properties)> _creationEvents = [];
+    private readonly List<(object entity, bool isManual, IEnumerable<SqlPropertyInfo> properties)> _deletionEvents = [];
+    private readonly List<(object entity, bool isManual, IEnumerable<SqlUpdatePropertyInfo> properties)> _updationEvents = [];
+    protected void SetupInterceptors()
+    {
+        TestSqlInterceptorBase.OnCreating += (sndr, se) => _creationEvents.Add(se);
+        TestSqlInterceptorBase.OnDeleting += (sndr, se) => _deletionEvents.Add(se);
+        TestSqlInterceptorBase.OnUpdating += (sndr, se) => _updationEvents.Add(se);
+        TestSqlInterceptorBase.OnAuditEntityAdded += (sndr, se) => _auditEntities.Add(se);
+    }
+
+    private void ValidateAuditEvnet(int elementPosition, string expectedAction, string expectedMessage)
+    {
+        var target = AuditEvents.ToList()[elementPosition];
+        target.Id.Should().NotBeNullOrEmpty();
+        target.Action.Should().BeEquivalentTo(expectedAction);
+        target.Message.Should().BeEquivalentTo(expectedMessage);
+    }
+    private static void ValidateAuditRecord(IList<AuditLog> auditLogs, int elementPosition, string expectedAction, string expectedMessage)
+    {
+        var target = auditLogs[elementPosition];
+        target.Id.Should().NotBeNullOrEmpty();
+        target.Action.Should().BeEquivalentTo(expectedAction);
+        target.Message.Should().BeEquivalentTo(expectedMessage);
+    }
 }

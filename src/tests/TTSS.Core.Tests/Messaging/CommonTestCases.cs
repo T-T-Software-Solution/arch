@@ -375,7 +375,7 @@ public abstract class CommonTestCases : IoCTestBase
         var sut = ServiceProvider.GetRequiredService<IMessagingHub>();
         var noti = new SingleSubscriber();
         await sut.PublishAsync(noti);
-        noti.HandlerNames.Should().BeEquivalentTo(new[] { nameof(SingleSubscriberHandler) });
+        noti.HandlerNames.Should().BeEquivalentTo([nameof(SingleSubscriberHandler)]);
         Mock.Verify(it => it.Execute(It.Is<SingleSubscriber>(act => act == noti)), Times.Exactly(1));
         Mock.Verify(it => it.ExecuteAsync(It.IsAny<It.IsAnyType>(), It.IsAny<CancellationToken>()), Times.Never);
     }
@@ -393,7 +393,7 @@ public abstract class CommonTestCases : IoCTestBase
                 nameof(MultiSubscriberHandler3),
             };
         noti.HandlerNames.Should().BeEquivalentTo(handlers);
-        Mock.Verify(it => it.Execute(It.IsAny<It.IsAnyType>()), Times.Exactly(handlers.Count()));
+        Mock.Verify(it => it.Execute(It.IsAny<It.IsAnyType>()), Times.Exactly(handlers.Length));
         Mock.Verify(it => it.ExecuteAsync(It.IsAny<It.IsAnyType>(), It.IsAny<CancellationToken>()), Times.Never);
     }
 
@@ -403,7 +403,7 @@ public abstract class CommonTestCases : IoCTestBase
         var sut = ServiceProvider.GetRequiredService<IMessagingHub>();
         var noti = new SingleSubscriberInternal();
         await sut.PublishAsync(noti);
-        noti.HandlerNames.Should().BeEquivalentTo(new[] { nameof(SingleSubscriberInternalHandler) });
+        noti.HandlerNames.Should().BeEquivalentTo([nameof(SingleSubscriberInternalHandler)]);
         Mock.Verify(it => it.Execute(It.Is<SingleSubscriberInternal>(act => act == noti)), Times.Exactly(1));
         Mock.Verify(it => it.ExecuteAsync(It.IsAny<It.IsAnyType>(), It.IsAny<CancellationToken>()), Times.Never);
     }
@@ -416,13 +416,13 @@ public abstract class CommonTestCases : IoCTestBase
         await sut.PublishAsync(noti);
         var handlers = new[]
         {
-                nameof(ChainPublishNotificationHandler),
-                nameof(MultiSubscriberHandler1),
-                nameof(MultiSubscriberHandler2),
-                nameof(MultiSubscriberHandler3),
-            };
+            nameof(ChainPublishNotificationHandler),
+            nameof(MultiSubscriberHandler1),
+            nameof(MultiSubscriberHandler2),
+            nameof(MultiSubscriberHandler3),
+        };
         noti.HandlerNames.Should().BeEquivalentTo(handlers);
-        Mock.Verify(it => it.Execute(It.IsAny<It.IsAnyType>()), Times.Exactly(handlers.Count()));
+        Mock.Verify(it => it.Execute(It.IsAny<It.IsAnyType>()), Times.Exactly(handlers.Length));
         Mock.Verify(it => it.ExecuteAsync(It.IsAny<It.IsAnyType>(), It.IsAny<CancellationToken>()), Times.Never);
     }
 
@@ -432,11 +432,12 @@ public abstract class CommonTestCases : IoCTestBase
         var sut = ServiceProvider.GetRequiredService<IMessagingHub>();
         var noti = new SingleSubscriberCallAsyncSingleSubscriber();
         await sut.PublishAsync(noti);
-        noti.HandlerNames.Should().BeEquivalentTo(new[]
+        var handlers = new[]
         {
-                nameof(SingleSubscriberCallAsyncSingleSubscriberHandler),
-                nameof(AsyncSingleSubscriberHandler),
-            });
+            nameof(SingleSubscriberCallAsyncSingleSubscriberHandler),
+            nameof(AsyncSingleSubscriberHandler),
+        };
+        noti.HandlerNames.Should().BeEquivalentTo(handlers);
         Mock.Verify(it => it.Execute(It.Is<SingleSubscriberCallAsyncSingleSubscriber>(act => act == noti)), Times.Exactly(1));
         Mock.Verify(it => it.ExecuteAsync(It.IsAny<It.IsAnyType>(), It.IsAny<CancellationToken>()), Times.Exactly(1));
     }
@@ -461,7 +462,7 @@ public abstract class CommonTestCases : IoCTestBase
         var sut = ServiceProvider.GetRequiredService<IMessagingHub>();
         var noti = new AsyncSingleSubscriber();
         await sut.PublishAsync(noti);
-        noti.HandlerNames.Should().BeEquivalentTo(new[] { nameof(AsyncSingleSubscriberHandler) });
+        noti.HandlerNames.Should().BeEquivalentTo([nameof(AsyncSingleSubscriberHandler)]);
         Mock.Verify(it => it.Execute(It.IsAny<It.IsAnyType>()), Times.Never);
         Mock.Verify(it => it.ExecuteAsync(It.Is<AsyncSingleSubscriber>(act => act == noti), It.IsAny<CancellationToken>()), Times.Exactly(1));
     }
@@ -474,13 +475,13 @@ public abstract class CommonTestCases : IoCTestBase
         await sut.PublishAsync(noti);
         var handlers = new[]
         {
-                nameof(AsyncMultiSubscriberHandler1),
-                nameof(AsyncMultiSubscriberHandler2),
-                nameof(AsyncMultiSubscriberHandler3),
-            };
+            nameof(AsyncMultiSubscriberHandler1),
+            nameof(AsyncMultiSubscriberHandler2),
+            nameof(AsyncMultiSubscriberHandler3),
+        };
         noti.HandlerNames.Should().BeEquivalentTo(handlers);
         Mock.Verify(it => it.Execute(It.IsAny<It.IsAnyType>()), Times.Never);
-        Mock.Verify(it => it.ExecuteAsync(It.IsAny<It.IsAnyType>(), It.IsAny<CancellationToken>()), Times.Exactly(handlers.Count()));
+        Mock.Verify(it => it.ExecuteAsync(It.IsAny<It.IsAnyType>(), It.IsAny<CancellationToken>()), Times.Exactly(handlers.Length));
     }
 
     [Fact]
@@ -489,7 +490,7 @@ public abstract class CommonTestCases : IoCTestBase
         var sut = ServiceProvider.GetRequiredService<IMessagingHub>();
         var noti = new AsyncSingleSubscriberInternal();
         await sut.PublishAsync(noti);
-        noti.HandlerNames.Should().BeEquivalentTo(new[] { nameof(AsyncSingleSubscriberInternalHandler) });
+        noti.HandlerNames.Should().BeEquivalentTo([nameof(AsyncSingleSubscriberInternalHandler)]);
         Mock.Verify(it => it.Execute(It.IsAny<It.IsAnyType>()), Times.Never);
         Mock.Verify(it => it.ExecuteAsync(It.Is<AsyncSingleSubscriberInternal>(act => act == noti), It.IsAny<CancellationToken>()), Times.Exactly(1));
     }
@@ -509,7 +510,7 @@ public abstract class CommonTestCases : IoCTestBase
             };
         noti.HandlerNames.Should().BeEquivalentTo(handlers);
         Mock.Verify(it => it.Execute(It.IsAny<It.IsAnyType>()), Times.Never);
-        Mock.Verify(it => it.ExecuteAsync(It.IsAny<It.IsAnyType>(), It.IsAny<CancellationToken>()), Times.Exactly(handlers.Count()));
+        Mock.Verify(it => it.ExecuteAsync(It.IsAny<It.IsAnyType>(), It.IsAny<CancellationToken>()), Times.Exactly(handlers.Length));
     }
 
     [Fact]
@@ -518,11 +519,12 @@ public abstract class CommonTestCases : IoCTestBase
         var sut = ServiceProvider.GetRequiredService<IMessagingHub>();
         var noti = new AsyncSingleSubscriberCallAsyncSingleSubscriber();
         await sut.PublishAsync(noti);
-        noti.HandlerNames.Should().BeEquivalentTo(new[]
+        var handlers = new[]
         {
-                nameof(AsyncSingleSubscriberCallAsyncSingleSubscriberHandler),
-                nameof(AsyncSingleSubscriberHandler),
-            });
+            nameof(AsyncSingleSubscriberCallAsyncSingleSubscriberHandler),
+            nameof(AsyncSingleSubscriberHandler),
+        };
+        noti.HandlerNames.Should().BeEquivalentTo(handlers);
         Mock.Verify(it => it.Execute(It.IsAny<It.IsAnyType>()), Times.Never);
         Mock.Verify(it => it.ExecuteAsync(It.IsAny<It.IsAnyType>(), It.IsAny<CancellationToken>()), Times.Exactly(2));
     }
@@ -537,11 +539,12 @@ public abstract class CommonTestCases : IoCTestBase
         var sut = ServiceProvider.GetRequiredService<IMessagingHub>();
         var noti = new SingleSubscriberCallOneWayRequest();
         await sut.PublishAsync(noti);
-        noti.HandlerNames.Should().BeEquivalentTo(new[]
+        var handlers = new[]
         {
-                nameof(SingleSubscriberCallOneWayRequestHandler),
-                nameof(OneWayHandler),
-            });
+            nameof(SingleSubscriberCallOneWayRequestHandler),
+            nameof(OneWayHandler),
+        };
+        noti.HandlerNames.Should().BeEquivalentTo(handlers);
         Mock.Verify(it => it.Execute(It.IsAny<It.IsAnyType>()), Times.Exactly(2));
         Mock.Verify(it => it.ExecuteAsync(It.IsAny<It.IsAnyType>(), It.IsAny<CancellationToken>()), Times.Never);
     }
@@ -552,11 +555,12 @@ public abstract class CommonTestCases : IoCTestBase
         var sut = ServiceProvider.GetRequiredService<IMessagingHub>();
         var noti = new SingleSubscriberCallAsyncOneWayRequest();
         await sut.PublishAsync(noti);
-        noti.HandlerNames.Should().BeEquivalentTo(new[]
+        var handlers = new[]
         {
-                nameof(SingleSubscriberCallAsyncOneWayRequestHandler),
-                nameof(AsyncOneWayHandler),
-            });
+            nameof(SingleSubscriberCallAsyncOneWayRequestHandler),
+            nameof(AsyncOneWayHandler),
+        };
+        noti.HandlerNames.Should().BeEquivalentTo(handlers);
         Mock.Verify(it => it.Execute(It.IsAny<SingleSubscriberCallAsyncOneWayRequest>()), Times.Exactly(1));
         Mock.Verify(it => it.ExecuteAsync(It.IsAny<AsyncOneWay>(), It.IsAny<CancellationToken>()), Times.Exactly(1));
     }
@@ -567,11 +571,12 @@ public abstract class CommonTestCases : IoCTestBase
         var sut = ServiceProvider.GetRequiredService<IMessagingHub>();
         var noti = new AsyncSingleSubscriberCallOneWayRequest();
         await sut.PublishAsync(noti);
-        noti.HandlerNames.Should().BeEquivalentTo(new[]
+        var handlers = new[]
         {
-                nameof(AsyncSingleSubscriberCallOneWayRequestHandler),
-                nameof(OneWayHandler),
-            });
+            nameof(AsyncSingleSubscriberCallOneWayRequestHandler),
+            nameof(OneWayHandler),
+        };
+        noti.HandlerNames.Should().BeEquivalentTo(handlers);
         Mock.Verify(it => it.Execute(It.IsAny<OneWay>()), Times.Exactly(1));
         Mock.Verify(it => it.ExecuteAsync(It.IsAny<AsyncSingleSubscriberCallOneWayRequest>(), It.IsAny<CancellationToken>()), Times.Exactly(1));
     }
@@ -582,11 +587,12 @@ public abstract class CommonTestCases : IoCTestBase
         var sut = ServiceProvider.GetRequiredService<IMessagingHub>();
         var noti = new AsyncSingleSubscriberCallAsyncOneWayRequest();
         await sut.PublishAsync(noti);
-        noti.HandlerNames.Should().BeEquivalentTo(new[]
+        var handlers = new[]
         {
-                nameof(AsyncSingleSubscriberCallAsyncOneWayRequestHandler),
-                nameof(AsyncOneWayHandler),
-            });
+            nameof(AsyncSingleSubscriberCallAsyncOneWayRequestHandler),
+            nameof(AsyncOneWayHandler),
+        };
+        noti.HandlerNames.Should().BeEquivalentTo(handlers);
         Mock.Verify(it => it.Execute(It.IsAny<It.IsAnyType>()), Times.Never);
         Mock.Verify(it => it.ExecuteAsync(It.IsAny<It.IsAnyType>(), It.IsAny<CancellationToken>()), Times.Exactly(2));
     }
@@ -601,14 +607,15 @@ public abstract class CommonTestCases : IoCTestBase
         var sut = ServiceProvider.GetRequiredService<IMessagingHub>();
         var request = Fixture
             .Build<OneWayCallSingleSubscriber>()
-            .With(it => it.NotificationHandlerNames, new List<string>())
+            .With(it => it.NotificationHandlerNames, [])
             .Create();
         await sut.SendAsync(request);
         request.Name.Should().Be(nameof(OneWayCallSingleSubscriberHandler));
-        request.NotificationHandlerNames.Should().BeEquivalentTo(new[]
+        var handlers = new[]
         {
-                nameof(SingleSubscriberHandler),
-            });
+            nameof(SingleSubscriberHandler),
+        };
+        request.NotificationHandlerNames.Should().BeEquivalentTo(handlers);
         Mock.Verify(it => it.Execute(It.IsAny<It.IsAnyType>()), Times.Exactly(2));
         Mock.Verify(it => it.ExecuteAsync(It.IsAny<It.IsAnyType>(), It.IsAny<CancellationToken>()), Times.Never);
     }
@@ -619,14 +626,15 @@ public abstract class CommonTestCases : IoCTestBase
         var sut = ServiceProvider.GetRequiredService<IMessagingHub>();
         var request = Fixture
             .Build<OneWayCallAsyncSingleSubscriber>()
-            .With(it => it.NotificationHandlerNames, new List<string>())
+            .With(it => it.NotificationHandlerNames, [])
             .Create();
         await sut.SendAsync(request);
         request.Name.Should().Be(nameof(OneWayCallAsyncSingleSubscriberHandler));
-        request.NotificationHandlerNames.Should().BeEquivalentTo(new[]
+        var handlers = new[]
         {
-                nameof(AsyncSingleSubscriberHandler),
-            });
+            nameof(AsyncSingleSubscriberHandler),
+        };
+        request.NotificationHandlerNames.Should().BeEquivalentTo(handlers);
         Mock.Verify(it => it.Execute(It.IsAny<OneWayCallAsyncSingleSubscriber>()), Times.Exactly(1));
         Mock.Verify(it => it.ExecuteAsync(It.IsAny<AsyncSingleSubscriber>(), It.IsAny<CancellationToken>()), Times.Exactly(1));
     }
@@ -637,14 +645,15 @@ public abstract class CommonTestCases : IoCTestBase
         var sut = ServiceProvider.GetRequiredService<IMessagingHub>();
         var request = Fixture
             .Build<AsyncOneWayCallSingleSubscriber>()
-            .With(it => it.NotificationHandlerNames, new List<string>())
+            .With(it => it.NotificationHandlerNames, [])
             .Create();
         await sut.SendAsync(request);
         request.Name.Should().Be(nameof(AsyncOneWayCallSingleSubscriberHandler));
-        request.NotificationHandlerNames.Should().BeEquivalentTo(new[]
+        var handlers = new[]
         {
-                nameof(SingleSubscriberHandler),
-            });
+            nameof(SingleSubscriberHandler),
+        };
+        request.NotificationHandlerNames.Should().BeEquivalentTo(handlers);
         Mock.Verify(it => it.Execute(It.IsAny<SingleSubscriber>()), Times.Exactly(1));
         Mock.Verify(it => it.ExecuteAsync(It.IsAny<AsyncOneWayCallSingleSubscriber>(), It.IsAny<CancellationToken>()), Times.Exactly(1));
     }
@@ -655,14 +664,15 @@ public abstract class CommonTestCases : IoCTestBase
         var sut = ServiceProvider.GetRequiredService<IMessagingHub>();
         var request = Fixture
             .Build<AsyncOneWayCallAsyncSingleSubscriber>()
-            .With(it => it.NotificationHandlerNames, new List<string>())
+            .With(it => it.NotificationHandlerNames, [])
             .Create();
         await sut.SendAsync(request);
         request.Name.Should().Be(nameof(AsyncOneWayCallAsyncSingleSubscriberHandler));
-        request.NotificationHandlerNames.Should().BeEquivalentTo(new[]
+        var handlers = new[]
         {
-                nameof(AsyncSingleSubscriberHandler),
-            });
+            nameof(AsyncSingleSubscriberHandler),
+        };
+        request.NotificationHandlerNames.Should().BeEquivalentTo(handlers);
         Mock.Verify(it => it.Execute(It.IsAny<It.IsAnyType>()), Times.Never);
         Mock.Verify(it => it.ExecuteAsync(It.IsAny<It.IsAnyType>(), It.IsAny<CancellationToken>()), Times.Exactly(2));
     }
@@ -763,6 +773,52 @@ public abstract class CommonTestCases : IoCTestBase
         actual.Should().BeNull();
         Mock.Verify(it => it.Execute(It.IsAny<It.IsAnyType>()), Times.Never);
         Mock.Verify(it => it.ExecuteAsync(It.IsAny<It.IsAnyType>(), It.IsAny<CancellationToken>()), Times.Never);
+    }
+
+    #endregion
+
+    #region Context
+
+    [Fact]
+    public async Task SendAMessageWithContextThruMultipleHandlers_ThenTheContextMustBeTheSameObjectAcrossThoseHandlers()
+    {
+        var sut = ServiceProvider.GetRequiredService<IMessagingHub>();
+        var actual = await sut.SendAsync(Fixture.Create<FirstRequest>());
+        VerifyExecutionWithContext(actual, 3, 1);
+    }
+
+    [Fact]
+    public async Task SendAMessageWithContextThruMultipleHandlers_MultipleTimes_ThenTheContextMustBeTheSameObjectAcrossThoseHandlers()
+    {
+        var sut = ServiceProvider.GetRequiredService<IMessagingHub>();
+
+        var act1 = await sut.SendAsync(Fixture.Create<FirstRequest>());
+        VerifyExecutionWithContext(act1, 3, 1);
+
+        var act2 = await sut.SendAsync(Fixture.Create<FirstRequest>());
+        VerifyExecutionWithContext(act2, 6, 2);
+
+        var act3 = await sut.SendAsync(Fixture.Create<FirstRequest>());
+        VerifyExecutionWithContext(act3, 9, 3);
+    }
+
+    private void VerifyExecutionWithContext(FirstResponse actual, int expectedSummary, int expectedCalledHandlers)
+    {
+        actual.Should().NotBeNull();
+        actual.Message.Should().Be(nameof(FirstHandler));
+        actual.Data.Summary.Should().Be(expectedSummary);
+        actual.Data.FirstHandlerCanReceive.Should().BeTrue();
+        actual.Data.SecondHandlerCanReceive.Should().BeTrue();
+        actual.Data.ThirdHandlerCanReceive.Should().BeTrue();
+        actual.Data.MessageFromThirdHandler.Should().Be(nameof(ThirdHandler));
+        actual.Data.FirstHandlerReceivedCorrelationId
+            .Should()
+            .Be(actual.Data.SecondHandlerReceivedCorrelationId)
+            .And
+            .Be(actual.Data.ThirdHandlerReceivedCorrelationId);
+        Mock.Verify(it => it.ExecuteAsync(It.IsAny<FirstRequest>(), It.IsAny<CancellationToken>()), Times.Exactly(expectedCalledHandlers));
+        Mock.Verify(it => it.Execute(It.IsAny<SecondRequest>()), Times.Exactly(expectedCalledHandlers));
+        Mock.Verify(it => it.Execute(It.IsAny<ThirdRequest>()), Times.Exactly(expectedCalledHandlers));
     }
 
     #endregion

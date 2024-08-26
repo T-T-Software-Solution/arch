@@ -33,7 +33,7 @@ public class InMemoryRepository<TEntity, TKey> : IInMemoryRepository<TEntity, TK
     /// <exception cref="ArgumentNullException">The id field selector is required</exception>
     public InMemoryRepository(Expression<Func<TEntity, TKey>> idField)
     {
-        if (idField is null) throw new ArgumentNullException(nameof(idField));
+        ArgumentNullException.ThrowIfNull(idField);
         _dataDict = new();
         GetKey = idField.Compile();
     }
@@ -152,7 +152,7 @@ public class InMemoryRepository<TEntity, TKey> : IInMemoryRepository<TEntity, TK
         var deleteIds = _dataDict.Where(keyValue => predicate(keyValue.Value))
             .Select(it => it.Key)
             .ToList();
-        if (!deleteIds.Any()) return Task.FromResult(false);
+        if (deleteIds.Count == 0) return Task.FromResult(false);
         deleteIds.ForEach(key => _dataDict.TryRemove(key, out var _));
         return Task.FromResult(true);
     }
@@ -176,19 +176,10 @@ public class InMemoryRepository<TEntity, TKey> : IInMemoryRepository<TEntity, TK
 /// In-memory implementation of <see cref="IRepository{TEntity}"/>.
 /// </summary>
 /// <typeparam name="TEntity">Entity type</typeparam>
-public class InMemoryRepository<TEntity> : InMemoryRepository<TEntity, string>,
-    IInMemoryRepository<TEntity>
-    where TEntity : IDbModel<string>
-{
-    #region Constructors
-
-    /// <summary>
-    /// Initialize an instance of <see cref="InMemoryRepository{TEntity}"/>.
-    /// </summary>
-    /// <param name="idField">The id field selector</param>
-    public InMemoryRepository(Expression<Func<TEntity, string>> idField) : base(idField)
-    {
-    }
-
-    #endregion
-}
+/// <remarks>
+/// Initialize an instance of <see cref="InMemoryRepository{TEntity}"/>.
+/// </remarks>
+/// <param name="idField">The id field selector</param>
+public class InMemoryRepository<TEntity>(Expression<Func<TEntity, string>> idField)
+    : InMemoryRepository<TEntity, string>(idField), IInMemoryRepository<TEntity>
+    where TEntity : IDbModel<string>;

@@ -5,16 +5,11 @@ public class AsyncOneWay : IRequesting
     public required string Name { get; set; }
 }
 
-public class AsyncOneWayHandler : RequestHandlerAsync<AsyncOneWay>
+public class AsyncOneWayHandler(ITestInterface testInterface) : RequestHandlerAsync<AsyncOneWay>
 {
-    private readonly ITestInterface _testInterface;
-
-    public AsyncOneWayHandler(ITestInterface testInterface)
-        => _testInterface = testInterface;
-
     public override async Task HandleAsync(AsyncOneWay request, CancellationToken cancellationToken = default)
     {
-        await _testInterface.ExecuteAsync(request, cancellationToken);
+        await testInterface.ExecuteAsync(request, cancellationToken);
         request.Name = GetType().Name;
     }
 }

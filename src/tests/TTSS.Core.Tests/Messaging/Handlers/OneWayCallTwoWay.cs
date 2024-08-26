@@ -6,24 +6,15 @@ public class OneWayCallTwoWay : IRequesting
     public int ValueFromTwoWay { get; set; }
 }
 
-public class OneWayCallTwoWayHandler : RequestHandler<OneWayCallTwoWay>
+public class OneWayCallTwoWayHandler(ITestInterface testInterface, IMessagingHub messagingHub) : RequestHandler<OneWayCallTwoWay>
 {
-    private readonly IMessagingHub _messagingHub;
-    private readonly ITestInterface _testInterface;
-
-    public OneWayCallTwoWayHandler(ITestInterface testInterface, IMessagingHub messagingHub)
-    {
-        _testInterface = testInterface;
-        _messagingHub = messagingHub;
-    }
-
     public override void Handle(OneWayCallTwoWay request)
     {
-        _testInterface.Execute(request);
+        testInterface.Execute(request);
         request.Name = GetType().Name;
 
-        var response = _messagingHub.SendAsync(new TwoWay { Name = Guid.NewGuid().ToString() });
-        Task.WaitAll(response);
+        var response = messagingHub.SendAsync(new TwoWay { Name = Guid.NewGuid().ToString() });
+        response.Wait();
 
         request.ValueFromTwoWay = response.Result.Value;
     }

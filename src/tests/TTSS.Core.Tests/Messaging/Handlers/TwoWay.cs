@@ -5,26 +5,16 @@ public class TwoWay : IRequesting<TwoWayResponse>
     public required string Name { get; set; }
 }
 
-public class TwoWayResponse
+public class TwoWayResponse(int value)
 {
-    public TwoWayResponse(int value)
-    {
-        Value = value;
-    }
-
-    public int Value { get; }
+    public int Value { get; } = value;
 }
 
-public class TwoWayHandler : RequestHandler<TwoWay, TwoWayResponse>
+public class TwoWayHandler(ITestInterface testInterface) : RequestHandler<TwoWay, TwoWayResponse>
 {
-    private readonly ITestInterface _testInterface;
-
-    public TwoWayHandler(ITestInterface testInterface)
-        => _testInterface = testInterface;
-
     public override TwoWayResponse Handle(TwoWay request)
     {
-        _testInterface.Execute(request);
+        testInterface.Execute(request);
         request.Name = GetType().Name;
         return new TwoWayResponse(99);
     }

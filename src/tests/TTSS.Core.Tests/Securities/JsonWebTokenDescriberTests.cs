@@ -144,7 +144,7 @@ public class JsonWebTokenDescriberTests : TestBase
             .BeEquivalentTo(expectedClaims.Select(it => (it.Type, it.Value)));
     }
 
-    private string GenerateToken(
+    private static string GenerateToken(
         string secret = Secret,
         string issuer = Issuer,
         string audience = Audience,

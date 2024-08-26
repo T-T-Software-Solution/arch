@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using TTSS.Core.Data;
+using TTSS.Infra.Data.Sql;
 using TTSS.Infra.Data.Sql.Models;
 
 namespace TTSS.Infra.Data.Sql;
@@ -82,7 +83,7 @@ public static class ModuleInitializer
                 if (dbModelContract is null || !dbModelContract.IsGenericType) throw new ArgumentOutOfRangeException(nameof(dbModel), $"It must implement the IDbModel<TEntity>.");
                 var isKeyString = baseServiceType.GetGenericArguments().Length == 1;
                 if (isKeyString && dbModelContract.GenericTypeArguments.FirstOrDefault() != typeof(string)) return (null!, null!);
-                var types = isKeyString ? new[] { dbModel } : new[] { dbModel, dbModelContract.GenericTypeArguments.FirstOrDefault() };
+                var types = isKeyString ? [dbModel] : new[] { dbModel, dbModelContract.GenericTypeArguments.FirstOrDefault() };
                 var services = new Type[]
                 {
                     baseServiceType.MakeGenericType(types!),
@@ -97,8 +98,23 @@ public static class ModuleInitializer
     /// </summary>
     /// <param name="target">The SQL setup</param>
     public static void Build(this SqlSetup target)
+        => Build(target, _ => { });
+
+    /// <summary>
+    /// Complete SQL setup.
+    /// </summary>
+    /// <param name="target">The SQL setup</param>
+    /// <param name="config">The interceptor configuration</param>
+    public static void Build(this SqlSetup target, Action<SqlInterceptorBuilder> config)
     {
-        var store = target.ConnectionStoreBuilder.Build();
+        var builder = SqlInterceptorBuilder.Default;
+        var store = target.ConnectionStoreBuilder.Build(builder);
         target.ServiceCollection.AddSingleton<SqlConnectionStore>(store);
+
+        config?.Invoke(builder);
+        foreach (var item in builder.InterceptorTypes)
+        {
+            target.ServiceCollection.AddKeyedScoped(item, store);
+        }
     }
 }

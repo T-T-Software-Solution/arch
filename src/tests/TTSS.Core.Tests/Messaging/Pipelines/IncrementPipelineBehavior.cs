@@ -2,17 +2,12 @@
 
 namespace TTSS.Core.Messaging.Pipelines;
 
-public class IncrementPipelineBehavior<TRequest, TResponse> : PipelineBehavior<TRequest, TResponse>
+public class IncrementPipelineBehavior<TRequest, TResponse>(ITestInterface testInterface) : PipelineBehavior<TRequest, TResponse>
     where TRequest : IncrementRequest
 {
-    private readonly ITestInterface _testInterface;
-
-    public IncrementPipelineBehavior(ITestInterface testInterface)
-        => _testInterface = testInterface;
-
     public override TResponse Handle(TRequest request, Func<TResponse> next)
     {
-        _testInterface.Execute(request);
+        testInterface.Execute(request);
         request.Number++;
         return next();
     }

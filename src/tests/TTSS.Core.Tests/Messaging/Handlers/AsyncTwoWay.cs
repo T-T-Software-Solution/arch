@@ -5,26 +5,16 @@ public class AsyncTwoWay : IRequesting<AsyncTwoWayResponse>
     public required string Name { get; set; }
 }
 
-public class AsyncTwoWayResponse
+public class AsyncTwoWayResponse(int value)
 {
-    public AsyncTwoWayResponse(int value)
-    {
-        Value = value;
-    }
-
-    public int Value { get; }
+    public int Value { get; } = value;
 }
 
-public class AsyncTwoWayHandler : RequestHandlerAsync<AsyncTwoWay, AsyncTwoWayResponse>
+public class AsyncTwoWayHandler(ITestInterface testInterface) : RequestHandlerAsync<AsyncTwoWay, AsyncTwoWayResponse>
 {
-    private readonly ITestInterface _testInterface;
-
-    public AsyncTwoWayHandler(ITestInterface testInterface)
-        => _testInterface = testInterface;
-
     public override async Task<AsyncTwoWayResponse> HandleAsync(AsyncTwoWay request, CancellationToken cancellationToken = default)
     {
-        await _testInterface.ExecuteAsync(request, cancellationToken);
+        await testInterface.ExecuteAsync(request, cancellationToken);
         request.Name = GetType().Name;
         return new AsyncTwoWayResponse(999);
     }
