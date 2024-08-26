@@ -1,5 +1,6 @@
 ﻿using System.Collections.Concurrent;
 using System.Linq.Expressions;
+using TTSS.Core.Services;
 
 namespace TTSS.Core.Data;
 
@@ -9,7 +10,7 @@ namespace TTSS.Core.Data;
 /// <typeparam name="TEntity">Entity type</typeparam>
 /// <typeparam name="TKey">Primary key type</typeparam>
 public class InMemoryRepository<TEntity, TKey> : IInMemoryRepository<TEntity, TKey>
-    where TEntity : IDbModel<TKey>
+    where TEntity : class, IDbModel<TKey>
     where TKey : notnull
 {
     #region Fields
@@ -20,7 +21,15 @@ public class InMemoryRepository<TEntity, TKey> : IInMemoryRepository<TEntity, TK
 
     #region Properties
 
-    private Func<TEntity, TKey> GetKey { get; }
+    /// <summary>
+    /// Mapping strategy.
+    /// </summary>
+    protected IMappingStrategy MappingStrategy { get; }
+
+    /// <summary>
+    /// Get key selector.
+    /// </summary>
+    protected Func<TEntity, TKey> GetKey { get; }
 
     #endregion
 
@@ -29,12 +38,14 @@ public class InMemoryRepository<TEntity, TKey> : IInMemoryRepository<TEntity, TK
     /// <summary>
     /// Initialize an instance of <see cref="InMemoryRepository{TEntity, TKey}"/>.
     /// </summary>
+    /// <param name="mappingStrategy">The mapping strategy</param>
     /// <param name="idField">The id field selector</param>
     /// <exception cref="ArgumentNullException">The id field selector is required</exception>
-    public InMemoryRepository(Expression<Func<TEntity, TKey>> idField)
+    public InMemoryRepository(IMappingStrategy mappingStrategy, Expression<Func<TEntity, TKey>> idField)
     {
         ArgumentNullException.ThrowIfNull(idField);
         _dataDict = new();
+        MappingStrategy = mappingStrategy;
         GetKey = idField.Compile();
     }
 
@@ -57,7 +68,7 @@ public class InMemoryRepository<TEntity, TKey> : IInMemoryRepository<TEntity, TK
     /// <param name="cancellationToken">Cancellation token</param>
     /// <returns>The entities</returns>
     public IEnumerable<TEntity> Get(CancellationToken cancellationToken = default)
-        => new InMemoryQueryResult<TEntity>(_dataDict.Values);
+        => new InMemoryQueryResult<TEntity>(_dataDict.Values, MappingStrategy);
 
     /// <summary>
     /// Get data by filter.
@@ -66,7 +77,19 @@ public class InMemoryRepository<TEntity, TKey> : IInMemoryRepository<TEntity, TK
     /// <param name="cancellationToken">Cancellation token</param>
     /// <returns>The entities</returns>
     public IEnumerable<TEntity> Get(Expression<Func<TEntity, bool>> filter, CancellationToken cancellationToken = default)
-        => new InMemoryQueryResult<TEntity>(_dataDict.Values.Where(filter.Compile()));
+        => new InMemoryQueryResult<TEntity>(_dataDict.Values.Where(filter.Compile()), MappingStrategy);
+
+    PagingSet<TEntity> IQueryRepository<TEntity, TKey>.GetPaging(int pageNo, int pageSize)
+        => PagingHelper.GetPaging(this, pageNo, pageSize);
+
+    PagingSet<TEntity> IQueryRepository<TEntity, TKey>.GetPaging(int pageNo, int pageSize, Expression<Func<TEntity, bool>> filter)
+        => PagingHelper.GetPaging(this, pageNo, pageSize, filter);
+
+    PagingSet<TEntity> IQueryRepository<TEntity, TKey>.GetPaging(int pageNo, int pageSize, Action<IPagingRepository<TEntity>> decorate)
+        => PagingHelper.GetPaging(this, pageNo, pageSize, decorate: decorate);
+
+    PagingSet<TEntity> IQueryRepository<TEntity, TKey>.GetPaging(int pageNo, int pageSize, Expression<Func<TEntity, bool>> filter, Action<IPagingRepository<TEntity>> decorate)
+        => PagingHelper.GetPaging(this, pageNo, pageSize, filter, decorate);
 
     /// <summary>
     /// Convert to queryable.
@@ -179,7 +202,8 @@ public class InMemoryRepository<TEntity, TKey> : IInMemoryRepository<TEntity, TK
 /// <remarks>
 /// Initialize an instance of <see cref="InMemoryRepository{TEntity}"/>.
 /// </remarks>
+/// <param name="mappingStrategy">The mapping strategy</param>
 /// <param name="idField">The id field selector</param>
-public class InMemoryRepository<TEntity>(Expression<Func<TEntity, string>> idField)
-    : InMemoryRepository<TEntity, string>(idField), IInMemoryRepository<TEntity>
-    where TEntity : IDbModel<string>;
+public class InMemoryRepository<TEntity>(IMappingStrategy mappingStrategy, Expression<Func<TEntity, string>> idField)
+    : InMemoryRepository<TEntity, string>(mappingStrategy, idField), IInMemoryRepository<TEntity>
+    where TEntity : class, IDbModel<string>;

@@ -1,10 +1,11 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System.Collections;
 using TTSS.Core.Data;
+using TTSS.Core.Services;
 
 namespace TTSS.Infra.Data.Sql;
 
-internal sealed class SqlQueryResult<TEntity>(IQueryable<TEntity> findResult, CancellationToken cancellationToken) : IQueryResult<TEntity>
+internal sealed class SqlQueryResult<TEntity>(IQueryable<TEntity> findResult, IMappingStrategy mappingStrategy, CancellationToken cancellationToken) : IQueryResult<TEntity>
 {
     #region Fields
 
@@ -23,8 +24,8 @@ internal sealed class SqlQueryResult<TEntity>(IQueryable<TEntity> findResult, Ca
     public async Task<IEnumerable<TEntity>> GetAsync()
         => await _findResult.ToListAsync(cancellationToken);
 
-    public IPagingRepositoryResult<TEntity> ToPaging(bool totalCount = false, int pageSize = 0)
-        => new SqlPagingResult<TEntity>(_findResult, totalCount, pageSize);
+    public IPagingRepository<TEntity> ToPaging(bool totalCount = false, int pageSize = 0)
+        => new SqlPagingRepository<TEntity>(_findResult, mappingStrategy, totalCount, pageSize);
 
     public IEnumerator<TEntity> GetEnumerator()
         => _findResult.GetEnumerator();

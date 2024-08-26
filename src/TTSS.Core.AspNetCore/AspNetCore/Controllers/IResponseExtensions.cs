@@ -14,7 +14,7 @@ public static class IResponseExtensions
     /// </summary>
     /// <param name="response">The response to convert</param>
     /// <returns>The converted response</returns>
-    public static async Task<IActionResult> ToActionResultAsync(this Task<IResponse> response)
+    public static async Task<ActionResult> ToActionResultAsync(this Task<IResponse> response)
         => ToActionResult(await response);
 
     /// <summary>
@@ -23,7 +23,7 @@ public static class IResponseExtensions
     /// <typeparam name="TData">The type of the response data</typeparam>
     /// <param name="response">The response to convert</param>
     /// <returns>The converted response</returns>
-    public static async Task<IActionResult> ToActionResultAsync<TData>(this Task<IResponse<TData>> response)
+    public static async Task<ActionResult<TData>> ToActionResultAsync<TData>(this Task<IResponse<TData>> response)
         => ToActionResult(await response);
 
     /// <summary>
@@ -31,7 +31,7 @@ public static class IResponseExtensions
     /// </summary>
     /// <param name="response">The response to convert</param>
     /// <returns>The converted response</returns>
-    public static async Task<IActionResult> ToActionResultAsync(this Task<IHttpResponse> response)
+    public static async Task<ActionResult> ToActionResultAsync(this Task<IHttpResponse> response)
         => ToActionResult(await response);
 
     /// <summary>
@@ -40,7 +40,7 @@ public static class IResponseExtensions
     /// <typeparam name="TData">The type of the response data</typeparam>
     /// <param name="response">The response to convert</param>
     /// <returns>The converted response</returns>
-    public static async Task<IActionResult> ToActionResultAsync<TData>(this Task<IHttpResponse<TData>> response)
+    public static async Task<ActionResult<TData>> ToActionResultAsync<TData>(this Task<IHttpResponse<TData>> response)
         => ToActionResult(await response);
 
     /// <summary>
@@ -48,10 +48,14 @@ public static class IResponseExtensions
     /// </summary>
     /// <param name="response">The response to convert</param>
     /// <returns>The converted response</returns>
-    public static IActionResult ToActionResult(this IResponse response)
+    public static ActionResult ToActionResult(this IResponse response)
     {
-        if (response is IHttpResponse httpResponse) return CreateActionResult(httpResponse);
-        else return new ObjectResult(response);
+        if (response is not IHttpResponse httpResponse)
+        {
+            return new ObjectResult(response);
+        }
+
+        return CreateActionResult(httpResponse);
     }
 
     /// <summary>
@@ -60,13 +64,17 @@ public static class IResponseExtensions
     /// <typeparam name="TData">The type of the response data</typeparam>
     /// <param name="response">The response to convert</param>
     /// <returns>The converted response</returns>
-    public static IActionResult ToActionResult<TData>(this IResponse<TData> response)
+    public static ActionResult ToActionResult<TData>(this IResponse<TData> response)
     {
-        if (response is IHttpResponse httpResponse) return CreateActionResult(httpResponse, response.Data);
-        else return new ObjectResult(response);
+        if (response is not IHttpResponse httpResponse)
+        {
+            return new ObjectResult(response);
+        }
+
+        return CreateActionResult(httpResponse, response.Data);
     }
 
-    private static IActionResult CreateActionResult(IHttpResponse response, object? content = null)
+    private static ActionResult CreateActionResult(IHttpResponse response, object? content = null)
         => response.StatusCode switch
         {
             HttpStatusCode.OK => content is null ? new OkResult() : new OkObjectResult(content),

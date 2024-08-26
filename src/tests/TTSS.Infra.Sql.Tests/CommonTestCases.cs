@@ -130,6 +130,31 @@ public abstract class CommonTestCases : IoCTestBase, IDisposable
         ServiceProvider.GetService<SqlRepository<SeriousLog, string>>().Should().BeNull();
     }
 
+    [Fact]
+    public void Resolve_WarmupService_ShouldBeSuccessful()
+    {
+        var wampups = ServiceProvider.GetServices<IDbWarmup>();
+        wampups.Should().NotBeNull();
+        wampups.Should().HaveCount(3);
+        Type[] expectedTypes = [
+            typeof(FruitDbContext),
+            typeof(SchoolDbContext),
+            typeof(SpaceDbContext)
+        ];
+        wampups.All(it => expectedTypes.Contains(it.GetType()));
+    }
+
+    [Fact]
+    public async Task WarmupService_ShouldWorkWithoutException()
+    {
+        var wampups = ServiceProvider.GetServices<IDbWarmup>();
+        wampups.Should().HaveCountGreaterThanOrEqualTo(3);
+        foreach (var item in wampups)
+        {
+            await item.WarmupAsync();
+        }
+    }
+
     #endregion
 
     #region Insert
@@ -815,6 +840,99 @@ public abstract class CommonTestCases : IoCTestBase, IDisposable
         ValidateAuditRecord(auditRecords, 1, "Update", nameof(SeriousLog));
     }
 
+    [Fact(DisplayName = "อัพข้อมูลที่มีความสามารถ TimeActivityLog โดยกำหนดให้เป็น soft deleted ระบบสามารถจับการอัพเดทข้อมูลได้ถูกต้อง")]
+    public async Task Update_TimeActivityLog_WithSoftDeleted_ThenTheUpdateMustWorkAsExpected()
+    {
+        SetupInterceptors();
+        var maintenanceLogRepo = ServiceProvider.GetRequiredService<IRepository<MaintenanceLog>>();
+        var maintenanceLog = new MaintenanceLog { Id = "1", Attempt = 5 };
+        await maintenanceLogRepo.InsertAsync(maintenanceLog);
+
+        maintenanceLog.Attempt = 99;
+        maintenanceLog.DeletedDate = CurrentTime;
+        await maintenanceLogRepo.UpdateAsync(maintenanceLog);
+
+        DeletionEvents.Should().HaveCount(1);
+        DeletionEvents.First().entity.Should().BeEquivalentTo(maintenanceLog);
+        DeletionEvents.First().properties.Should().BeEquivalentTo([
+                new SqlPropertyInfo
+                {
+                    ColumnName = "Id",
+                    Value = maintenanceLog.Id,
+                    Remark = null,
+                },
+                new SqlPropertyInfo
+                {
+                    ColumnName = "Attempt",
+                    Value = "5",
+                    Remark = null,
+                }]);
+
+        maintenanceLog.CreatedDate.Should().BeCloseTo(CurrentTime, TimeSpan.FromSeconds(1));
+        maintenanceLog.LastUpdatedDate.Should().BeNull();
+        maintenanceLog.DeletedDate.Should().BeCloseTo(CurrentTime, TimeSpan.FromSeconds(1));
+
+        AuditEvents.Should().HaveCount(2);
+        ValidateAuditEvnet(0, "Create", nameof(MaintenanceLog));
+        ValidateAuditEvnet(1, "Delete", nameof(MaintenanceLog));
+
+        var auditRepo = ServiceProvider.GetRequiredService<IRepository<AuditLog>>();
+        var auditRecords = auditRepo.Get().ToList();
+        auditRecords.Should().HaveCount(2);
+        ValidateAuditRecord(auditRecords, 0, "Create", nameof(MaintenanceLog));
+        ValidateAuditRecord(auditRecords, 1, "Delete", nameof(MaintenanceLog));
+    }
+
+    [Fact(DisplayName = "อัพข้อมูลที่มีความสามารถ UserActivityLog โดยกำหนดให้เป็น soft deleted ระบบสามารถจับการอัพเดทข้อมูลได้ถูกต้อง")]
+    public async Task Update_UserActivityLog_WithSoftDeleted_ThenTheUpdateMustWorkAsExpected()
+    {
+        SetupInterceptors();
+        var seriousLogRepo = ServiceProvider.GetRequiredService<IRepository<SeriousLog>>();
+        var seriousLog = new SeriousLog { Id = "1", Attempt = 5 };
+        await seriousLogRepo.InsertAsync(seriousLog);
+
+        seriousLog.Attempt = 99;
+        seriousLog.DeletedDate = CurrentTime;
+        var originalCreateByUserId = Context.CurrentUserId;
+        var newUpdateByUserId = Guid.NewGuid().ToString();
+        Context.SetCurrentUserId(newUpdateByUserId);
+        await seriousLogRepo.UpdateAsync(seriousLog);
+
+        DeletionEvents.Should().HaveCount(1);
+        DeletionEvents.First().entity.Should().BeEquivalentTo(seriousLog);
+        DeletionEvents.First().properties.Should().BeEquivalentTo([
+                new SqlPropertyInfo
+                {
+                    ColumnName = "Id",
+                    Value = seriousLog.Id,
+                    Remark = null,
+                },
+                new SqlPropertyInfo
+                {
+                    ColumnName = "Attempt",
+                    Value = "5",
+                    Remark = null,
+                }]);
+
+        seriousLog.CreatedDate.Should().BeCloseTo(CurrentTime, TimeSpan.FromSeconds(1));
+        seriousLog.LastUpdatedDate.Should().BeNull();
+        seriousLog.DeletedDate.Should().BeCloseTo(CurrentTime, TimeSpan.FromSeconds(1));
+
+        seriousLog.CreatedById.Should().Be(originalCreateByUserId);
+        seriousLog.LastUpdatedById.Should().BeNull();
+        seriousLog.DeletedById.Should().Be(newUpdateByUserId);
+
+        AuditEvents.Should().HaveCount(2);
+        ValidateAuditEvnet(0, "Create", nameof(SeriousLog));
+        ValidateAuditEvnet(1, "Delete", nameof(SeriousLog));
+
+        var auditRepo = ServiceProvider.GetRequiredService<IRepository<AuditLog>>();
+        var auditRecords = auditRepo.Get().ToList();
+        auditRecords.Should().HaveCount(2);
+        ValidateAuditRecord(auditRecords, 0, "Create", nameof(SeriousLog));
+        ValidateAuditRecord(auditRecords, 1, "Delete", nameof(SeriousLog));
+    }
+
     #endregion
 
     #endregion
@@ -1090,15 +1208,27 @@ public abstract class CommonTestCases : IoCTestBase, IDisposable
 
     [Fact]
     public async Task GetPaging_WhenNoData_ThenTheSystemShouldNotError()
-        => await ValidatePagingResult(0, 5, 0, 0, 0, false, false, 0, 0);
+        => await ValidatePagingResult(0, 5, 1, 1, 1, false, false, 1, 0);
 
     [Fact]
     public async Task GetPaging_WhenNoData_WithTheSecondPage_ThenTheSystemShouldNotError()
-        => await ValidatePagingResult(0, 5, 1, 0, 0, true, false, 0, 0);
+        => await ValidatePagingResult(0, 5, 2, 1, 1, true, false, 1, 0);
 
     [Fact]
     public async Task GetPaging_WhenNoData_WithTheThirdPage_ThenTheSystemShouldNotError()
-        => await ValidatePagingResult(0, 5, 2, 0, 0, true, false, 0, 0);
+        => await ValidatePagingResult(0, 5, 3, 1, 1, true, false, 1, 0);
+
+    [Fact]
+    public async Task GetPaging_WhenNoData_WithTheVeryFarPage_ThenTheSystemShouldNotError()
+        => await ValidatePagingResult(0, 5, 9999, 1, 1, true, false, 1, 0);
+
+    [Fact]
+    public async Task GetPaging_WhenNoData_WithZeroPage_ThenTheSystemShouldNotError()
+        => await ValidatePagingResult(0, 5, 0, 1, 1, false, false, 1, 0);
+
+    [Fact]
+    public async Task GetPaging_WhenNoData_WithNegativePage_ThenTheSystemShouldNotError()
+        => await ValidatePagingResult(0, 5, -9999, 1, 1, false, false, 1, 0);
 
     #endregion
 
@@ -1106,15 +1236,15 @@ public abstract class CommonTestCases : IoCTestBase, IDisposable
 
     [Fact]
     public async Task GetPaging_WhenDataAreLessThanPageSize()
-        => await ValidatePagingResult(3, 5, 0, 0, 0, false, false, 1, 3);
+        => await ValidatePagingResult(3, 5, 1, 1, 1, false, false, 1, 3);
 
     [Fact]
     public async Task GetPaging_WhenDataAreEqualWithPageSize()
-        => await ValidatePagingResult(5, 5, 0, 0, 0, false, false, 1, 5);
+        => await ValidatePagingResult(5, 5, 1, 1, 1, false, false, 1, 5);
 
     [Fact]
     public async Task GetPaging_WhenDataAreMoreThanPageSize()
-        => await ValidatePagingResult(7, 5, 0, 0, 1, false, true, 2, 5);
+        => await ValidatePagingResult(7, 5, 1, 1, 2, false, true, 2, 5);
 
     #endregion
 
@@ -1122,15 +1252,15 @@ public abstract class CommonTestCases : IoCTestBase, IDisposable
 
     [Fact]
     public async Task GetPaging_WithTheSecondPage_ThatHasLessThanPageSize()
-       => await ValidatePagingResult(7, 5, 1, 0, 1, true, false, 2, 2);
+       => await ValidatePagingResult(7, 5, 2, 1, 2, true, false, 2, 2);
 
     [Fact]
     public async Task GetPaging_WithTheSecondPage_ThatHasEqualWithPageSize()
-        => await ValidatePagingResult(10, 5, 1, 0, 1, true, false, 2, 5);
+        => await ValidatePagingResult(10, 5, 2, 1, 2, true, false, 2, 5);
 
     [Fact]
     public async Task GetPaging_WithTheSecondPage_ThatHasMoreThanPageSize()
-        => await ValidatePagingResult(13, 5, 1, 0, 2, true, true, 3, 5);
+        => await ValidatePagingResult(13, 5, 2, 1, 3, true, true, 3, 5);
 
     #endregion
 
@@ -1138,15 +1268,15 @@ public abstract class CommonTestCases : IoCTestBase, IDisposable
 
     [Fact]
     public async Task GetPaging_WithTheThirdPage_ThatHasLessThanPageSize()
-        => await ValidatePagingResult(13, 5, 2, 1, 2, true, false, 3, 3);
+        => await ValidatePagingResult(13, 5, 3, 2, 3, true, false, 3, 3);
 
     [Fact]
     public async Task GetPaging_WithTheThirdPage_ThatHasEqualWithPageSize()
-        => await ValidatePagingResult(15, 5, 2, 1, 2, true, false, 3, 5);
+        => await ValidatePagingResult(15, 5, 3, 2, 3, true, false, 3, 5);
 
     [Fact]
     public async Task GetPaging_WithTheThirdPage_ThatHasMoreThanPageSize()
-        => await ValidatePagingResult(30, 5, 2, 1, 3, true, true, 6, 5);
+        => await ValidatePagingResult(30, 5, 3, 2, 4, true, true, 6, 5);
 
     #endregion
 
@@ -1156,36 +1286,32 @@ public abstract class CommonTestCases : IoCTestBase, IDisposable
         int expectedPageCount, int expectedDataElements)
     {
         var sut = ServiceProvider.GetRequiredService<IRepository<Apple>>();
-
-        var records = Enumerable.Range(1, contents)
+        var records = Enumerable
+            .Range(1, contents)
             .Select(it => Fixture.Create<Apple>());
+        await sut.InsertBulkAsync(records);
 
-        foreach (var item in records)
-        {
-            await sut.InsertAsync(item);
-        }
+        var repository = sut.Get().ToPaging(totalCount: true, pageSize);
+        var pagingSet = repository.GetPage(getPageNo);
+        pagingSet.CurrentPage.Should().Be(getPageNo);
+        pagingSet.PreviousPage.Should().Be(expectedPrevPage);
+        pagingSet.NextPage.Should().Be(expectedNextPage);
+        pagingSet.HasPreviousPage.Should().Be(expectedHasPrevPage);
+        pagingSet.HasNextPage.Should().Be(expectedHasNextPage);
+        pagingSet.TotalCount.Should().Be(contents);
+        pagingSet.PageCount.Should().Be(expectedPageCount);
+        (await pagingSet.GetDataAsync()).Should().HaveCount(expectedDataElements);
 
-        var paging = sut.Get().ToPaging(totalCount: true, pageSize);
-        var pagingResult = paging.GetPage(getPageNo);
-        pagingResult.CurrentPage.Should().Be(getPageNo);
-        pagingResult.PreviousPage.Should().Be(expectedPrevPage);
-        pagingResult.NextPage.Should().Be(expectedNextPage);
-        pagingResult.HasPreviousPage.Should().Be(expectedHasPrevPage);
-        pagingResult.HasNextPage.Should().Be(expectedHasNextPage);
-        pagingResult.TotalCount.Should().Be(contents);
-        pagingResult.PageCount.Should().Be(expectedPageCount);
-        (await pagingResult.GetDataAsync()).Should().HaveCount(expectedDataElements);
-
-        var pagingData = await pagingResult.ToPagingDataAsync();
-        pagingData.CurrentPage.Should().Be(getPageNo);
-        pagingData.PreviousPage.Should().Be(expectedPrevPage);
-        pagingData.NextPage.Should().Be(expectedNextPage);
-        pagingData.HasPreviousPage.Should().Be(expectedHasPrevPage);
-        pagingData.HasNextPage.Should().Be(expectedHasNextPage);
-        pagingData.TotalCount.Should().Be(contents);
-        pagingData.PageCount.Should().Be(expectedPageCount);
-        pagingData.Result.Should().HaveCount(expectedDataElements);
-        pagingData.Result.Should().BeEquivalentTo((await pagingResult.GetDataAsync()).ToList());
+        var paging = await pagingSet.ExecuteAsync();
+        paging.CurrentPage.Should().Be(getPageNo);
+        paging.PreviousPage.Should().Be(expectedPrevPage);
+        paging.NextPage.Should().Be(expectedNextPage);
+        paging.HasPreviousPage.Should().Be(expectedHasPrevPage);
+        paging.HasNextPage.Should().Be(expectedHasNextPage);
+        paging.TotalCount.Should().Be(contents);
+        paging.PageCount.Should().Be(expectedPageCount);
+        paging.Contents.Should().HaveCount(expectedDataElements);
+        paging.Contents.Should().BeEquivalentTo((await pagingSet.GetDataAsync()).ToList());
     }
 
     #endregion

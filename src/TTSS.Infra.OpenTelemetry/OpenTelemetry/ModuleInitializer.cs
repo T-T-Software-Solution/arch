@@ -57,7 +57,7 @@ public static class ModuleInitializer
         {
             oTelBuilder.UseAzureMonitor();
         }
-        services.RegisterActivityFactory();
+        services.RegisterLoggerModule();
         services.AddSingleton<ActivitySource>(pvd => new(oTelConfiguration!.CurrentSourceName, oTelConfiguration.Version));
         return services;
     }

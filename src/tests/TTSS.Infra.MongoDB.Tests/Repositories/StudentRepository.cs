@@ -1,4 +1,5 @@
-﻿using TTSS.Infra.Data.MongoDB.Documents;
+﻿using TTSS.Core.Services;
+using TTSS.Infra.Data.MongoDB.Documents;
 
 namespace TTSS.Infra.Data.MongoDB.Repositories;
 
@@ -7,11 +8,8 @@ internal class StudentDbContext : IMongoDbContext
     public StudentRepository StudentRepository { get; set; }
 }
 
-internal class StudentRepository : MongoDbRepository<Student, string>
+internal class StudentRepository(MongoDbConnectionStore connectionStore, IMappingStrategy mappingStrategy) : MongoDbRepository<Student, string>(connectionStore, mappingStrategy)
 {
-    public StudentRepository(MongoDbConnectionStore connectionStore) : base(connectionStore)
-    {
-    }
 }
 
 internal class TestDbContext : IMongoDbContext

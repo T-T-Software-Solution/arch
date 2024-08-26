@@ -1,28 +1,27 @@
-﻿namespace TTSS.Core.Models;
+﻿using System.Collections.Concurrent;
+using System.Text.Json.Serialization;
+
+namespace TTSS.Core.Models;
 
 /// <summary>
 /// Default implementation of <see cref="ICorrelationContext"/>.
 /// </summary>
-public class CorrelationContext : ICorrelationContext
+public class CorrelationContext : ICorrelationContext, ISetterCorrelationContext
 {
-    #region Fields
-
-    private string? _currentUserId;
-    private string _correlationId = null!;
-
-    #endregion
-
-    #region Methods
+    #region Properties
 
     /// <summary>
     /// Current user ID.
     /// </summary>
-    public string? CurrentUserId => _currentUserId;
+    public string? CurrentUserId { get; internal set; }
 
     /// <summary>
     /// Correlation ID.
     /// </summary>
-    public string CorrelationId => _correlationId;
+    public string CorrelationId { get; internal set; } = null!;
+
+    [JsonIgnore]
+    IDictionary<string, object> ICorrelationContext.ContextBag { get; } = new ConcurrentDictionary<string, object>();
 
     #endregion
 
@@ -33,7 +32,7 @@ public class CorrelationContext : ICorrelationContext
     /// </summary>
     /// <param name="currentUserId">The current user ID</param>
     protected void SetCurrentUserIdentity(string? currentUserId)
-        => _currentUserId = currentUserId;
+        => CurrentUserId = currentUserId;
 
     /// <summary>
     /// Set the correlation ID.
@@ -41,7 +40,13 @@ public class CorrelationContext : ICorrelationContext
     /// <param name="correlationId">The correlation ID</param>
     /// <exception cref="ArgumentNullException">The correlation ID is required</exception>
     protected void SetCorrelationIdentity(string correlationId)
-        => _correlationId = correlationId ?? throw new ArgumentNullException(nameof(correlationId));
+        => CorrelationId = correlationId ?? throw new ArgumentNullException(nameof(correlationId));
+
+    void ISetterCorrelationContext.SetCorrelationId(string correlationId)
+        => SetCorrelationIdentity(correlationId);
+
+    void ISetterCorrelationContext.SetCurrentUserId(string? currentUserId)
+        => SetCurrentUserIdentity(currentUserId);
 
     #endregion
 }

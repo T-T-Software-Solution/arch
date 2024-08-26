@@ -1,5 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Diagnostics;
 using TTSS.Infra.Data.Sql.Models;
 
 namespace TTSS.Infra.Data.Sql;
@@ -12,7 +11,6 @@ public sealed class SqlConnectionStore
     #region Fields
 
     private SqlInterceptorBuilder? _builder;
-    private IEnumerable<IInterceptor>? _interceptors;
     private readonly Dictionary<string, SqlConnection> _connections = [];
 
     #endregion
@@ -33,10 +31,10 @@ public sealed class SqlConnectionStore
             throw new ArgumentOutOfRangeException($"Collection '{typeName}' not found.");
 
         var dbContext = dbContextFactory.GetDbContext(connection.DbContextDataType);
-        _interceptors ??= (_builder is null) ? [] : dbContextFactory.GetInterceptors(this, _builder).ToList();
-        if (_interceptors.Any() && dbContext is DbContextBase contextBase)
+        var interceptors = (_builder is null) ? [] : dbContextFactory.GetInterceptors(this, _builder).ToList();
+        if (interceptors.Count > 0 && dbContext is DbContextBase contextBase)
         {
-            contextBase.SetInterceptors(_interceptors);
+            contextBase.SetInterceptors(interceptors);
         }
 
         var collection = dbContext.Set<TEntity>();

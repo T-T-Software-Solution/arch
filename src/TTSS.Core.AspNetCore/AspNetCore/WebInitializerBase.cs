@@ -1,4 +1,6 @@
-﻿using TTSS.Core.Configurations;
+﻿using TTSS.Core.AspNetCore.Pipelines;
+using TTSS.Core.Configurations;
+using TTSS.Core.Data;
 
 namespace TTSS.Core.AspNetCore;
 
@@ -10,6 +12,7 @@ public abstract class WebInitializerBase
     #region Fields
 
     private readonly List<IValidator> _registeredOptionsValidators = [];
+    private readonly Dictionary<Type, ServiceDescriptor> _registeredMiddlewares = [];
 
     #endregion
 
@@ -64,8 +67,16 @@ public abstract class WebInitializerBase
     /// Post-build asynchronous  actions.
     /// </summary>
     /// <param name="app">The web application used to configure the HTTP pipeline, and routes</param>
-    public virtual Task PostBuildAsync(WebApplication app)
-        => Task.CompletedTask;
+    public virtual async Task PostBuildAsync(WebApplication app)
+    {
+        await using var scope = app.Services.CreateAsyncScope();
+        var serviceProviderScope = scope.ServiceProvider;
+        var warmups = serviceProviderScope.GetServices<IDbWarmup>();
+        foreach (var item in warmups)
+        {
+            await item.WarmupAsync();
+        }
+    }
 
     /// <summary>
     /// Registers databases into the <see cref="IServiceCollection"/>.
@@ -127,6 +138,35 @@ public abstract class WebInitializerBase
     /// <exception cref="ArgumentNullException">The validator is required</exception>
     internal void AddOptionsValidator(IOptionsValidator? validator)
         => _registeredOptionsValidators.Add(validator ?? throw new ArgumentNullException(nameof(validator)));
+
+    internal WebInitializerBase AddMiddleware<TMiddleware>(ServiceDescriptor descriptor)
+        where TMiddleware : IMiddleware
+    {
+        var target = typeof(TMiddleware);
+        if (false == _registeredMiddlewares.ContainsKey(target))
+        {
+            _registeredMiddlewares.Add(target, descriptor);
+        }
+        return this;
+    }
+
+    internal void RegisterMiddlewares(IServiceCollection services)
+    {
+        this.RegisterMiddleware<HttpCorrelationContextMiddleware>(ServiceLifetime.Scoped);
+
+        foreach (var item in _registeredMiddlewares)
+        {
+            services.Add(item.Value);
+        }
+    }
+
+    internal void UseMiddlewares(IApplicationBuilder builder)
+    {
+        foreach (var item in _registeredMiddlewares)
+        {
+            builder.UseMiddleware(item.Key);
+        }
+    }
 
     #endregion
 }

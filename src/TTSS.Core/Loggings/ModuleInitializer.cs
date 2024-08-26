@@ -8,10 +8,10 @@ namespace TTSS.Core.Loggings;
 public static class ModuleInitializer
 {
     /// <summary>
-    /// Register ActivityFactory.
+    /// Register core loggers.
     /// </summary>
     /// <param name="target">The service collection</param>
     /// <returns>The service collection</returns>
-    public static IServiceCollection RegisterActivityFactory(this IServiceCollection target)
+    public static IServiceCollection RegisterLoggerModule(this IServiceCollection target)
         => target.AddTransient<IActivityFactory, ActivityFactory>();
 }

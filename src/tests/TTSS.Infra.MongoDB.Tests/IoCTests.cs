@@ -2,7 +2,9 @@
 using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
 using Mongo2Go;
+using System.Reflection;
 using TTSS.Core.Data;
+using TTSS.Core.Services;
 using TTSS.Infra.Data.MongoDB.Documents;
 using TTSS.Infra.Data.MongoDB.Repositories;
 
@@ -13,6 +15,8 @@ public class IoCTests : CommonTestCases
     protected override void RegisterServices(IServiceCollection services)
     {
         services
+           .AddAutoMapper(Assembly.GetExecutingAssembly())
+           .AddSingleton<IMappingStrategy, AutoMapperMappingStrategy>()
             .SetupMongoDatabase(Guid.NewGuid().ToString(), ConnectionString)
                 .AddDbContext<TestDbContext>()
                 .AddDbContext<SimplestTestDbContext>()
@@ -24,6 +28,8 @@ public class IoCTests : CommonTestCases
     {
         var services = new ServiceCollection();
         services
+            .AddAutoMapper(Assembly.GetExecutingAssembly())
+            .AddSingleton<IMappingStrategy, AutoMapperMappingStrategy>()
             .SetupMongoDatabase(Guid.NewGuid().ToString(), ConnectionString)
                 .AddDbContext<TestDbContext>()
             .SetupMongoDatabase(Guid.NewGuid().ToString(), ConnectionString)
@@ -62,6 +68,8 @@ public class IoCTests : CommonTestCases
             var services = new ServiceCollection();
             var dbName = Guid.NewGuid().ToString();
             services
+                .AddAutoMapper(Assembly.GetExecutingAssembly())
+                .AddSingleton<IMappingStrategy, AutoMapperMappingStrategy>()
                 .SetupMongoDatabase(dbName, firstDbRunner.ConnectionString)
                     .AddDbContext<PersonDbContext>()
                 .SetupMongoDatabase(dbName, secondDbRunner.ConnectionString)

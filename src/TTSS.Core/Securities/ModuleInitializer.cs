@@ -12,9 +12,6 @@ public static class ModuleInitializer
     /// </summary>
     /// <param name="services">The service collection</param>
     /// <returns>The service collection</returns>
-    public static IServiceCollection RegisterJwtDescriber(this IServiceCollection services)
-    {
-        services.AddSingleton<ITokenDescriber, JsonWebTokenDescriber>();
-        return services;
-    }
+    public static IServiceCollection RegisterSecurityModule(this IServiceCollection services)
+        => services.AddSingleton<ITokenDescriber, JsonWebTokenDescriber>();
 }

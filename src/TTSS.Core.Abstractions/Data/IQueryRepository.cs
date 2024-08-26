@@ -1,4 +1,6 @@
-﻿namespace TTSS.Core.Data;
+﻿using System.Linq.Expressions;
+
+namespace TTSS.Core.Data;
 
 /// <summary>
 /// Contract for repository with query operations.
@@ -28,5 +30,53 @@ public interface IQueryRepository<TEntity, TKey> : IRepositoryBase
     /// <param name="filter">Entity filter</param>
     /// <param name="cancellationToken">Cancellation token</param>
     /// <returns>The entities</returns>
-    IEnumerable<TEntity> Get(System.Linq.Expressions.Expression<Func<TEntity, bool>> filter, CancellationToken cancellationToken = default);
+    IEnumerable<TEntity> Get(Expression<Func<TEntity, bool>> filter, CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Get paged set.
+    /// </summary>
+    /// <param name="pageNo">Page number</param>
+    /// <param name="pageSize">Content size per page</param>
+    /// <returns>Paging set</returns>
+    PagingSet<TEntity> GetPaging(
+        int pageNo,
+        int pageSize);
+
+    /// <summary>
+    /// Get paged set.
+    /// </summary>
+    /// <param name="pageNo">Page number</param>
+    /// <param name="pageSize">Content size per page</param>
+    /// <param name="filter">Entity filter</param>
+    /// <returns>Paging set</returns>
+    PagingSet<TEntity> GetPaging(
+        int pageNo,
+        int pageSize,
+        Expression<Func<TEntity, bool>> filter);
+
+    /// <summary>
+    /// Get paged set.
+    /// </summary>
+    /// <param name="pageNo">Page number</param>
+    /// <param name="pageSize">Content size per page</param>
+    /// <param name="decorate">Decorate function</param>
+    /// <returns>Paging set</returns>
+    PagingSet<TEntity> GetPaging(
+        int pageNo,
+        int pageSize,
+        Action<IPagingRepository<TEntity>> decorate);
+
+    /// <summary>
+    /// Get paged set.
+    /// </summary>
+    /// <param name="pageNo">Page number</param>
+    /// <param name="pageSize">Content size per page</param>
+    /// /// <param name="filter">Entity filter</param>
+    /// <param name="decorate">Decorate function</param>
+    /// <returns>Paging set</returns>
+    PagingSet<TEntity> GetPaging(
+        int pageNo,
+        int pageSize,
+        Expression<Func<TEntity, bool>> filter,
+        Action<IPagingRepository<TEntity>> decorate);
 }

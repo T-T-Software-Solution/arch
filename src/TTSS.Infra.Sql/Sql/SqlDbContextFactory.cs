@@ -25,15 +25,21 @@ public class SqlDbContextFactory(Lazy<IServiceProvider> serviceProvider) : Facto
     public DbContext GetDbContext(Type type)
     {
         if (!type.IsSubclassOf(typeof(DbContext)))
+        {
             throw new ArgumentOutOfRangeException($"{type.Name} must be a subclass of DbContext.");
+        }
 
-        if (GetOrCreate(type) is DbContext ctx) return ctx;
-        else throw new ArgumentOutOfRangeException($"{type.Name} isn't DbContext or forget to register.");
+        if (GetOrCreate(type) is not DbContext ctx)
+        {
+            throw new ArgumentOutOfRangeException($"{type.Name} isn't DbContext or forget to register.");
+        }
+
+        return ctx;
     }
 
     internal IEnumerable<IInterceptor> GetInterceptors(SqlConnectionStore store, SqlInterceptorBuilder builder)
         => builder.InterceptorTypes
-            .Select(it => serviceProvider.Value.GetRequiredKeyedService(it, store))
+            .Select(it => ServiceProvider.GetRequiredKeyedService(it, store))
             .Cast<IInterceptor>();
 
     #endregion

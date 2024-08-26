@@ -4,9 +4,9 @@ using TTSS.Core.Data;
 namespace TTSS.Infra.Data.Sql.Models;
 
 /// <summary>
-/// SQK connection information.
+/// SQL connection information.
 /// </summary>
-public sealed record SqlConnection
+internal sealed record SqlConnection
 {
     #region Properties
 

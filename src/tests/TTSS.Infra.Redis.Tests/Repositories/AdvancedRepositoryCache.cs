@@ -4,14 +4,9 @@ using TTSS.Infra.Data.Redis.Models;
 
 namespace TTSS.Infra.Data.Redis.Repositories;
 
-internal class AdvancedRepositoryCache : RedisRepositoryCache<AdvancedEntity>
+internal class AdvancedRepositoryCache(RedisConnectionStore connectionStore,
+    IDateTimeService dateTimeService) : RedisRepositoryCache<AdvancedEntity>(connectionStore)
 {
-    private readonly IDateTimeService _dateTimeService;
-
-    public AdvancedRepositoryCache(RedisConnectionStore connectionStore,
-        IDateTimeService dateTimeService) : base(connectionStore)
-        => _dateTimeService = dateTimeService;
-
     protected override RedisCacheBehavior GetCacheBehavior(RedisCacheBehavior currentBehavior)
     {
         var keyPrefix = Guid.NewGuid().ToString();
@@ -22,7 +17,7 @@ internal class AdvancedRepositoryCache : RedisRepositoryCache<AdvancedEntity>
     public async Task<AdvancedEntityPrimaryKey> SaveNewRecordAsync(int age, string name)
     {
         var id = new AdvancedEntityPrimaryKey(Guid.NewGuid().ToString());
-        var entity = AdvancedEntity.Create(id, age, name, _dateTimeService);
+        var entity = AdvancedEntity.Create(id, age, name, dateTimeService);
         var ack = await SetAsync(entity.Id.Value, entity);
         return ack ? entity.Id : default;
     }

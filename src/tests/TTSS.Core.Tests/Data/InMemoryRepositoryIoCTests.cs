@@ -7,6 +7,7 @@ public class InMemoryRepositoryIoCTests : InMemoryRepositoryCommonTestCases
 {
     protected override void RegisterServices(IServiceCollection services)
     {
+        base.RegisterServices(services);
         services.RegisterInMemoryRepository<BasicDbModel>();
         services.RegisterInMemoryRepository<CustomPrimaryKeyDbModel, int>();
     }

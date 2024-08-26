@@ -1,4 +1,6 @@
-﻿namespace TTSS.Core.Models;
+﻿using System.Text.Json.Serialization;
+
+namespace TTSS.Core.Models;
 
 /// <summary>
 /// Contract for correlation context.
@@ -14,4 +16,10 @@ public interface ICorrelationContext
     /// Correlation ID.
     /// </summary>
     public string CorrelationId { get; }
+
+    /// <summary>
+    /// Shared context data repository.
+    /// </summary>
+    [JsonIgnore]
+    IDictionary<string, object> ContextBag { get; }
 }

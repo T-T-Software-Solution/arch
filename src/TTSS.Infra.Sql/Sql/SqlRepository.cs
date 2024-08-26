@@ -4,6 +4,7 @@ using System.Data;
 using System.Data.Common;
 using System.Linq.Expressions;
 using TTSS.Core.Data;
+using TTSS.Core.Services;
 
 namespace TTSS.Infra.Data.Sql;
 
@@ -16,12 +17,6 @@ public class SqlRepository<TEntity, TKey> : ISqlRepository<TEntity, TKey>
     where TEntity : class, IDbModel<TKey>
     where TKey : notnull
 {
-    #region Fields
-
-    private readonly List<string> _includePropertyPaths = [];
-
-    #endregion
-
     #region Properties
 
     /// <summary>
@@ -35,20 +30,29 @@ public class SqlRepository<TEntity, TKey> : ISqlRepository<TEntity, TKey>
     protected internal DbSet<TEntity> Collection { get; }
 
     /// <summary>
+    /// Mapping strategy.
+    /// </summary>
+    protected IMappingStrategy MappingStrategy { get; }
+
+    /// <summary>
     /// Provides functionality to evaluate queries against a specific data source wherein the type of the data is known.
     /// </summary>
     protected internal IQueryable<TEntity> Queryable
     {
         get
         {
-            IQueryable<TEntity> query = Collection;
-            foreach (var path in _includePropertyPaths)
+            if (PreFilters.Count <= 0)
             {
-                query = query.Include(path);
+                return Collection;
             }
-            return query;
+
+            var aggregate = PreFilters
+                .Aggregate(Collection.AsQueryable(), (current, next) => next(current));
+            return aggregate;
         }
     }
+
+    internal List<Func<IQueryable<TEntity>, IQueryable<TEntity>>> PreFilters { get; set; } = [];
 
     #endregion
 
@@ -58,13 +62,15 @@ public class SqlRepository<TEntity, TKey> : ISqlRepository<TEntity, TKey>
     /// Initializes a new instance of the <see cref="SqlRepository{TEntity, TKey}"/> class.
     /// </summary>
     /// <param name="connectionStore">The connection store</param>
+    /// <param name="mappingStrategy">The mapping strategy</param>
     /// <param name="dbContextFactory">The DbContext factory</param>
     /// <exception cref="ArgumentOutOfRangeException">All parameters are required</exception>
-    public SqlRepository(SqlConnectionStore connectionStore, SqlDbContextFactory dbContextFactory)
+    public SqlRepository(SqlConnectionStore connectionStore, SqlDbContextFactory dbContextFactory, IMappingStrategy mappingStrategy)
     {
         var (collection, dbContext) = connectionStore.GetCollection<TEntity>(dbContextFactory);
         DbContext = dbContext ?? throw new ArgumentOutOfRangeException(nameof(connectionStore), $"The {nameof(dbContext)} must not be null.");
         Collection = collection ?? throw new ArgumentOutOfRangeException(nameof(connectionStore), $"The {nameof(collection)} must not be null.");
+        MappingStrategy = mappingStrategy;
     }
 
     #endregion
@@ -72,7 +78,7 @@ public class SqlRepository<TEntity, TKey> : ISqlRepository<TEntity, TKey>
     #region Methods
 
     /// <summary>
-    /// Get an entity by id.
+    /// Get an entity by Id.
     /// </summary>
     /// <param name="key">Target entity key</param>
     /// <param name="cancellationToken">Cancellation token</param>
@@ -86,7 +92,7 @@ public class SqlRepository<TEntity, TKey> : ISqlRepository<TEntity, TKey>
     /// <param name="cancellationToken">Cancellation token</param>
     /// <returns>The entities</returns>
     public IEnumerable<TEntity> Get(CancellationToken cancellationToken = default)
-        => new SqlQueryResult<TEntity>(Queryable, cancellationToken);
+        => new SqlQueryResult<TEntity>(Queryable, MappingStrategy, cancellationToken);
 
     /// <summary>
     /// Get data by filter.
@@ -95,7 +101,19 @@ public class SqlRepository<TEntity, TKey> : ISqlRepository<TEntity, TKey>
     /// <param name="cancellationToken">Cancellation token</param>
     /// <returns>The entities</returns>
     public IEnumerable<TEntity> Get(Expression<Func<TEntity, bool>> filter, CancellationToken cancellationToken = default)
-        => new SqlQueryResult<TEntity>(Queryable.Where(filter), cancellationToken);
+        => new SqlQueryResult<TEntity>(Queryable.Where(filter), MappingStrategy, cancellationToken);
+
+    PagingSet<TEntity> IQueryRepository<TEntity, TKey>.GetPaging(int pageNo, int pageSize)
+        => PagingHelper.GetPaging(this, pageNo, pageSize);
+
+    PagingSet<TEntity> IQueryRepository<TEntity, TKey>.GetPaging(int pageNo, int pageSize, Expression<Func<TEntity, bool>> filter)
+        => PagingHelper.GetPaging(this, pageNo, pageSize, filter);
+
+    PagingSet<TEntity> IQueryRepository<TEntity, TKey>.GetPaging(int pageNo, int pageSize, Action<IPagingRepository<TEntity>> decorate)
+        => PagingHelper.GetPaging(this, pageNo, pageSize, decorate: decorate);
+
+    PagingSet<TEntity> IQueryRepository<TEntity, TKey>.GetPaging(int pageNo, int pageSize, Expression<Func<TEntity, bool>> filter, Action<IPagingRepository<TEntity>> decorate)
+        => PagingHelper.GetPaging(this, pageNo, pageSize, filter, decorate);
 
     /// <summary>
     /// Convert to queryable.
@@ -299,25 +317,6 @@ public class SqlRepository<TEntity, TKey> : ISqlRepository<TEntity, TKey>
     #region ISqlRepositorySpecific members
 
     /// <summary>
-    /// Specifies related entities to include in the query results. The navigation property to be included is specified starting with the type of entity being queried (<typeparamref name="TEntity" />).
-    /// </summary>
-    /// <remarks>
-    /// See <see href="https://aka.ms/efcore-docs-load-related-data">Loading related entities</see> for more information and examples.
-    /// </remarks>
-    /// <typeparam name="TProperty">The type of the related entity to be included</typeparam>
-    /// <param name="navigationPropertyPath">
-    /// A lambda expression representing the navigation property to be included (<c>t => t.Property1</c>).
-    /// </param>
-    public ISqlRepositorySpecific<TEntity> Include<TProperty>(Expression<Func<TEntity, TProperty?>> navigationPropertyPath) where TProperty : class
-    {
-        if (navigationPropertyPath.Body is MemberExpression expression && false == _includePropertyPaths.Contains(expression.Member.Name))
-        {
-            _includePropertyPaths.Add(expression.Member.Name);
-        }
-        return this;
-    }
-
-    /// <summary>
     /// Load a reference property.
     /// </summary>
     /// <typeparam name="TProperty">The reference property type</typeparam>
@@ -354,6 +353,18 @@ public class SqlRepository<TEntity, TKey> : ISqlRepository<TEntity, TKey>
     /// <returns>Acknowledged</returns>
     public Task LoadReferenceAsync<TProperty>(TEntity entity, Expression<Func<TEntity, IEnumerable<TProperty>>> propertyExpression) where TProperty : class
         => Collection.Entry(entity).Collection(propertyExpression).LoadAsync();
+
+    #endregion
+
+    #region IConfigurableRepository members
+
+    /// <summary>
+    /// Configure the repository.
+    /// </summary>
+    /// <param name="collection">The collection</param>
+    /// <returns>The repository</returns>
+    public void Configure(Func<IQueryable<TEntity>, IQueryable<TEntity>> collection)
+        => PreFilters.Add(collection);
 
     #endregion
 
@@ -406,14 +417,6 @@ public class SqlRepository<TEntity, TKey> : ISqlRepository<TEntity, TKey>
 
     #endregion
 
-    /// <summary>
-    /// Filters the elements of an System.Linq.IQueryable based on a specified type.
-    /// </summary>
-    /// <typeparam name="TResult">The type to filter the elements of the sequence on</typeparam>
-    /// <returns>A collection that contains the elements from source that have type TResult</returns>
-    public IQueryable<TResult> OfType<TResult>()
-        => Collection.OfType<TResult>();
-
     private async Task<bool> SaveChangedAsync(CancellationToken cancellationToken)
         => await DbContext.SaveChangesAsync(cancellationToken) > 0;
 
@@ -435,6 +438,7 @@ public class SqlRepository<TEntity, TKey> : ISqlRepository<TEntity, TKey>
 /// </remarks>
 /// <param name="connectionStore">The connection store</param>
 /// <param name="dbContextFactory">The DbContext factory</param>
-public class SqlRepository<TEntity>(SqlConnectionStore connectionStore, SqlDbContextFactory dbContextFactory) : SqlRepository<TEntity, string>(connectionStore, dbContextFactory),
+/// <param name="mappingStrategy">The mapping strategy</param>
+public class SqlRepository<TEntity>(SqlConnectionStore connectionStore, SqlDbContextFactory dbContextFactory, IMappingStrategy mappingStrategy) : SqlRepository<TEntity, string>(connectionStore, dbContextFactory, mappingStrategy),
     ISqlRepository<TEntity>
     where TEntity : class, IDbModel<string>;
