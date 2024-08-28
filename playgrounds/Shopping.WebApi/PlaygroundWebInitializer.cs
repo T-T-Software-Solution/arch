@@ -23,12 +23,12 @@ public sealed class PlaygroundWebInitializer : WebInitializerBase
     {
         var assemblies = new[]
         {
-            typeof(DEMO_Context).Assembly,
+            typeof(MappingProfileRegistrar).Assembly,
             Assembly.GetExecutingAssembly(),
         };
 
         services
-            .RegisterTTSSCoreHttp<DEMO_Context>(assemblies);
+            .RegisterTTSSCoreHttp(assemblies);
 
         // Optional for setting up Authentication.
         services

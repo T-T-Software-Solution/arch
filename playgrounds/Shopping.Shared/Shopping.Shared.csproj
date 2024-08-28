@@ -7,12 +7,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="AutoMapper" Version="13.0.1" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\..\src\TTSS.Core.Web\TTSS.Core.Web.csproj" />
-    <ProjectReference Include="..\..\src\TTSS.Infra.Sql\TTSS.Infra.Sql.csproj" />
+    <PackageReference Include="TTSS.Core" Version="2.0.0" />
+    <PackageReference Include="TTSS.Infra.Sql" Version="2.0.0" />
   </ItemGroup>
 
 </Project>

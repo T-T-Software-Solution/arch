@@ -5,21 +5,6 @@ VisualStudioVersion = 17.11.35208.52
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Shopping.WebApi", "Shopping.WebApi\Shopping.WebApi.csproj", "{7AA962EB-657D-4540-B19E-3D93638BDBE3}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "refs", "refs", "{6D568C0D-BC69-44FD-A3A7-1782957D55E6}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TTSS.Infra.Sql", "..\src\TTSS.Infra.Sql\TTSS.Infra.Sql.csproj", "{AE7B99C8-9206-4684-BF47-87234807BF3C}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TTSS.Core.Abstractions", "..\src\TTSS.Core.Abstractions\TTSS.Core.Abstractions.csproj", "{14406655-4F71-406E-978E-40F10DA0E6E9}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TTSS.Core.Web", "..\src\TTSS.Core.Web\TTSS.Core.Web.csproj", "{1D26794E-8E35-4E9E-A9DD-B295D5896109}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TTSS.Core", "..\src\TTSS.Core\TTSS.Core.csproj", "{23DFA858-E865-4D70-BDD0-E8A3E609B2D4}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{FC9CE129-F71B-4B48-AA92-DC96BDC99218}"
-	ProjectSection(SolutionItems) = preProject
-		.editorconfig = .editorconfig
-	EndProjectSection
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Shopping.Shared", "Shopping.Shared\Shopping.Shared.csproj", "{3D72D94E-5995-43FA-9114-C4300CE3FB7A}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Shopping.Idp", "Shopping.Idp\Shopping.Idp.csproj", "{40EB66AB-D23E-434D-87CE-3834A865D534}"
@@ -34,22 +19,6 @@ Global
 		{7AA962EB-657D-4540-B19E-3D93638BDBE3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7AA962EB-657D-4540-B19E-3D93638BDBE3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7AA962EB-657D-4540-B19E-3D93638BDBE3}.Release|Any CPU.Build.0 = Release|Any CPU
-		{AE7B99C8-9206-4684-BF47-87234807BF3C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{AE7B99C8-9206-4684-BF47-87234807BF3C}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{AE7B99C8-9206-4684-BF47-87234807BF3C}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{AE7B99C8-9206-4684-BF47-87234807BF3C}.Release|Any CPU.Build.0 = Release|Any CPU
-		{14406655-4F71-406E-978E-40F10DA0E6E9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{14406655-4F71-406E-978E-40F10DA0E6E9}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{14406655-4F71-406E-978E-40F10DA0E6E9}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{14406655-4F71-406E-978E-40F10DA0E6E9}.Release|Any CPU.Build.0 = Release|Any CPU
-		{1D26794E-8E35-4E9E-A9DD-B295D5896109}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{1D26794E-8E35-4E9E-A9DD-B295D5896109}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{1D26794E-8E35-4E9E-A9DD-B295D5896109}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{1D26794E-8E35-4E9E-A9DD-B295D5896109}.Release|Any CPU.Build.0 = Release|Any CPU
-		{23DFA858-E865-4D70-BDD0-E8A3E609B2D4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{23DFA858-E865-4D70-BDD0-E8A3E609B2D4}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{23DFA858-E865-4D70-BDD0-E8A3E609B2D4}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{23DFA858-E865-4D70-BDD0-E8A3E609B2D4}.Release|Any CPU.Build.0 = Release|Any CPU
 		{3D72D94E-5995-43FA-9114-C4300CE3FB7A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{3D72D94E-5995-43FA-9114-C4300CE3FB7A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3D72D94E-5995-43FA-9114-C4300CE3FB7A}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -61,12 +30,6 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
-	EndGlobalSection
-	GlobalSection(NestedProjects) = preSolution
-		{AE7B99C8-9206-4684-BF47-87234807BF3C} = {6D568C0D-BC69-44FD-A3A7-1782957D55E6}
-		{14406655-4F71-406E-978E-40F10DA0E6E9} = {6D568C0D-BC69-44FD-A3A7-1782957D55E6}
-		{1D26794E-8E35-4E9E-A9DD-B295D5896109} = {6D568C0D-BC69-44FD-A3A7-1782957D55E6}
-		{23DFA858-E865-4D70-BDD0-E8A3E609B2D4} = {6D568C0D-BC69-44FD-A3A7-1782957D55E6}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {F0002039-45C6-4BA1-83B6-5DC994FFEE99}
