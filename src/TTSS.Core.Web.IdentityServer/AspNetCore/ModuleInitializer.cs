@@ -2,11 +2,11 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using TTSS.Core.Data;
-using TTSS.Core.IdentityServer;
-using TTSS.Core.IdentityServer.Configurations;
+using TTSS.Core.Web.IdentityServer;
+using TTSS.Core.Web.IdentityServer.Configurations;
 using static OpenIddict.Abstractions.OpenIddictConstants;
 
-namespace TTSS.Core.AspNetCore;
+namespace TTSS.Core.Web;
 
 /// <summary>
 /// Helper extension methods for the register TTSS IdentityServer services.

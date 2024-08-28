@@ -9,10 +9,10 @@ using OpenIddict.Abstractions;
 using OpenIddict.Server.AspNetCore;
 using System.Diagnostics.CodeAnalysis;
 using System.Security.Claims;
-using TTSS.Core.IdentityServer.Configurations;
+using TTSS.Core.Web.IdentityServer.Configurations;
 using static OpenIddict.Abstractions.OpenIddictConstants;
 
-namespace TTSS.Core.IdentityServer.Controllers;
+namespace TTSS.Core.Web.IdentityServer.Controllers;
 
 /// <summary>
 /// Authorization controller base.

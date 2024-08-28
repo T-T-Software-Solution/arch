@@ -1,4 +1,4 @@
-﻿using TTSS.Core.AspNetCore.Models;
+﻿using TTSS.Core.Web.Models;
 
 namespace Shopping.Shared;
 

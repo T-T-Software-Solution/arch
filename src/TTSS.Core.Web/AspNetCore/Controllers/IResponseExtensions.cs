@@ -2,7 +2,7 @@
 using System.Net;
 using TTSS.Core.Models;
 
-namespace TTSS.Core.AspNetCore.Controllers;
+namespace TTSS.Core.Web.Controllers;
 
 /// <summary>
 /// Helper extension methods for converting <see cref="IResponse"/> to <see cref="IActionResult"/>.

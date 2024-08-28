@@ -1,7 +1,7 @@
 ﻿using TTSS.Core.Messaging.Pipelines;
 using TTSS.Core.Models;
 
-namespace TTSS.Core.AspNetCore.Pipelines;
+namespace TTSS.Core.Web.Pipelines;
 
 /// <summary>
 /// Pipeline behavior to set the current user ID from the HTTP context.

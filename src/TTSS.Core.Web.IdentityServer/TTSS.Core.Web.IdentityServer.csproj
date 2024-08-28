@@ -35,7 +35,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\TTSS.Core.AspNetCore\TTSS.Core.AspNetCore.csproj" />
+    <ProjectReference Include="..\TTSS.Core.Web\TTSS.Core.Web.csproj" />
     <ProjectReference Include="..\TTSS.Infra.Sql\TTSS.Infra.Sql.csproj" />
   </ItemGroup>
 

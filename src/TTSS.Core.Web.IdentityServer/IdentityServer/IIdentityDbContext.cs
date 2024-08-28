@@ -1,6 +1,6 @@
 ﻿using TTSS.Core.Data;
 
-namespace TTSS.Core.IdentityServer;
+namespace TTSS.Core.Web.IdentityServer;
 
 /// <summary>
 /// Contract for identity database context.

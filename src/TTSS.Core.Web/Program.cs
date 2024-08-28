@@ -1,4 +1,4 @@
-﻿using TTSS.Core.AspNetCore;
+﻿using TTSS.Core.Web;
 using TTSS.Core.Configurations;
 
 var builder = WebApplication.CreateBuilder(args);

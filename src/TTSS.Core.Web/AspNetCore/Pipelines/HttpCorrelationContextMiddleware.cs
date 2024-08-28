@@ -1,8 +1,8 @@
 ﻿
-using TTSS.Core.AspNetCore.Models;
+using TTSS.Core.Web.Models;
 using TTSS.Core.Models;
 
-namespace TTSS.Core.AspNetCore.Pipelines;
+namespace TTSS.Core.Web.Pipelines;
 
 /// <summary>
 /// Middleware for correlation context.

@@ -1,6 +1,6 @@
 ﻿using TTSS.Core.Configurations;
 
-namespace TTSS.Core.AspNetCore;
+namespace TTSS.Core.Web;
 
 /// <summary>
 /// Helper extension methods for <see cref="WebApplicationBuilder"/>.

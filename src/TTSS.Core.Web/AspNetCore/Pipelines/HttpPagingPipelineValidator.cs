@@ -3,7 +3,7 @@ using TTSS.Core.Messaging.Pipelines;
 using TTSS.Core.Models;
 using HttpResponse = TTSS.Core.Models.HttpResponse;
 
-namespace TTSS.Core.AspNetCore.Pipelines;
+namespace TTSS.Core.Web.Pipelines;
 
 /// <summary>
 /// Validates paging arguments.

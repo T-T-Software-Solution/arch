@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using System.Security.Cryptography.X509Certificates;
 using static OpenIddict.Abstractions.OpenIddictConstants;
 
-namespace TTSS.Core.IdentityServer.Configurations;
+namespace TTSS.Core.Web.IdentityServer.Configurations;
 
 /// <summary>
 /// Identity configuration options.

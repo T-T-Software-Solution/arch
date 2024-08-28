@@ -1,6 +1,6 @@
 using Shopping.Idp;
 using System.Reflection;
-using TTSS.Core.AspNetCore;
+using TTSS.Core.Web;
 
 var builder = WebApplication.CreateBuilder(args);
 

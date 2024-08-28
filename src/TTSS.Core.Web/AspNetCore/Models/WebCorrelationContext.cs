@@ -2,7 +2,7 @@
 using System.Text.Json.Serialization;
 using TTSS.Core.Models;
 
-namespace TTSS.Core.AspNetCore.Models;
+namespace TTSS.Core.Web.Models;
 
 /// <summary>
 /// Default for web correlation context.

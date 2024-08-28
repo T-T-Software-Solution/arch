@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using TTSS.Core.Data;
 
-namespace TTSS.Core.IdentityServer;
+namespace TTSS.Core.Web.IdentityServer;
 
 // TODO: Duplicated code with DbContextBase, consider refactoring to a common service.
 /// <summary>

@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Shopping.Idp.DbContexts;
 using System.Reflection;
-using TTSS.Core.AspNetCore;
+using TTSS.Core.Web;
 using TTSS.Infra.Data.Sql;
 
 namespace Shopping.Idp;

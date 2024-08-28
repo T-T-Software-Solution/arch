@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using TTSS.Core.IdentityServer;
+using TTSS.Core.Web.IdentityServer;
 
 namespace Shopping.Idp.DbContexts;
 

@@ -1,8 +1,8 @@
-﻿using TTSS.Core.AspNetCore.Pipelines;
+﻿using TTSS.Core.Web.Pipelines;
 using TTSS.Core.Configurations;
 using TTSS.Core.Data;
 
-namespace TTSS.Core.AspNetCore;
+namespace TTSS.Core.Web;
 
 /// <summary>
 /// Web application initializer.

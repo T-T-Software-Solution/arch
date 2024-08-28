@@ -11,12 +11,11 @@
     <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="8.0.8" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.8" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.8" />
-    <!--<PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="8.0.4" />-->
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="8.0.4" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\TTSS.Core.IdentityServer\TTSS.Core.IdentityServer.csproj" />
+    <ProjectReference Include="..\..\src\TTSS.Core.Web.IdentityServer\TTSS.Core.Web.IdentityServer.csproj" />
   </ItemGroup>
 
 </Project>

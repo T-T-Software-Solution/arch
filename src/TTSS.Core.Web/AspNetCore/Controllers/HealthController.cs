@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System.Net;
 
-namespace TTSS.Core.AspNetCore.Controllers;
+namespace TTSS.Core.Web.Controllers;
 
 /// <summary>
 /// Health controller.
