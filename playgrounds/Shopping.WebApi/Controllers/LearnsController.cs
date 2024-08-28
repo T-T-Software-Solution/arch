@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Shopping.WebApi.Biz.Learns;
-using TTSS.Core.AspNetCore.Controllers;
+using TTSS.Core.Web.Controllers;
 using TTSS.Core.Messaging;
 using TTSS.Core.Models;
 

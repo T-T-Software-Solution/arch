@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Shopping.Shared.Entities.ViewModels;
 using Shopping.WebApi.Biz.Carts;
-using TTSS.Core.AspNetCore.Controllers;
+using TTSS.Core.Web.Controllers;
 using TTSS.Core.Messaging;
 using TTSS.Core.Models;
 

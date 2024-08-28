@@ -5,7 +5,9 @@ using System.Data.Common;
 using System.Linq.Expressions;
 using TTSS.Infra.Data.Sql;
 
+#pragma warning disable IDE0130 // Namespace does not match folder structure
 namespace TTSS.Core.Data;
+#pragma warning restore IDE0130 // Namespace does not match folder structure
 
 /// <summary>
 /// Add extension methods for mapping operations to ISqlRepository.

@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Shopping.WebApi.Biz.Tokens;
 using System.Security.Claims;
-using TTSS.Core.AspNetCore.Controllers;
+using TTSS.Core.Web.Controllers;
 using TTSS.Core.Messaging;
 
 namespace Shopping.WebApi.Controllers;
