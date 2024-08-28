@@ -54,9 +54,13 @@ public static class ModuleInitializer
 
         var targetPropertyType = typeof(DbSet<>);
         var targetDbContractType = typeof(IDbModel<>);
+        var baseDbModelType = typeof(IDbModel);
         var dbContextType = typeof(TDbContext);
         builder.SetupDatabase(dbContextType);
-        foreach (var item in getDbSets(dbContextType)) builder.RegisterCollection(item);
+        foreach (var item in getDbSets(dbContextType))
+        {
+            builder.RegisterCollection(item);
+        }
         registerRepository(dbContextType, typeof(IRepository<>), typeof(ISqlRepository<>), typeof(SqlRepository<>));
         registerRepository(dbContextType, typeof(IRepository<,>), typeof(ISqlRepository<,>), typeof(SqlRepository<,>));
         return target;
@@ -75,7 +79,7 @@ public static class ModuleInitializer
             => dbContext.GetProperties()
                 .Where(it => it.PropertyType.IsGenericType && targetPropertyType == it.PropertyType.GetGenericTypeDefinition())
                 .Select(it => it.PropertyType.GenericTypeArguments.FirstOrDefault())
-                .Where(it => it is not null);
+                .Where(it => it is not null && it.IsAssignableTo(baseDbModelType));
         IEnumerable<(Type[] services, Type implementation)> getRepositoryMap(Type dbContext, Type baseServiceType, Type specificServiceType, Type implementationType)
             => getDbSets(dbContext)
             .Select(dbModel =>

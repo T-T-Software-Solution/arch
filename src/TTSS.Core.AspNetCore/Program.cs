@@ -7,7 +7,6 @@ builder.AddOptionsValidator<Opt>();
 builder.Services.AddControllers();
 var application = await builder.BuildAsync<WebInitializer>(app =>
 {
-    // Configure the HTTP request pipeline.
     app.UseHttpsRedirection();
     app.UseAuthorization();
     app.MapControllers();
