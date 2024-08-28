@@ -30,7 +30,7 @@
     <PackageReference Include="ILogger.Moq" Version="1.1.10" />
     <PackageReference Include="SpecFlow" Version="3.9.74" />
     <PackageReference Include="System.ComponentModel.TypeConverter" Version="4.3.0" />
-    <PackageReference Include="YamlDotNet" Version="13.7.1" />
+    <PackageReference Include="YamlDotNet" Version="16.0.0" />
   </ItemGroup>
 
   <ItemGroup>

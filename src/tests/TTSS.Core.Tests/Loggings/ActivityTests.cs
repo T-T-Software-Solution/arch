@@ -4,7 +4,6 @@ using Microsoft.Extensions.Logging;
 using Moq;
 using System.Diagnostics;
 using TTSS.Tests;
-using Xunit.Abstractions;
 
 namespace TTSS.Core.Loggings;
 
@@ -14,14 +13,12 @@ public class ActivityTests : TestBase
 
     private ActivityFactory Sut => Fixture.Create<ActivityFactory>();
 
-    public ActivityTests(ITestOutputHelper testOutput)
+    public ActivityTests()
     {
         _listener = new ActivityListener
         {
             ShouldListenTo = _ => true,
             Sample = (ref ActivityCreationOptions<ActivityContext> _) => ActivitySamplingResult.AllData,
-            ActivityStopped = activity => testOutput.WriteLine($"{activity.ParentId}:{activity.Id} - Stop"),
-            ActivityStarted = activity => testOutput.WriteLine($"{activity.ParentId}:{activity.Id} - Start"),
         };
         ActivitySource.AddActivityListener(_listener);
         Fixture.Register(() => new ActivitySource(nameof(ActivityTests)));
