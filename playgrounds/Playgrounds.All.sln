@@ -7,8 +7,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Shopping.WebApi", "Shopping
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Shopping.Shared", "Shopping.Shared\Shopping.Shared.csproj", "{3D72D94E-5995-43FA-9114-C4300CE3FB7A}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Shopping.Idp", "Shopping.Idp\Shopping.Idp.csproj", "{40EB66AB-D23E-434D-87CE-3834A865D534}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -23,10 +21,6 @@ Global
 		{3D72D94E-5995-43FA-9114-C4300CE3FB7A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3D72D94E-5995-43FA-9114-C4300CE3FB7A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3D72D94E-5995-43FA-9114-C4300CE3FB7A}.Release|Any CPU.Build.0 = Release|Any CPU
-		{40EB66AB-D23E-434D-87CE-3834A865D534}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{40EB66AB-D23E-434D-87CE-3834A865D534}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{40EB66AB-D23E-434D-87CE-3834A865D534}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{40EB66AB-D23E-434D-87CE-3834A865D534}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
