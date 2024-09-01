@@ -9,12 +9,12 @@ using TTSS.Core.Models;
 
 namespace Shopping.WebApi.Biz.Products;
 
-public sealed record GetProduct(string ProductId) : IHttpRequesting<ProductVm>;
+public sealed record ProductsGet(string ProductId) : IHttpRequesting<ProductVm>;
 
-internal sealed class GetProductHandler(IRepository<Product> repository, IMapper mapper)
-    : HttpRequestHandlerAsync<GetProduct, ProductVm>
+file sealed class Handler(IRepository<Product> repository, IMapper mapper)
+    : HttpRequestHandlerAsync<ProductsGet, ProductVm>
 {
-    public override async Task<IHttpResponse<ProductVm>> HandleAsync(GetProduct request, CancellationToken cancellationToken = default)
+    public override async Task<IHttpResponse<ProductVm>> HandleAsync(ProductsGet request, CancellationToken cancellationToken = default)
     {
         var entity = await repository
             .ExcludeDeleted()

@@ -9,12 +9,12 @@ using TTSS.Core.Models;
 
 namespace Shopping.WebApi.Biz.Users;
 
-public sealed record GetUser(string UserId) : IHttpRequesting<UserVm>;
+public sealed record UsersGet(string UserId) : IHttpRequesting<UserVm>;
 
-internal class GetUserHandler(IRepository<User> repository, IMapper mapper)
-    : HttpRequestHandlerAsync<GetUser, UserVm>
+file class Handler(IRepository<User> repository, IMapper mapper)
+    : HttpRequestHandlerAsync<UsersGet, UserVm>
 {
-    public override async Task<IHttpResponse<UserVm>> HandleAsync(GetUser request, CancellationToken cancellationToken = default)
+    public override async Task<IHttpResponse<UserVm>> HandleAsync(UsersGet request, CancellationToken cancellationToken = default)
     {
         var entity = await repository.GetByIdAsync(request.UserId, cancellationToken);
         if (entity is null)

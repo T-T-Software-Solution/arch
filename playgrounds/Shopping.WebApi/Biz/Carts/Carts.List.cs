@@ -9,17 +9,17 @@ using TTSS.Core.Models;
 
 namespace Shopping.WebApi.Biz.Carts;
 
-public sealed record ListCarts : IHttpRequesting<Paging<CartVm>>, IPagingRequest
+public sealed record CartsList : IHttpRequesting<Paging<CartVm>>, IPagingRequest
 {
     public required int PageNo { get; init; }
     public required int PageSize { get; init; }
     public string? Keyword { get; init; }
 }
 
-internal sealed class ListCartsHandler(IRepository<Cart> repository)
-    : HttpRequestHandlerAsync<ListCarts, Paging<CartVm>>
+file sealed class Handler(IRepository<Cart> repository)
+    : HttpRequestHandlerAsync<CartsList, Paging<CartVm>>
 {
-    public override async Task<IHttpResponse<Paging<CartVm>>> HandleAsync(ListCarts request, CancellationToken cancellationToken = default)
+    public override async Task<IHttpResponse<Paging<CartVm>>> HandleAsync(CartsList request, CancellationToken cancellationToken = default)
     {
         var paging = await repository
             .Include(it => it.Owner)

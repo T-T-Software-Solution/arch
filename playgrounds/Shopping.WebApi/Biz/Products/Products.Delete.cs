@@ -8,12 +8,12 @@ using TTSS.Core.Services;
 
 namespace Shopping.WebApi.Biz.Products;
 
-public sealed record DeleteProduct(string ProductId) : IHttpRequesting;
+public sealed record ProductsDelete(string ProductId) : IHttpRequesting;
 
-internal sealed class DeleteProductHandler(IRepository<Product> repository, IDateTimeService dateTimeService)
-    : HttpRequestHandlerAsync<DeleteProduct>
+file sealed class Handler(IRepository<Product> repository, IDateTimeService dateTimeService)
+    : HttpRequestHandlerAsync<ProductsDelete>
 {
-    public override async Task<IHttpResponse> HandleAsync(DeleteProduct request, CancellationToken cancellationToken = default)
+    public override async Task<IHttpResponse> HandleAsync(ProductsDelete request, CancellationToken cancellationToken = default)
     {
         var entity = await repository.GetByIdAsync(request.ProductId, cancellationToken);
         if (entity is null)

@@ -9,16 +9,16 @@ using TTSS.Core.Models;
 
 namespace Shopping.WebApi.Biz.Products;
 
-public sealed record CreateProduct : IHttpRequesting<ProductVm>
+public sealed record ProductsCreate : IHttpRequesting<ProductVm>
 {
     public required string Name { get; init; }
     public required double Price { get; init; }
 }
 
-internal sealed class CreateProductHandler(IRepository<Product> repository, IMapper mapper)
-    : HttpRequestHandlerAsync<CreateProduct, ProductVm>
+file sealed class Handler(IRepository<Product> repository, IMapper mapper)
+    : HttpRequestHandlerAsync<ProductsCreate, ProductVm>
 {
-    public override async Task<IHttpResponse<ProductVm>> HandleAsync(CreateProduct request, CancellationToken cancellationToken = default)
+    public override async Task<IHttpResponse<ProductVm>> HandleAsync(ProductsCreate request, CancellationToken cancellationToken = default)
     {
         var areArgumentsValid = !string.IsNullOrWhiteSpace(request.Name) && request.Price > 0;
         if (false == areArgumentsValid)

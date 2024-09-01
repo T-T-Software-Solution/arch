@@ -11,7 +11,7 @@ using TTSS.Core.Models;
 
 namespace Shopping.WebApi.Biz.Carts;
 
-public sealed record UpdateCart : IHttpRequesting<CartVm>
+public sealed record CartsUpdate : IHttpRequesting<CartVm>
 {
     [JsonIgnore]
     public string? CartId { get; init; }
@@ -19,13 +19,13 @@ public sealed record UpdateCart : IHttpRequesting<CartVm>
     public string? RemoveProductId { get; init; }
 }
 
-internal sealed class UpdateCartHandler(ICorrelationContext context,
+file sealed class Handler(ICorrelationContext context,
     IRepository<Cart> cartRepository,
     IRepository<Product> productRepository,
     IMapper mapper)
-    : HttpRequestHandlerAsync<UpdateCart, CartVm>
+    : HttpRequestHandlerAsync<CartsUpdate, CartVm>
 {
-    public override async Task<IHttpResponse<CartVm>> HandleAsync(UpdateCart request, CancellationToken cancellationToken = default)
+    public override async Task<IHttpResponse<CartVm>> HandleAsync(CartsUpdate request, CancellationToken cancellationToken = default)
     {
         var areArgumentsValid = !string.IsNullOrWhiteSpace(request.CartId)
             && (false == string.IsNullOrWhiteSpace(request.AddProductId) || false == string.IsNullOrWhiteSpace(request.RemoveProductId));

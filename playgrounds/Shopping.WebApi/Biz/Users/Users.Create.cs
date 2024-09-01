@@ -13,16 +13,16 @@ using TTSS.Core.Models;
 namespace Shopping.WebApi.Biz.Users;
 
 [OperationDescription(OperationType.Create, "User", "Create a new user.")]
-public sealed record CreateUser : IHttpRequesting<CreateUserResult>
+public sealed record UsersCreate : IHttpRequesting<CreateUserResult>
 {
     public string? FirstName { get; init; }
     public string? LastName { get; init; }
 }
 
-internal sealed class CreateUserHandler(IRepository<User> repository, IMessagingHub hub, IMapper mapper)
-    : HttpRequestHandlerAsync<CreateUser, CreateUserResult>
+file sealed class Handler(IRepository<User> repository, IMessagingHub hub, IMapper mapper)
+    : HttpRequestHandlerAsync<UsersCreate, CreateUserResult>
 {
-    public override async Task<IHttpResponse<CreateUserResult>> HandleAsync(CreateUser request, CancellationToken cancellationToken = default)
+    public override async Task<IHttpResponse<CreateUserResult>> HandleAsync(UsersCreate request, CancellationToken cancellationToken = default)
     {
         var entity = new User
         {

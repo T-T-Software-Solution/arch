@@ -9,15 +9,15 @@ using TTSS.Core.Models;
 
 namespace Shopping.WebApi.Biz.Carts;
 
-public sealed record CreateCart : IHttpRequesting<CartVm>;
+public sealed record CartsCreate : IHttpRequesting<CartVm>;
 
-internal sealed class CreateCartHandler(ICorrelationContext context,
+file sealed class Handler(ICorrelationContext context,
     IRepository<User> userRepository,
     IRepository<Cart> cartRepository,
     IMapper mapper)
-    : HttpRequestHandlerAsync<CreateCart, CartVm>
+    : HttpRequestHandlerAsync<CartsCreate, CartVm>
 {
-    public override async Task<IHttpResponse<CartVm>> HandleAsync(CreateCart request, CancellationToken cancellationToken = default)
+    public override async Task<IHttpResponse<CartVm>> HandleAsync(CartsCreate request, CancellationToken cancellationToken = default)
     {
         if (context.CurrentUserId is null)
         {

@@ -9,14 +9,14 @@ using TTSS.Core.Services;
 
 namespace Shopping.WebApi.Biz.Carts;
 
-public sealed record DeleteCart(string CartId) : IHttpRequesting;
+public sealed record CartsDelete(string CartId) : IHttpRequesting;
 
-internal class DeleteCartHandler(ICorrelationContext context,
+file sealed class Handler(ICorrelationContext context,
     IRepository<Cart> repository,
     IDateTimeService dateTimeService)
-    : HttpRequestHandlerAsync<DeleteCart>
+    : HttpRequestHandlerAsync<CartsDelete>
 {
-    public override async Task<IHttpResponse> HandleAsync(DeleteCart request, CancellationToken cancellationToken = default)
+    public override async Task<IHttpResponse> HandleAsync(CartsDelete request, CancellationToken cancellationToken = default)
     {
         if (context.CurrentUserId is null)
         {

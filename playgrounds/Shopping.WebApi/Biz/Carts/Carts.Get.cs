@@ -10,12 +10,12 @@ using TTSS.Core.Models;
 
 namespace Shopping.WebApi.Biz.Carts;
 
-public sealed record GetCart(string CartId) : IHttpRequesting<CartVm>;
+public sealed record CartsGet(string CartId) : IHttpRequesting<CartVm>;
 
-internal class GetCartHandler(IRepository<Cart> repository, IMapper mapper)
-    : HttpRequestHandlerAsync<GetCart, CartVm>
+file sealed class Handler(IRepository<Cart> repository, IMapper mapper)
+    : HttpRequestHandlerAsync<CartsGet, CartVm>
 {
-    public override async Task<IHttpResponse<CartVm>> HandleAsync(GetCart request, CancellationToken cancellationToken = default)
+    public override async Task<IHttpResponse<CartVm>> HandleAsync(CartsGet request, CancellationToken cancellationToken = default)
     {
         var areArgumentsValid = !string.IsNullOrWhiteSpace(request.CartId);
         if (!areArgumentsValid)

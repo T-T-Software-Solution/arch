@@ -10,7 +10,7 @@ using TTSS.Core.Models;
 
 namespace Shopping.WebApi.Biz.Users;
 
-public sealed record UpdateUser : IHttpRequesting<UserVm>
+public sealed record UsersUpdate : IHttpRequesting<UserVm>
 {
     [JsonIgnore]
     public string? UserId { get; init; }
@@ -18,10 +18,10 @@ public sealed record UpdateUser : IHttpRequesting<UserVm>
     public string? LastName { get; init; }
 }
 
-internal sealed class UpdateUserHandler(ICorrelationContext context, IRepository<User> repository, IMapper mapper)
-    : HttpRequestHandlerAsync<UpdateUser, UserVm>
+file sealed class Handler(ICorrelationContext context, IRepository<User> repository, IMapper mapper)
+    : HttpRequestHandlerAsync<UsersUpdate, UserVm>
 {
-    public override async Task<IHttpResponse<UserVm>> HandleAsync(UpdateUser request, CancellationToken cancellationToken = default)
+    public override async Task<IHttpResponse<UserVm>> HandleAsync(UsersUpdate request, CancellationToken cancellationToken = default)
     {
         var areArgumentsValid = !string.IsNullOrWhiteSpace(request.UserId)
             && context.CurrentUserId == request.UserId
