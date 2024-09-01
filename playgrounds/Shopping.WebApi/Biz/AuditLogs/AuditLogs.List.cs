@@ -9,17 +9,17 @@ using TTSS.Core.Models;
 
 namespace Shopping.WebApi.Biz.AuditLogs;
 
-public sealed record ListAuditLogs : IHttpRequesting<Paging<AuditLogVm>>, IPagingRequest
+public sealed record AuditLogsList : IHttpRequesting<Paging<AuditLogVm>>, IPagingRequest
 {
     public required int PageNo { get; init; }
     public required int PageSize { get; init; }
     public string? Keyword { get; init; }
 }
 
-internal sealed class ListAuditLogsHandler(IRepository<AuditLog> repository)
-    : HttpRequestHandlerAsync<ListAuditLogs, Paging<AuditLogVm>>
+file sealed class Handler(IRepository<AuditLog> repository)
+    : HttpRequestHandlerAsync<AuditLogsList, Paging<AuditLogVm>>
 {
-    public override async Task<IHttpResponse<Paging<AuditLogVm>>> HandleAsync(ListAuditLogs request, CancellationToken cancellationToken = default)
+    public override async Task<IHttpResponse<Paging<AuditLogVm>>> HandleAsync(AuditLogsList request, CancellationToken cancellationToken = default)
     {
         Expression<Func<AuditLog, bool>> filter = it => string.IsNullOrEmpty(request.Keyword)
             || (null != it.Description && it.Description.Contains(request.Keyword));

@@ -10,7 +10,7 @@ using TTSS.Core.Models;
 
 namespace Shopping.WebApi.Biz.Products;
 
-public sealed record UpdateProduct : IHttpRequesting<ProductVm>
+public sealed record ProductsUpdate : IHttpRequesting<ProductVm>
 {
     [JsonIgnore]
     public string? ProductId { get; init; }
@@ -18,10 +18,10 @@ public sealed record UpdateProduct : IHttpRequesting<ProductVm>
     public double? Price { get; init; }
 }
 
-internal sealed class UpdateProductHandler(IRepository<Product> repository, IMapper mapper)
-    : HttpRequestHandlerAsync<UpdateProduct, ProductVm>
+file sealed class Handler(IRepository<Product> repository, IMapper mapper)
+    : HttpRequestHandlerAsync<ProductsUpdate, ProductVm>
 {
-    public override async Task<IHttpResponse<ProductVm>> HandleAsync(UpdateProduct request, CancellationToken cancellationToken = default)
+    public override async Task<IHttpResponse<ProductVm>> HandleAsync(ProductsUpdate request, CancellationToken cancellationToken = default)
     {
         var areArgumentsValid = !string.IsNullOrWhiteSpace(request.ProductId)
             && (!string.IsNullOrWhiteSpace(request.Name) || request.Price is not null);

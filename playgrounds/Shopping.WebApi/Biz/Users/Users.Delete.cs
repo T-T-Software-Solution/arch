@@ -7,12 +7,12 @@ using TTSS.Core.Models;
 
 namespace Shopping.WebApi.Biz.Users;
 
-public sealed record DeleteUser(string UserId) : IHttpRequesting;
+public sealed record UsersDelete(string UserId) : IHttpRequesting;
 
-internal class DeleteUserHandler(ICorrelationContext context, IRepository<User> repository)
-    : HttpRequestHandlerAsync<DeleteUser>
+file class Handler(ICorrelationContext context, IRepository<User> repository)
+    : HttpRequestHandlerAsync<UsersDelete>
 {
-    public override async Task<IHttpResponse> HandleAsync(DeleteUser request, CancellationToken cancellationToken = default)
+    public override async Task<IHttpResponse> HandleAsync(UsersDelete request, CancellationToken cancellationToken = default)
     {
         var areArgumentsValid = !string.IsNullOrWhiteSpace(request.UserId);
         if (!areArgumentsValid)

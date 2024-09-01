@@ -1,12 +1,11 @@
 using Microsoft.AspNetCore.Mvc;
-using Shopping.WebApi.Biz.Learns;
 using TTSS.Core.Messaging;
 using TTSS.Core.Models;
 using TTSS.Core.Web.Controllers;
 
-namespace Shopping.WebApi.Controllers;
+namespace Shopping.WebApi.Biz.Learns;
 
-public sealed class LearnsController(IMessagingHub hub, ICorrelationContext context) : ApiControllerBase
+public sealed class Learns(IMessagingHub hub, ICorrelationContext context) : ApiControllerBase
 {
     [HttpGet("1/OneWay/{input}")]
     public Task OneWay(string input)

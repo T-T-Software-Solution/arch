@@ -1,13 +1,12 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Shopping.WebApi.Biz.Tokens;
 using System.Security.Claims;
 using TTSS.Core.Messaging;
 using TTSS.Core.Web.Controllers;
 
-namespace Shopping.WebApi.Controllers;
+namespace Shopping.WebApi.Biz.Tokens;
 
-public sealed class TokensController(IMessagingHub hub) : ApiControllerBase
+public sealed class Tokens(IMessagingHub hub) : ApiControllerBase
 {
     [HttpPost]
     public Task<string> Post([FromBody] CreateToken request)
