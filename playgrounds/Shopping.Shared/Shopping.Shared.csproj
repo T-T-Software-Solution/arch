@@ -7,11 +7,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="AutoMapper" Version="13.0.1" />
+    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="8.0.4" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\TTSS.Core.Web\TTSS.Core.Web.csproj" />
+    <ProjectReference Include="..\..\src\TTSS.Core.Web.Identity\TTSS.Core.Web.Identity.csproj" />
     <ProjectReference Include="..\..\src\TTSS.Infra.Sql\TTSS.Infra.Sql.csproj" />
   </ItemGroup>
 

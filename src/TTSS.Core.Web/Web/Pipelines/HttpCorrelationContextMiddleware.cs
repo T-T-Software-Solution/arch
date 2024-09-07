@@ -1,6 +1,7 @@
 ﻿
-using TTSS.Core.Web.Models;
+using System.Security.Claims;
 using TTSS.Core.Models;
+using TTSS.Core.Web.Models;
 
 namespace TTSS.Core.Web.Pipelines;
 
@@ -34,7 +35,8 @@ public class HttpCorrelationContextMiddleware(ICorrelationContext context, IHttp
         if (context.CurrentUserId is null
             && (accessor.HttpContext?.User?.Identity?.IsAuthenticated ?? false))
         {
-            setter.SetCurrentUserId(accessor.HttpContext.User.Identity?.Name);
+            var userIdentifier = accessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
+            setter.SetCurrentUserId(userIdentifier);
         }
 
         if (context is WebCorrelationContext webContext

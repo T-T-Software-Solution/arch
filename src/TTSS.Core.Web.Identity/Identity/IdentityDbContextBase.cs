@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using TTSS.Core.Data;
 
-namespace TTSS.Core.Web.IdentityServer;
+namespace TTSS.Core.Web.Identity;
 
 // TODO: Duplicated code with DbContextBase, consider refactoring to a common service.
 /// <summary>
@@ -12,7 +12,7 @@ namespace TTSS.Core.Web.IdentityServer;
 /// </summary>
 /// <typeparam name="TUser">The type of the user objects</typeparam>
 public abstract class IdentityDbContextBase<TUser>(DbContextOptions options)
-    : IdentityDbContext<TUser>(options), IIdentityDbContext
+    : IdentityDbContext<TUser>(options), IDbWarmup
     where TUser : IdentityUser
 {
     #region Fields

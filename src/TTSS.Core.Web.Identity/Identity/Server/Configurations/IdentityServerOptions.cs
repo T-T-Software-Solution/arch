@@ -3,14 +3,14 @@ using Microsoft.AspNetCore.Identity;
 using System.Security.Cryptography.X509Certificates;
 using static OpenIddict.Abstractions.OpenIddictConstants;
 
-namespace TTSS.Core.Web.IdentityServer.Configurations;
+namespace TTSS.Core.Web.Identity.Server.Configurations;
 
 /// <summary>
-/// Identity configuration options.
+/// Identity server configuration options.
 /// By default, AccessToken will expire in 1 hour and RefreshToken will expire in 8 hours.
 /// And challenge lifetime is 2 minutes.
 /// </summary>
-public class IdentityConOptions
+public class IdentityServerOptions
 {
     #region Fields
 
@@ -46,17 +46,17 @@ public class IdentityConOptions
     /// <summary>
     /// The challenge lifetime in seconds. (Default is 2 minutes)
     /// </summary>
-    public int ChallengeLifetimeInSeconds { get; set; } = TimeSpan.FromMinutes(DefaultChallengeLifetime).Seconds;
+    public TimeSpan ChallengeLifetime { get; set; } = TimeSpan.FromMinutes(DefaultChallengeLifetime);
 
     /// <summary>
     /// The access token lifetime in seconds. (Default is 1 hour)
     /// </summary>
-    public int AccessTokenLifetimeInSeconds { get; set; } = TimeSpan.FromHours(DefaultAccessTokenLifetime).Seconds;
+    public TimeSpan AccessTokenLifetime { get; set; } = TimeSpan.FromHours(DefaultAccessTokenLifetime);
 
     /// <summary>
     /// The refresh token lifetime in seconds. (Default is 8 hours)
     /// </summary>
-    public int RefreshTokenLifetimeInSeconds { get; set; } = TimeSpan.FromHours(DefaultRefreshTokenLifetime).Seconds;
+    public TimeSpan RefreshTokenLifetime { get; set; } = TimeSpan.FromHours(DefaultRefreshTokenLifetime);
 
     /// <summary>
     /// Setups the cookie authentication options.
@@ -87,6 +87,13 @@ public class IdentityConOptions
     /// Setups the OpenIddict validation builder.
     /// </summary>
     public Action<OpenIddictValidationBuilder>? OpenIddictValidationBuilder { get; set; }
+
+    #endregion
+
+    #region Methods
+
+    internal static TimeSpan GetDuration(TimeSpan? value, TimeSpan defaultValue)
+        => (value is not null && value.Value > TimeSpan.Zero) ? value.Value : defaultValue;
 
     #endregion
 }

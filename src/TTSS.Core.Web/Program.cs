@@ -1,5 +1,5 @@
-﻿using TTSS.Core.Web;
-using TTSS.Core.Configurations;
+﻿using TTSS.Core.Configurations;
+using TTSS.Core.Web;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.AddOptionsValidator<Opt>();

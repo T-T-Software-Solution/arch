@@ -24,11 +24,15 @@ internal sealed class UpdateUserHandler(ICorrelationContext context, IRepository
     public override async Task<IHttpResponse<UserVm>> HandleAsync(UpdateUser request, CancellationToken cancellationToken = default)
     {
         var areArgumentsValid = !string.IsNullOrWhiteSpace(request.UserId)
-            && context.CurrentUserId == request.UserId
             && (!string.IsNullOrWhiteSpace(request.FirstName) || !string.IsNullOrWhiteSpace(request.LastName));
         if (!areArgumentsValid)
         {
             return Response(HttpStatusCode.BadRequest, "Invalid arguments");
+        }
+
+        if (context.CurrentUserId != request.UserId)
+        {
+            return Response(HttpStatusCode.Forbidden, "You are not allowed to update this user");
         }
 
         var entity = await repository.GetByIdAsync(request.UserId!, cancellationToken);

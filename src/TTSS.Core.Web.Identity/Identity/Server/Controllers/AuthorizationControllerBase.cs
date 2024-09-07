@@ -9,10 +9,10 @@ using OpenIddict.Abstractions;
 using OpenIddict.Server.AspNetCore;
 using System.Diagnostics.CodeAnalysis;
 using System.Security.Claims;
-using TTSS.Core.Web.IdentityServer.Configurations;
+using TTSS.Core.Web.Identity.Server.Configurations;
 using static OpenIddict.Abstractions.OpenIddictConstants;
 
-namespace TTSS.Core.Web.IdentityServer.Controllers;
+namespace TTSS.Core.Web.Identity.Server.Controllers;
 
 /// <summary>
 /// Authorization controller base.
@@ -21,7 +21,7 @@ namespace TTSS.Core.Web.IdentityServer.Controllers;
 /// <param name="options">Identity configuration options</param>
 /// <param name="userManager">User manager</param>
 /// <param name="signInManager">Sign-in manager</param>
-public abstract class AuthorizationControllerBase<TUser>(IOptions<IdentityConOptions> options,
+public abstract class AuthorizationControllerBase<TUser>(IOptions<IdentityServerOptions> options,
     UserManager<TUser> userManager,
     SignInManager<TUser> signInManager)
     : Controller where TUser : IdentityUser
@@ -47,8 +47,8 @@ public abstract class AuthorizationControllerBase<TUser>(IOptions<IdentityConOpt
             var identity = new ClaimsIdentity(OpenIddictServerAspNetCoreDefaults.AuthenticationScheme);
             identity.AddClaim(Claims.Subject, request.ClientId ?? throw new InvalidOperationException());
 
-            // Add some claim, don't forget to add destination otherwise it won't be added to the access token.
-            //identity.AddClaim("some-claim", "some-value", Destinations.AccessToken);
+            // Add extra calims here (don't forget to add destination otherwise it won't be added to the access token)
+            // identity.AddClaim("some-claim", "some-value", Destinations.AccessToken);
 
             claimsPrincipal = new ClaimsPrincipal(identity);
             claimsPrincipal.SetScopes(request.GetScopes());
@@ -101,31 +101,36 @@ public abstract class AuthorizationControllerBase<TUser>(IOptions<IdentityConOpt
         if (false == (User?.Identity?.IsAuthenticated ?? false) || false == result.Succeeded || string.IsNullOrWhiteSpace(result.Principal?.Identity?.Name))
         {
             var querystring = QueryString.Create(Request.HasFormContentType ? [.. Request.Form] : Request.Query.ToList());
+            var expiry = DateTimeOffset.UtcNow.Add(IdentityServerOptions.GetDuration(options?.Value?.ChallengeLifetime,
+                TimeSpan.FromMinutes(IdentityServerOptions.DefaultChallengeLifetime)));
             var properties = new AuthenticationProperties
             {
                 RedirectUri = $"{Request.PathBase}{Request.Path}{querystring}",
-                ExpiresUtc = options is null
-                    ? DateTimeOffset.UtcNow.AddMinutes(IdentityConOptions.DefaultChallengeLifetime)
-                    : DateTimeOffset.UtcNow.AddSeconds(options.Value.ChallengeLifetimeInSeconds),
+                ExpiresUtc = expiry,
             };
             return Challenge(properties, CookieAuthenticationDefaults.AuthenticationScheme);
         }
 
-        // Create a new claims principal
         var userId = User.GetClaim(Claims.Subject)!;
         List<Claim> claims = [new Claim(Claims.Subject, userId)];
-        var roles = User.FindAll(Claims.Role) ?? [];
-        foreach (var item in roles)
-        {
-            var roleClaim = new Claim(Claims.Role, item.Value)
-                .SetDestinations(Destinations.AccessToken);
-            claims.Add(roleClaim);
-        }
+
+        AssignRoleClaim(User, claims);
 
         var claimsIdentity = new ClaimsIdentity(claims, OpenIddictServerAspNetCoreDefaults.AuthenticationScheme);
         var claimsPrincipal = new ClaimsPrincipal(claimsIdentity);
         claimsPrincipal.SetScopes(request.GetScopes());
         return SignIn(claimsPrincipal, OpenIddictServerAspNetCoreDefaults.AuthenticationScheme);
+
+        static void AssignRoleClaim(ClaimsPrincipal user, IList<Claim> claims)
+        {
+            var roles = user.FindAll(Claims.Role) ?? [];
+            foreach (var item in roles)
+            {
+                var roleClaim = new Claim(Claims.Role, item.Value)
+                    .SetDestinations(Destinations.AccessToken);
+                claims.Add(roleClaim);
+            }
+        }
     }
 
     /// <summary>
@@ -223,7 +228,7 @@ public abstract class AuthorizationControllerBase<TUser>(IOptions<IdentityConOpt
 /// <param name="options">Identity configuration options</param>
 /// <param name="userManager">User manager</param>
 /// <param name="signInManager">Sign-in manager</param>
-public abstract class AuthorizationControllerBase(IOptions<IdentityConOptions> options,
+public abstract class AuthorizationControllerBase(IOptions<IdentityServerOptions> options,
     UserManager<IdentityUser> userManager,
     SignInManager<IdentityUser> signInManager)
     : AuthorizationControllerBase<IdentityUser>(options, userManager, signInManager);

@@ -1,4 +1,5 @@
-﻿using TTSS.Core.Messaging.Pipelines;
+﻿using System.Security.Claims;
+using TTSS.Core.Messaging.Pipelines;
 using TTSS.Core.Models;
 
 namespace TTSS.Core.Web.Pipelines;
@@ -29,7 +30,8 @@ public sealed class HttpUserIdentityPipelineBehavior<TRequest, TResponse>(ICorre
             && context is ISetterCorrelationContext setter
             && (accessor.HttpContext?.User?.Identity?.IsAuthenticated ?? false))
         {
-            setter.SetCurrentUserId(accessor.HttpContext.User.Identity?.Name);
+            var userIdentifier = accessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
+            setter.SetCurrentUserId(userIdentifier);
         }
 
         return next();

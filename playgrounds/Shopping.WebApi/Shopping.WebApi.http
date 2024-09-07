@@ -1,4 +1,5 @@
-@Host= http://localhost:5105
+@Host= https://localhost:3001
+@AccessToken = YOUR_ACCESS_TOKEN_HERE
 
 ###========================================================= AuditLog
 ###- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - List
@@ -23,7 +24,7 @@ GET {{Host}}/api/users/{{UserCreate.response.body.userInfo.id}}
 ###- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - Update
 PUT {{Host}}/api/users/update/{{UserCreate.response.body.userInfo.id}}
 Content-Type: application/json
-Authorization: Bearer {{UserCreate.response.body.token}}
+Authorization: Bearer {{AccessToken}}
 
 { "firstName": "Mina", "lastName": "Dixon" }
 

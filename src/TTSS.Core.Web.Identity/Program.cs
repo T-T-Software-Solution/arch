@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System.Reflection;
 using TTSS.Core.Web;
-using TTSS.Core.Web.IdentityServer;
+using TTSS.Core.Web.Identity;
 
 var builder = WebApplication.CreateBuilder(args);
 

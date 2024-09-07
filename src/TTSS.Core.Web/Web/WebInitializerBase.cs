@@ -1,6 +1,6 @@
-﻿using TTSS.Core.Web.Pipelines;
-using TTSS.Core.Configurations;
+﻿using TTSS.Core.Configurations;
 using TTSS.Core.Data;
+using TTSS.Core.Web.Pipelines;
 
 namespace TTSS.Core.Web;
 

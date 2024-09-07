@@ -39,9 +39,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Shopping.Shared", "..\playg
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Shopping.WebApi", "..\playgrounds\Shopping.WebApi\Shopping.WebApi.csproj", "{B385E26C-EF6C-4D2C-ABFB-7EA05ED56639}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TTSS.Core.Web.IdentityServer", "TTSS.Core.Web.IdentityServer\TTSS.Core.Web.IdentityServer.csproj", "{D296FCE9-9E18-4A96-B10A-1C710F5219A6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Shopping.Idp", "..\playgrounds\Shopping.Idp\Shopping.Idp.csproj", "{A4067792-790D-4771-87A1-DC6527BD8ADB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shopping.Idp", "..\playgrounds\Shopping.Idp\Shopping.Idp.csproj", "{A4067792-790D-4771-87A1-DC6527BD8ADB}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TTSS.Core.Web.Identity", "TTSS.Core.Web.Identity\TTSS.Core.Web.Identity.csproj", "{1A876CBC-7DB9-449A-B721-A1E96149481F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -113,14 +113,14 @@ Global
 		{B385E26C-EF6C-4D2C-ABFB-7EA05ED56639}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B385E26C-EF6C-4D2C-ABFB-7EA05ED56639}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B385E26C-EF6C-4D2C-ABFB-7EA05ED56639}.Release|Any CPU.Build.0 = Release|Any CPU
-		{D296FCE9-9E18-4A96-B10A-1C710F5219A6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{D296FCE9-9E18-4A96-B10A-1C710F5219A6}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{D296FCE9-9E18-4A96-B10A-1C710F5219A6}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{D296FCE9-9E18-4A96-B10A-1C710F5219A6}.Release|Any CPU.Build.0 = Release|Any CPU
 		{A4067792-790D-4771-87A1-DC6527BD8ADB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{A4067792-790D-4771-87A1-DC6527BD8ADB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A4067792-790D-4771-87A1-DC6527BD8ADB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A4067792-790D-4771-87A1-DC6527BD8ADB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1A876CBC-7DB9-449A-B721-A1E96149481F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1A876CBC-7DB9-449A-B721-A1E96149481F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1A876CBC-7DB9-449A-B721-A1E96149481F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1A876CBC-7DB9-449A-B721-A1E96149481F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
