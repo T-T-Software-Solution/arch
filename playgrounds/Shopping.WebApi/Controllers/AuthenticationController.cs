@@ -10,6 +10,7 @@ public class AuthenticationController : AuthenticationControllerBase
 {
     protected override ActionResult? CreateLoginResult(ClaimsIdentity identity, AuthenticationProperties properties)
     {
+        // NOT DO THIS IN PRODUCTION. THIS IS JUST FOR DEMO PURPOSES.
         var token = properties
             .GetTokens()
             .FirstOrDefault(it => it.Name == OpenIddictClientAspNetCoreConstants.Tokens.BackchannelAccessToken)
