@@ -36,6 +36,11 @@ public class IdentityClientOptions
     public required string AuthorityBaseUrl { get; set; }
 
     /// <summary>
+    /// A list of URLs that the client requires.
+    /// </summary>
+    public IEnumerable<string>? AudienceBaseUrls { get; set; }
+
+    /// <summary>
     /// The client identifier.
     /// </summary>
     public required string ClientId { get; set; }
