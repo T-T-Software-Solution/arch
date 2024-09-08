@@ -37,6 +37,16 @@ public class IdentityClientRegistrarOptions
     public required string ClientSecret { get; set; }
 
     /// <summary>
+    /// How the client manages credentials.
+    /// </summary>
+    public ClientType ClientType { get; set; } = ClientType.Confidential;
+
+    /// <summary>
+    /// How client interacts with the IDP.
+    /// </summary>
+    public ApplicationType ApplicationType { get; set; } = ApplicationType.Web;
+
+    /// <summary>
     /// The application requirements.
     /// </summary>
     public IEnumerable<string> Requirements { get; set; } = DefaultRequirements;

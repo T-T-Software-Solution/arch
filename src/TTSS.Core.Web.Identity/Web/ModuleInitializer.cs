@@ -289,6 +289,8 @@ public static class ModuleInitializer
                 ClientId = client.ClientId,
                 ClientSecret = client.ClientSecret,
                 DisplayName = client.DisplayName,
+                ClientType = client.ClientType.ToString().ToLower(),
+                ApplicationType = client.ApplicationType.ToString().ToLower(),
             };
             var permissions = client.AllowScopes.Select(it => $"{Permissions.Prefixes.Scope}{it}")
                 .Union(client.AllowEndpoints.Select(it => $"{Permissions.Prefixes.Endpoint}{it}"))

@@ -4,9 +4,9 @@ using OpenIddict.Client.AspNetCore;
 using System.Security.Claims;
 using TTSS.Core.Web.Identity.Client.Controllers;
 
-namespace Shopping.WebApi.Controllers;
+namespace Shopping.WebApi.Biz.Authentications;
 
-public class AuthenticationController : AuthenticationControllerBase
+public class Authentications : AuthenticationControllerBase
 {
     protected override ActionResult? CreateLoginResult(ClaimsIdentity identity, AuthenticationProperties properties)
     {
