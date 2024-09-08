@@ -115,6 +115,7 @@ public abstract class AuthorizationControllerBase<TUser>(IOptions<IdentityServer
         List<Claim> claims = [new Claim(Claims.Subject, userId)];
 
         AssignRoleClaim(User, claims);
+        SetExtraClaims(User, claims);
 
         var claimsIdentity = new ClaimsIdentity(claims, OpenIddictServerAspNetCoreDefaults.AuthenticationScheme);
         var claimsPrincipal = new ClaimsPrincipal(claimsIdentity);
@@ -211,6 +212,13 @@ public abstract class AuthorizationControllerBase<TUser>(IOptions<IdentityServer
         return SignOut(new AuthenticationProperties { RedirectUri = returnUrl },
             OpenIddictServerAspNetCoreDefaults.AuthenticationScheme);
     }
+
+    /// <summary>
+    /// Set extra claims.
+    /// </summary>
+    /// <param name="user">User</param>
+    /// <param name="claims">Extra claims</param>
+    protected abstract void SetExtraClaims(ClaimsPrincipal user, IList<Claim> claims);
 
     /// <summary>
     /// Set extra user information.

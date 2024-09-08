@@ -9,6 +9,10 @@ namespace Shopping.Idp.Controllers;
 public class AuthorizationController(IOptions<IdentityServerOptions> options, UserManager<IdentityUser> userManager, SignInManager<IdentityUser> signInManager)
     : AuthorizationControllerBase<IdentityUser>(options, userManager, signInManager)
 {
+    protected override void SetExtraClaims(ClaimsPrincipal user, IList<Claim> claims)
+    {
+    }
+
     protected override void SetExtraUserInfo(ClaimsPrincipal claims, IDictionary<string, object?> userInfo)
     {
     }
