@@ -11,10 +11,6 @@ namespace Shopping.Idp;
 
 public class IdpWebInitializer : WebInitializerBase
 {
-    public override void RegisterOptions(IServiceCollection services)
-    {
-    }
-
     public override void RegisterServices(IServiceCollection services)
     {
         services

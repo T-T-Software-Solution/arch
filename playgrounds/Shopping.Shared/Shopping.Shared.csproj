@@ -11,7 +11,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\TTSS.Core.Web.Identity\TTSS.Core.Web.Identity.csproj" />
+    <ProjectReference Include="..\..\src\TTSS.Core\TTSS.Core.csproj" />
     <ProjectReference Include="..\..\src\TTSS.Infra.Sql\TTSS.Infra.Sql.csproj" />
   </ItemGroup>
 

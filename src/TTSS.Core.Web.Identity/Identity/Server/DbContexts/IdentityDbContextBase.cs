@@ -6,7 +6,6 @@ using TTSS.Core.Data;
 
 namespace TTSS.Core.Web.Identity.Server.DbContexts;
 
-// TODO: Duplicated code with DbContextBase, consider refactoring to a common service.
 /// <summary>
 /// Identity database context.
 /// </summary>

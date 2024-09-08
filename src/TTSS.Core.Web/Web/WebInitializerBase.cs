@@ -67,16 +67,8 @@ public abstract class WebInitializerBase
     /// Post-build asynchronous  actions.
     /// </summary>
     /// <param name="app">The web application used to configure the HTTP pipeline, and routes</param>
-    public virtual async Task PostBuildAsync(WebApplication app)
-    {
-        await using var scope = app.Services.CreateAsyncScope();
-        var serviceProviderScope = scope.ServiceProvider;
-        var warmups = serviceProviderScope.GetServices<IDbWarmup>();
-        foreach (var item in warmups)
-        {
-            await item.WarmupAsync();
-        }
-    }
+    public virtual Task PostBuildAsync(WebApplication app)
+        => Task.CompletedTask;
 
     /// <summary>
     /// Registers databases into the <see cref="IServiceCollection"/>.
@@ -167,6 +159,17 @@ public abstract class WebInitializerBase
         foreach (var item in _registeredMiddlewares)
         {
             builder.UseMiddleware(item.Key);
+        }
+    }
+
+    internal async Task WarmupDatabaseAsync(WebApplication app)
+    {
+        await using var scope = app.Services.CreateAsyncScope();
+        var serviceProviderScope = scope.ServiceProvider;
+        var warmups = serviceProviderScope.GetServices<IDbWarmup>();
+        foreach (var item in warmups)
+        {
+            await item.WarmupAsync();
         }
     }
 

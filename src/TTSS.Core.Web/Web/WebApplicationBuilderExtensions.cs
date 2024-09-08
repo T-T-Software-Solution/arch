@@ -181,6 +181,7 @@ public static class WebApplicationBuilderExtensions
         initializer.ConfigurePipelines(app);
         initializer.PostBuild(app);
         await initializer.PostBuildAsync(app);
+        await initializer.WarmupDatabaseAsync(app);
         config?.Invoke(app);
         initializer.UseMiddlewares(app);
         return (app, initializer);

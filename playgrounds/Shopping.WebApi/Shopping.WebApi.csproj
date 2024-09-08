@@ -11,6 +11,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\src\TTSS.Core.Web.Identity\TTSS.Core.Web.Identity.csproj" />
     <ProjectReference Include="..\Shopping.Shared\Shopping.Shared.csproj" />
   </ItemGroup>
 

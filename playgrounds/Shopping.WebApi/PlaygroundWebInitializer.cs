@@ -11,10 +11,6 @@ namespace Shopping.WebApi;
 
 public sealed class PlaygroundWebInitializer : WebInitializerBase
 {
-    public override void RegisterOptions(IServiceCollection services)
-    {
-    }
-
     public override void RegisterServices(IServiceCollection services)
     {
         var assemblies = new[]
