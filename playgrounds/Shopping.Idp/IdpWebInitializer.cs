@@ -1,8 +1,10 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Shopping.Idp.DbContexts;
 using System.Reflection;
 using TTSS.Core.Web;
 using TTSS.Core.Web.Identity.Server.Configurations;
+using TTSS.Core.Web.Identity.Server.Models;
 using TTSS.Infra.Data.Sql;
 
 namespace Shopping.Idp;
@@ -40,7 +42,9 @@ public class IdpWebInitializer : WebInitializerBase
     {
         await base.PostBuildAsync(app);
 
-        // DON'T DO THIS IN PRODUCTION! Just an example for demonstration purposes.
+        // DON'T USE THE FOLLOWING CODE IN PRODUCTION.
+
+        // (DEMO) Register Shopping API client.
         var clientBaseUrl = "https://localhost:3001";
         var clients = new IdentityClientRegistrarOptions[]
         {
@@ -53,6 +57,17 @@ public class IdpWebInitializer : WebInitializerBase
                 LogoutCallbackEndpoints = [IdentityClientRegistrarOptions.CreateLogoutCallbackPath(clientBaseUrl)],
             }
         };
-        await app.RegisterClientIfAbsentAsync(clients);
+        await app.RegisterClientsAsync(clients);
+
+        // (DEMO) Register roles.
+        await app.RegisterRolesAsync(["admin", "user"]);
+
+        // (DEMO) Register user.
+        var accounts = new RegisterAccount<IdentityUser>[]
+        {
+            new (new("admin@demo.com") { Email = "admin@demo.com" }, "P@ssw0rd", ["admin"]),
+            new (new("user1@demo.com") { Email = "user1@demo.com" }, "P@ssw0rd", ["user"]),
+        };
+        await app.RegisterAccountsAsync(accounts);
     }
 }

@@ -9,6 +9,7 @@ using OpenIddict.Client;
 using TTSS.Core.Data;
 using TTSS.Core.Web.Identity.Client.Configurations;
 using TTSS.Core.Web.Identity.Server.Configurations;
+using TTSS.Core.Web.Identity.Server.Models;
 using static OpenIddict.Abstractions.OpenIddictConstants;
 
 #pragma warning disable IDE0130 // Namespace does not match folder structure
@@ -20,16 +21,6 @@ namespace TTSS.Core.Web;
 /// </summary>
 public static class ModuleInitializer
 {
-    /// <summary>
-    /// Add the identity server modules with Development enabled.
-    /// </summary>
-    /// <typeparam name="TIdentityDbContext">The identity database context</typeparam>
-    /// <param name="target">The service collection</param>
-    /// <returns>The service collection</returns>
-    public static IServiceCollection RegisterIdentityServer<TIdentityDbContext>(this IServiceCollection target)
-        where TIdentityDbContext : DbContext, IDbWarmup
-        => RegisterIdentityServer<TIdentityDbContext, IdentityUser>(target, new IdentityServerOptions { IsDevelopmentEnabled = true });
-
     /// <summary>
     /// Add the identity server modules.
     /// </summary>
@@ -277,11 +268,12 @@ public static class ModuleInitializer
     }
 
     /// <summary>
-    /// Register the client if it is not already registered.
+    /// Register the client.
+    /// If the client is already registered, it will be ignored.
     /// </summary>
     /// <param name="target">The web application</param>
     /// <param name="clients">The clients to register</param>
-    public static async Task RegisterClientIfAbsentAsync(this WebApplication target, IEnumerable<IdentityClientRegistrarOptions> clients)
+    public static async Task RegisterClientsAsync(this WebApplication target, IEnumerable<IdentityClientRegistrarOptions> clients)
     {
         await using var scope = target.Services.CreateAsyncScope();
         var manager = scope.ServiceProvider.GetRequiredService<IOpenIddictApplicationManager>();
@@ -307,6 +299,98 @@ public static class ModuleInitializer
             foreach (var item in client.LoginCallbackEndpoints) descriptor.RedirectUris.Add(new(item));
             foreach (var item in client.LogoutCallbackEndpoints) descriptor.PostLogoutRedirectUris.Add(new(item));
             await manager.CreateAsync(descriptor);
+        }
+    }
+
+    /// <summary>
+    /// Register the roles.
+    /// If the role is already registered, it will be ignored.
+    /// </summary>
+    /// <param name="target">The web application</param>
+    /// <param name="roles"></param>
+    public static Task RegisterRolesAsync(this WebApplication target, IEnumerable<string> roles)
+    {
+        if (roles is null || false == roles.Any())
+        {
+            return Task.CompletedTask;
+        }
+
+        var uniqueRoleQry = roles
+            .Where(it => false == string.IsNullOrWhiteSpace(it))
+            .Distinct()
+            .Select(it => new IdentityRole(it));
+        return RegisterRolesAsync(target, uniqueRoleQry);
+    }
+
+    /// <summary>
+    /// Register the roles.
+    /// If the role is already registered, it will be ignored.
+    /// </summary>
+    /// <typeparam name="TIdentityRole">The type representing a Role in the system</typeparam>
+    /// <param name="target">The web application</param>
+    /// <param name="roles">The roles to register</param>
+    public static async Task RegisterRolesAsync<TIdentityRole>(this WebApplication target, IEnumerable<TIdentityRole> roles)
+        where TIdentityRole : IdentityRole
+    {
+        if (roles is null || false == roles.Any())
+        {
+            return;
+        }
+
+        var uniqueRoleQry = roles
+            .Where(it => false == string.IsNullOrWhiteSpace(it.Name))
+            .Distinct() ?? [];
+
+        await using var scope = target.Services.CreateAsyncScope();
+        var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<TIdentityRole>>();
+        foreach (var item in uniqueRoleQry)
+        {
+            if (await roleManager.FindByNameAsync(item.Name!) is not null)
+            {
+                continue;
+            }
+
+            await roleManager.CreateAsync(item);
+        }
+    }
+
+    /// <summary>
+    /// Register the accounts.
+    /// If the account's email is already registered, it will be ignored.
+    /// </summary>
+    /// <typeparam name="TIdentityUser"></typeparam>
+    /// <param name="target">The web application</param>
+    /// <param name="accounts">The accounts to register</param>
+    public static async Task RegisterAccountsAsync<TIdentityUser>(this WebApplication target, IEnumerable<RegisterAccount<TIdentityUser>> accounts)
+        where TIdentityUser : IdentityUser
+    {
+        if (accounts is null || false == accounts.Any())
+        {
+            return;
+        }
+
+        var validAccountQry = accounts
+            .Where(it => it is not null
+                && it.User is not null
+                && false == string.IsNullOrWhiteSpace(it.User.Email)
+                && false == string.IsNullOrWhiteSpace(it.Password));
+
+        await using var scope = target.Services.CreateAsyncScope();
+        var userManager = scope.ServiceProvider.GetRequiredService<UserManager<TIdentityUser>>();
+        foreach (var item in validAccountQry)
+        {
+            var user = item.User!;
+            if (await userManager.FindByEmailAsync(user.Email!) is not null)
+            {
+                continue;
+            }
+
+            await userManager.CreateAsync(user, item.Password);
+
+            foreach (var role in item.Roles ?? [])
+            {
+                await userManager.AddToRoleAsync(user, role);
+            }
         }
     }
 }

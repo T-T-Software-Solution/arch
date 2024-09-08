@@ -114,7 +114,9 @@ public abstract class WebInitializerBase
     /// Registers services into the <see cref="IServiceCollection"/>.
     /// </summary>
     /// <param name="services">The service collection</param>
-    public abstract void RegisterOptions(IServiceCollection services);
+    public virtual void RegisterOptions(IServiceCollection services)
+    {
+    }
 
     /// <summary>
     /// Registers services into the <see cref="IServiceCollection"/>.

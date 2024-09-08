@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using TTSS.Core.Data;
 
-namespace TTSS.Core.Web.Identity;
+namespace TTSS.Core.Web.Identity.Server.DbContexts;
 
 // TODO: Duplicated code with DbContextBase, consider refactoring to a common service.
 /// <summary>
@@ -63,5 +63,4 @@ public abstract class IdentityDbContextBase<TUser>(DbContextOptions options)
 /// <summary>
 /// Identity database context.
 /// </summary>
-public abstract class IdentityDbContextBase(DbContextOptions options)
-    : IdentityDbContextBase<IdentityUser>(options);
+public abstract class IdentityDbContextBase(DbContextOptions options) : IdentityDbContextBase<IdentityUser>(options);
