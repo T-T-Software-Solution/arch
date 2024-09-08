@@ -36,9 +36,16 @@ public class IdentityClientOptions
     public required string AuthorityBaseUrl { get; set; }
 
     /// <summary>
-    /// A list of URLs that the client requires.
+    /// A list of issuer URLs that the client considers valid.
+    /// Leave null if the client does not require any issuer, but if the value is set, the client will check the token's issuer.
     /// </summary>
-    public IEnumerable<string>? AudienceBaseUrls { get; set; }
+    public IEnumerable<string>? IssuerBaseUrls { get; set; }
+
+    /// <summary>
+    /// A list of URLs that the client requires.
+    /// Leave null if the client does not require any audience, but if the value is set, the client will check the token's audience.
+    /// </summary>
+    public IEnumerable<string>? RequiredAudienceBaseUrls { get; set; }
 
     /// <summary>
     /// The client identifier.

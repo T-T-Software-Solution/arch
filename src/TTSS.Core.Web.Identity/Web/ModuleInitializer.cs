@@ -178,11 +178,12 @@ public static class ModuleInitializer
                cfg.TokenValidationParameters = new TokenValidationParameters
                {
                    ValidateIssuer = true,
-                   ValidateAudience = options.AudienceBaseUrls?.Any() ?? false,
                    ValidateLifetime = true,
+                   ValidateAudience = options.RequiredAudienceBaseUrls?.Any() ?? false,
                    ValidateIssuerSigningKey = true,
-                   ValidIssuer = cfg.Authority, // TODO: Support multiple issuers
-                   ValidAudiences = options.AudienceBaseUrls,
+                   ValidIssuer = cfg.Authority,
+                   ValidIssuers = options.IssuerBaseUrls,
+                   ValidAudiences = options.RequiredAudienceBaseUrls,
                    IssuerSigningKeys = webKey.GetSigningKeys(),
                };
                options.BearerOptions?.Invoke(cfg);
