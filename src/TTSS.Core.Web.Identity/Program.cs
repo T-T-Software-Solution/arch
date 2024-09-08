@@ -41,6 +41,6 @@ file class WebInitializer : WebInitializerBase
         base.RegisterDatabases(services);
         // Ensure the database is registered with a DbContext that inherits from IdentityDbContextBase.
     }
-}
 
-file class SampleIdentityDbContext(DbContextOptions options) : IdentityDbContextBase(options);
+    private class SampleIdentityDbContext(DbContextOptions options) : IdentityDbContextBase(options);
+}

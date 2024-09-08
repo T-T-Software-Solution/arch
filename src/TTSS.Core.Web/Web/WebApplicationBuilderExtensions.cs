@@ -179,9 +179,9 @@ public static class WebApplicationBuilderExtensions
         var app = target.Build();
         initializer.ConfigureRoutes(app);
         initializer.ConfigurePipelines(app);
+        await initializer.WarmupDatabaseAsync(app);
         initializer.PostBuild(app);
         await initializer.PostBuildAsync(app);
-        await initializer.WarmupDatabaseAsync(app);
         config?.Invoke(app);
         initializer.UseMiddlewares(app);
         return (app, initializer);

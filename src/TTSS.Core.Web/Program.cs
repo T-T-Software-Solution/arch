@@ -14,7 +14,7 @@ var application = await builder.BuildAsync<WebInitializer>(app =>
 
 application.Run();
 
-file class WebInitializer : WebInitializerBase
+internal class WebInitializer : WebInitializerBase
 {
     public override void RegisterOptions(IServiceCollection services)
     {
@@ -25,7 +25,7 @@ file class WebInitializer : WebInitializerBase
     }
 }
 
-file class Opt : IOptionsValidator
+internal class Opt : IOptionsValidator
 {
     public static string SectionName => nameof(Opt);
 
