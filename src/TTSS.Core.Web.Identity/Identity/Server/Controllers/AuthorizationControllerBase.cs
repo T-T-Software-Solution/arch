@@ -147,6 +147,7 @@ public abstract class AuthorizationControllerBase<TUser>(IOptions<IdentityServer
             {
                 builder.Append($":{uri.Port}");
             }
+            builder.Append("/");
             var audienceClaim = new Claim(Claims.Audience, builder.ToString())
                 .SetDestinations(Destinations.AccessToken);
             claims.Add(audienceClaim);

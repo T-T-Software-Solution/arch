@@ -25,8 +25,8 @@ public sealed class PlaygroundWebInitializer : WebInitializerBase
             {
                 IsDevelopmentEnabled = true,
                 CredentialKey = null, // THIS PROPERTY IS REQUIRED FOR PRODUCTION
-                AuthorityBaseUrl = "https://localhost:9001",
-                AudienceBaseUrls = ["https://localhost:3001"],
+                AuthorityBaseUrl = "https://localhost:9001/",
+                AudienceBaseUrls = ["https://localhost:3001/"],
                 ClientId = "40D4C23A-0B90-4B1A-8D4E-4F0BE4E23D4B",
                 ClientSecret = "the$ecr3T",
                 ProviderName = "shopping-idp",
