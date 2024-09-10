@@ -1,5 +1,5 @@
 using Shopping.WebApi;
-using TTSS.Core.AspNetCore;
+using TTSS.Core.Web;
 
 var builder = WebApplication.CreateBuilder(args);
 
