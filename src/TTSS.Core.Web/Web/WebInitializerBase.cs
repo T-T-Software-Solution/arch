@@ -162,7 +162,7 @@ public abstract class WebInitializerBase
         }
     }
 
-    internal async Task WarmupDatabaseAsync(WebApplication app)
+    internal static async Task WarmupDatabaseAsync(WebApplication app)
     {
         await using var scope = app.Services.CreateAsyncScope();
         var serviceProviderScope = scope.ServiceProvider;
