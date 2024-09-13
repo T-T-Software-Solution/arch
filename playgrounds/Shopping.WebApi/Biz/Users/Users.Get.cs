@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 using Shopping.Shared.Entities;
 using Shopping.Shared.Entities.ViewModels;
 using System.Net;
@@ -16,7 +17,11 @@ file class Handler(IRepository<User> repository, IMapper mapper)
 {
     public override async Task<IHttpResponse<UserVm>> HandleAsync(UsersGet request, CancellationToken cancellationToken = default)
     {
-        var entity = await repository.GetByIdAsync(request.UserId, cancellationToken);
+        var entity = await repository
+            .Query()
+            .Include(it => it.Carts)
+            .ThenInclude(it => it.Products)
+            .FirstOrDefaultAsync(it => it.Id == request.UserId, cancellationToken);
         if (entity is null)
         {
             return Response(HttpStatusCode.Gone, "User not found");

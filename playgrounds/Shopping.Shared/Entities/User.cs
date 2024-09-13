@@ -11,4 +11,7 @@ public sealed class User : SqlModelBase
 
     [Comment("นามสกุล")]
     public string? LastName { get; set; }
+
+    [Comment("รายการตะกร้า")]
+    public ICollection<Cart> Carts { get; set; } = [];
 }

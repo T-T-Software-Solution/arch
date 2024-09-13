@@ -10,4 +10,5 @@ public sealed record UserVm : IHaveOrderNumber
     public string? FirstName { get; init; }
     public string? LastName { get; init; }
     public int OrderNo { get; set; }
+    public IEnumerable<CartVm> Carts { get; init; }
 }

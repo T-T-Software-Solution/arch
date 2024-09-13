@@ -21,11 +21,13 @@ file sealed class Handler(IRepository<User> repository)
 {
     public override async Task<IHttpResponse<Paging<UserVm>>> HandleAsync(UsersList request, CancellationToken cancellationToken = default)
     {
-        var shouldSkipSearch = string.IsNullOrEmpty(request.Keyword);
+        var keyword = request.Keyword?.ToLower() ?? string.Empty;
+        var shouldSkipSearch = string.IsNullOrEmpty(keyword);
         Expression<Func<User, bool>> filter = it => shouldSkipSearch
-            || (null != it.FirstName && it.FirstName.Contains(request.Keyword!))
-            || (null != it.LastName && it.LastName.Contains(request.Keyword!));
+            || (null != it.FirstName && it.FirstName.Contains(keyword))
+            || (null != it.LastName && it.LastName.Contains(keyword));
         var paging = await repository
+            .Include(it => it.Carts)
             .GetPaging(request.PageNo, request.PageSize, filter)
             .ExecuteAsync<UserVm>();
         return Response(HttpStatusCode.OK, paging);
