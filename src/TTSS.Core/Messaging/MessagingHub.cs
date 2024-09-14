@@ -2,14 +2,12 @@
 
 namespace TTSS.Core.Messaging;
 
-/// <summary>
-/// Default mediator implementation relying on single and multi instance delegates for resolving handlers.
-/// </summary>
-/// <param name="provider">Service provider</param>
 internal sealed class MessagingHub(Lazy<IServiceProvider> provider) : IMessagingHub
 {
     #region Properties
 
+    private ILocalMessagingHub LocalHub => ServiceProvider.GetRequiredService<ILocalMessagingHub>();
+    private IRemoteMessagingHub RemoteHub => ServiceProvider.GetRequiredService<IRemoteMessagingHub>();
     private IServiceProvider ServiceProvider => provider?.Value ?? throw new InvalidOperationException("The service provider is not available");
 
     #endregion
@@ -18,25 +16,44 @@ internal sealed class MessagingHub(Lazy<IServiceProvider> provider) : IMessaging
 
     Task IMessagingHub.PublishAsync<TPublication>(TPublication publication, CancellationToken cancellationToken)
     {
+        // TODO: Implement the method for remote publication
         ArgumentNullException.ThrowIfNull(publication);
-        var mediator = ServiceProvider.GetRequiredService<MediatR.IMediator>();
-        return mediator.Publish(publication, cancellationToken);
+        return LocalHub.PublishAsync(publication, cancellationToken);
     }
 
-    async Task IMessagingHub.SendAsync<TRequest>(TRequest request, CancellationToken cancellationToken)
+    Task IMessagingHub.SendAsync<TRequest>(TRequest request, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(request);
-        var mediator = ServiceProvider.GetRequiredService<MediatR.IMediator>();
-        await mediator.Send(request, cancellationToken);
+        if (request is IRemoteRequesting remoteRequest)
+        {
+            return RemoteHub.SendAsync(remoteRequest, cancellationToken);
+        }
+        else if (request is IRequesting localRequest)
+        {
+            return LocalHub.SendAsync(localRequest, cancellationToken);
+        }
+        else
+        {
+            throw new NotSupportedException($"The request type {request.GetType().Name} is not supported");
+        }
     }
 
-    async Task<TResponse> IMessagingHub.SendAsync<TResponse>(IRequesting<TResponse> request, CancellationToken cancellationToken)
-        where TResponse : class
+    Task<TResponse> IMessagingHub.SendAsync<TResponse>(IRequesting<TResponse> request, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(request);
-        var mediator = ServiceProvider.GetRequiredService<MediatR.IMediator>();
-        return await mediator.Send(request, cancellationToken);
+        return LocalHub.SendAsync(request, cancellationToken);
     }
 
-    #endregion
+    Task<TResponse> IMessagingHub.SendAsync<TRequest, TResponse>(TRequest request, TimeSpan timeout, Uri? destinationAddress, CancellationToken cancellationToken)
+    {
+        ArgumentNullException.ThrowIfNull(request);
+        if (request is not IRemoteRequesting<TResponse>)
+        {
+            throw new NotSupportedException($"The request type {request.GetType().Name} is not supported");
+        }
+
+        return RemoteHub.SendAsync<TRequest, TResponse>(request, timeout, destinationAddress, cancellationToken);
+    }
 }
+
+#endregion

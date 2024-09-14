@@ -5,10 +5,10 @@ namespace TTSS.Core.Messaging;
 /// <summary>
 /// Contract for a remote request message.
 /// </summary>
-public interface IRemoteRequesting : IRemoteRequest;
+public interface IRemoteRequesting : IRequest;
 
 /// <summary>
 /// Contract for a remote request message with a response.
 /// </summary>
 /// <typeparam name="TResponse">Response type</typeparam>
-public interface IRemoteRequesting<out TResponse> : IRemoteRequest<TResponse> where TResponse : class;
+public interface IRemoteRequesting<out TResponse> : IRequest<TResponse> where TResponse : class;

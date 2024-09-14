@@ -1,7 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using TTSS.Core.Contexts;
 using TTSS.Core.Messaging.Pipelines;
-using TTSS.Core.Models;
 
 namespace TTSS.Core.Messaging;
 
@@ -18,8 +17,7 @@ public class IoCTests : CommonTestCases
             typeof(AsyncMoreThan10PipelineBehavior<,>),
         };
         services
-            .AddScoped<ICorrelationContext, MessagingContext>()
             .AddTransient<ITestInterface>(pvd => mock.Object)
-            .RegisterMessagingModule([GetType().Assembly], behaviorTypes);
+            .RegisterTTSSCore<MessagingContext>([GetType().Assembly], behaviorTypes);
     }
 }

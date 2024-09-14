@@ -50,7 +50,7 @@
       <Method Name="CreateDisplayablePaging" Hidden="true" />
     </Members>
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAARBAAAAEEAAAKUCigAAAAAAAAIgAACAAY=</HashCode>
+      <HashCode>AAAAAAAAAAARBAAAAEEAAAKUAigAAAAAAAAIgAACAEY=</HashCode>
       <FileName>Data\PagingSet.cs</FileName>
     </TypeIdentifier>
   </Class>
@@ -281,14 +281,14 @@
     </TypeIdentifier>
   </Interface>
   <Interface Name="TTSS.Core.Models.IResponse">
-    <Position X="14" Y="9.25" Width="1.75" />
+    <Position X="14" Y="10.75" Width="1.75" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIAAAAAA=</HashCode>
       <FileName>Models\IResponse.cs</FileName>
     </TypeIdentifier>
   </Interface>
   <Interface Name="TTSS.Core.Models.IResponse&lt;TData&gt;">
-    <Position X="14" Y="11.25" Width="1.75" />
+    <Position X="14" Y="12.75" Width="1.75" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAA=</HashCode>
       <FileName>Models\IResponse.cs</FileName>
@@ -338,7 +338,7 @@
     </TypeIdentifier>
   </Interface>
   <Interface Name="TTSS.Core.Models.IRequest" Collapsed="true">
-    <Position X="14" Y="8.5" Width="1.75" />
+    <Position X="14" Y="8.75" Width="1.75" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Models\IRequest.cs</FileName>
@@ -373,17 +373,44 @@
     </TypeIdentifier>
   </Interface>
   <Interface Name="TTSS.Core.Models.IHttpResponse">
-    <Position X="16.25" Y="9.25" Width="2.25" />
+    <Position X="16.25" Y="10.75" Width="2.25" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAIAAACAAAAAA=</HashCode>
       <FileName>Models\IHttpResponse.cs</FileName>
     </TypeIdentifier>
   </Interface>
   <Interface Name="TTSS.Core.Models.IHttpResponse&lt;TData&gt;" Collapsed="true">
-    <Position X="16.25" Y="11.5" Width="2.25" />
+    <Position X="16.25" Y="13" Width="2.25" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Models\IHttpResponse.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="TTSS.Core.Messaging.IRemoteRequesting" Collapsed="true">
+    <Position X="14" Y="9.75" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Messaging\IRemoteRequesting.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="TTSS.Core.Messaging.IRemoteRequesting&lt;TResponse&gt;" Collapsed="true">
+    <Position X="16.25" Y="9.75" Width="2.5" />
+    <InheritanceLine Type="TTSS.Core.Models.IRequest&lt;TResponse&gt;" FixedToPoint="true">
+      <Path>
+        <Point X="17.125" Y="9.312" />
+        <Point X="17.125" Y="9.75" />
+      </Path>
+    </InheritanceLine>
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Messaging\IRemoteRequesting.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="TTSS.Core.Models.IRequest&lt;TResponse&gt;" Collapsed="true">
+    <Position X="16.25" Y="8.75" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Models\IRequest.cs</FileName>
     </TypeIdentifier>
   </Interface>
   <Font Name="Segoe UI" Size="9" />

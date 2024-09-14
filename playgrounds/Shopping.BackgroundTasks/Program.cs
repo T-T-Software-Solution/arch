@@ -39,9 +39,8 @@ app.AppStarted += async (sender, e) =>
     var logger = app.GetLogger<Program>();
     logger.LogInformation("Application started");
 
-    var hub = app.ScopedServiceProvider.GetRequiredService<IMessagingCenter>();
+    var hub = app.ScopedServiceProvider.GetRequiredService<IMessagingHub>();
     await hub.SendAsync(new Greeting { Message = "Hello, World!" });
-
     var rsp = await hub.SendAsync<Ping, Pong>(new Ping(3, 7));
     logger.LogInformation("The result from the remote request is {@Result}", rsp.Result);
 };

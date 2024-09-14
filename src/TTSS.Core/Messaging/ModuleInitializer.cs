@@ -32,7 +32,8 @@ public static class ModuleInitializer
             .Union(defaultPipelines);
 
         services
-            .AddScoped<IMessagingHub>(sp => new MessagingHub(new(sp)))
+            .AddScoped<IMessagingHub, MessagingHub>()
+            .AddScoped<ILocalMessagingHub, LocalMessagingHub>()
             .AddMediatR(cfg =>
             {
                 cfg.RegisterServicesFromAssemblies(assemblies.ToArray());

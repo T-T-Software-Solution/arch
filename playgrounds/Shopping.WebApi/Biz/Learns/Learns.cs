@@ -29,6 +29,6 @@ public sealed class Learns(IMessagingHub hub, IRemoteMessagingHub remoteHub) : A
         => remoteHub.SendAsync(new Greeting { Message = message });
 
     [HttpPost("/Remote/2/Ping")]
-    public Task<Pong?> SendGreeting([FromQuery] int first, [FromQuery] int second)
+    public Task<Pong> SendGreeting([FromQuery] int first, [FromQuery] int second)
         => remoteHub.SendAsync<Ping, Pong>(new Ping(first, second));
 }
