@@ -55,7 +55,7 @@ public sealed class AppHost(IHost host)
     /// </summary>
     /// <param name="callerName">The caller name</param>
     /// <returns>Returns the logger instance</returns>
-    public ILogger GetLogger([CallerMemberName] string? callerName = default)
+    public ILogger GetLogger([CallerMemberName] string callerName = default!)
         => ScopedServiceProvider.GetRequiredService<ILoggerFactory>().CreateLogger(callerName);
 
     #endregion

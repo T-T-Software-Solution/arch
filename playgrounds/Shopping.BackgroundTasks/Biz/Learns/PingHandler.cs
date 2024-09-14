@@ -4,11 +4,11 @@ using TTSS.Core.Messaging.Handlers;
 
 namespace Shopping.BackgroundTasks.Biz.Learns;
 
-public sealed class PingPongHandler(ILogger<PingPongHandler> logger) : RemoteRequestHandlerAsync<Ping, Pong>
+public sealed class PingHandler(ILogger<PingHandler> logger) : RemoteRequestHandlerAsync<Ping, Pong>
 {
     public override Task<Pong> HandleAsync(Ping request, CancellationToken cancellationToken = default)
     {
-        logger.LogInformation("Received message: {@First} {@Second}", request.First, request.Second);
+        logger.LogInformation("Received message: {@First} and {@Second}", request.First, request.Second);
         var response = new Pong(request.First + request.Second);
         return Task.FromResult(response);
     }

@@ -9,7 +9,6 @@ using OpenIddict.Abstractions;
 using OpenIddict.Server.AspNetCore;
 using System.Diagnostics.CodeAnalysis;
 using System.Security.Claims;
-using System.Text;
 using TTSS.Core.Services;
 using TTSS.Core.Web.Identity.Server.Configurations;
 using static OpenIddict.Abstractions.OpenIddictConstants;

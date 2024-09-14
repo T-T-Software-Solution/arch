@@ -16,56 +16,24 @@ internal sealed class MessagingHub(Lazy<IServiceProvider> provider) : IMessaging
 
     #region Methods
 
-    /// <summary>
-    /// Asynchronously send a notification to multiple handlers.
-    /// </summary>
-    /// <param name="publication">Notification object</param>
-    /// <param name="cancellationToken">Optional cancellation token</param>
-    /// <returns>A task that represents the publish operation</returns>
-    public Task PublishAsync<TPublication>(TPublication publication, CancellationToken cancellationToken = default)
-        where TPublication : IPublication
+    Task IMessagingHub.PublishAsync<TPublication>(TPublication publication, CancellationToken cancellationToken)
     {
-        if (publication is null)
-        {
-            return Task.CompletedTask;
-        }
-
+        ArgumentNullException.ThrowIfNull(publication);
         var mediator = ServiceProvider.GetRequiredService<MediatR.IMediator>();
         return mediator.Publish(publication, cancellationToken);
     }
 
-    /// <summary>
-    /// Asynchronously send an object request to a single handler.
-    /// </summary>
-    /// <param name="request">Request object</param>
-    /// <param name="cancellationToken">Optional cancellation token</param>
-    /// <returns>A task that represents the send operation. The task result contains the type erased handler response</returns>
-    public async Task SendAsync<TRequest>(TRequest request, CancellationToken cancellationToken = default)
-        where TRequest : IRequesting
+    async Task IMessagingHub.SendAsync<TRequest>(TRequest request, CancellationToken cancellationToken)
     {
-        if (request is null)
-        {
-            return;
-        }
-
+        ArgumentNullException.ThrowIfNull(request);
         var mediator = ServiceProvider.GetRequiredService<MediatR.IMediator>();
         await mediator.Send(request, cancellationToken);
     }
 
-    /// <summary>
-    /// Asynchronously send a request to a single handler with response.
-    /// </summary>
-    /// <typeparam name="TResponse">Response type</typeparam>
-    /// <param name="request">Request object</param>
-    /// <param name="cancellationToken">Optional cancellation token</param>
-    /// <returns>A task that represents the send operation. The task result contains the handler response</returns>
-    public async Task<TResponse?> SendAsync<TResponse>(IRequesting<TResponse> request, CancellationToken cancellationToken = default)
+    async Task<TResponse> IMessagingHub.SendAsync<TResponse>(IRequesting<TResponse> request, CancellationToken cancellationToken)
+        where TResponse : class
     {
-        if (request is null)
-        {
-            return default;
-        }
-
+        ArgumentNullException.ThrowIfNull(request);
         var mediator = ServiceProvider.GetRequiredService<MediatR.IMediator>();
         return await mediator.Send(request, cancellationToken);
     }

@@ -23,22 +23,23 @@ public abstract class CommonTestCases : IoCTestBase
     }
 
     [Fact]
-    public async Task Send_OneWayWithNull_TheSystemMustNotThrowAnException()
+    public async Task Send_OneWayWithNull_TheSystemMustThrowAnException()
     {
         var sut = ServiceProvider.GetRequiredService<IMessagingHub>();
         OneWay request = null;
-        await sut.SendAsync(request);
+        var act = async () => await sut.SendAsync(request);
+        await act.Should().ThrowAsync<ArgumentNullException>();
         Mock.Verify(it => it.Execute(It.IsAny<OneWay>()), Times.Never);
         Mock.Verify(it => it.ExecuteAsync(It.IsAny<It.IsAnyType>(), It.IsAny<CancellationToken>()), Times.Never);
     }
 
     [Fact]
-    public async Task Send_TwoWayWithNull_TheSystemMustNotThrowAnException()
+    public async Task Send_TwoWayWithNull_TheSystemMustAnException()
     {
         var sut = ServiceProvider.GetRequiredService<IMessagingHub>();
         TwoWay request = null;
-        var actual = await sut.SendAsync(request);
-        actual.Should().BeNull();
+        var act = async () => await sut.SendAsync(request);
+        await act.Should().ThrowAsync<ArgumentNullException>();
         Mock.Verify(it => it.Execute(It.IsAny<TwoWay>()), Times.Never);
         Mock.Verify(it => it.ExecuteAsync(It.IsAny<It.IsAnyType>(), It.IsAny<CancellationToken>()), Times.Never);
     }

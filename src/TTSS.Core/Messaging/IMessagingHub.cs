@@ -12,7 +12,8 @@ public interface IMessagingHub
     /// <param name="publication">Notification object</param>
     /// <param name="cancellationToken">Optional cancellation token</param>
     /// <returns>A task that represents the publish operation</returns>
-    Task PublishAsync<TPublication>(TPublication publication, CancellationToken cancellationToken = default) where TPublication : IPublication;
+    Task PublishAsync<TPublication>(TPublication publication, CancellationToken cancellationToken = default)
+        where TPublication : IPublication;
 
     /// <summary>
     /// Asynchronously send an object request to a single handler.
@@ -31,5 +32,6 @@ public interface IMessagingHub
     /// <param name="request">Request object</param>
     /// <param name="cancellationToken">Optional cancellation token</param>
     /// <returns>A task that represents the send operation. The task result contains the handler response</returns>
-    Task<TResponse?> SendAsync<TResponse>(IRequesting<TResponse> request, CancellationToken cancellationToken = default);
+    Task<TResponse> SendAsync<TResponse>(IRequesting<TResponse> request, CancellationToken cancellationToken = default)
+        where TResponse : class;
 }

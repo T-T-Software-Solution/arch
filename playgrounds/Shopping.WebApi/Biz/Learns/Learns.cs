@@ -6,7 +6,7 @@ using TTSS.Core.Web.Controllers;
 
 namespace Shopping.WebApi.Biz.Learns;
 
-public sealed class Learns(IMessagingHub hub, IRemoteMessagingHub remoteHub, ICorrelationContext context) : ApiControllerBase
+public sealed class Learns(IMessagingHub hub, IRemoteMessagingHub remoteHub) : ApiControllerBase
 {
     [HttpGet("/Local/1/OneWay/{input}")]
     public Task OneWay(string input)
