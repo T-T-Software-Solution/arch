@@ -33,13 +33,11 @@ public interface IRemoteMessagingHub
     /// <param name="request">Request object</param>
     /// <param name="timeout">An optional timeout for the request (defaults to 30 seconds)</param>
     /// <param name="destinationAddress">The service address</param>
-    /// <param name="callback">A callback, which can modify the <see cref="MassTransit.SendContext" /> of the request</param>
     /// <param name="cancellationToken">An optional cancellationToken for this request</param>
     /// <returns>A task that represents the send operation. The task result contains the handler response</returns>
     Task<TResponse> SendAsync<TRequest, TResponse>(TRequest request,
-        MassTransit.RequestTimeout timeout = default,
+        TimeSpan timeout = default,
         Uri? destinationAddress = default,
-        Action<MassTransit.SendContext<TRequest>>? callback = default,
         CancellationToken cancellationToken = default)
         where TRequest : class, IRemoteRequesting<TResponse>
         where TResponse : class;

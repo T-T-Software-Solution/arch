@@ -29,22 +29,23 @@ internal sealed class RemoteMessagingHub(Lazy<IServiceProvider> provider) : IRem
     {
         ArgumentNullException.ThrowIfNull(request);
         var bus = ServiceProvider.GetRequiredService<IBus>();
-        var sender = await bus.GetSendEndpoint(new($"{bus.Address.GetBaseUri()}{typeof(TRequest).Name}"));
-        await sender.Send(request, cancellationToken);
+        var requestingType = request.GetType();
+        var sender = await bus.GetSendEndpoint(new($"{bus.Address.GetBaseUri()}{requestingType.Name}"));
+        await sender.Send(request, requestingType, cancellationToken);
     }
 
     async Task<TResponse> IRemoteMessagingHub.SendAsync<TRequest, TResponse>(TRequest request,
-        RequestTimeout timeout,
+        TimeSpan timeout,
         Uri? destinationAddress,
-        Action<SendContext<TRequest>>? callback,
         CancellationToken cancellationToken)
         where TResponse : class
     {
         ArgumentNullException.ThrowIfNull(request);
         var bus = ServiceProvider.GetRequiredService<IBus>();
+        var timeoutValue = timeout > TimeSpan.Zero ? timeout : RequestTimeout.Default;
         var response = destinationAddress is null
-            ? await bus.Request<TRequest, TResponse>(request, cancellationToken, timeout, callback)
-            : await bus.Request<TRequest, TResponse>(destinationAddress, request, cancellationToken, timeout, callback);
+            ? await bus.Request<TRequest, TResponse>(request, cancellationToken, timeoutValue)
+            : await bus.Request<TRequest, TResponse>(destinationAddress, request, cancellationToken, timeoutValue);
         return response.Message;
     }
 

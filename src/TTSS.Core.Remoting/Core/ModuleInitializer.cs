@@ -15,6 +15,7 @@ public static class ModuleInitializer
             .Configure(option => { option.ConnectionString = connectionString; });
 
         target
+            .AddScoped<IMessagingCenter, MessagingCenter>()
             .AddScoped<IRemoteMessagingHub, RemoteMessagingHub>()
             .AddPostgresMigrationHostedService()
             .AddMassTransit(busCfg =>
