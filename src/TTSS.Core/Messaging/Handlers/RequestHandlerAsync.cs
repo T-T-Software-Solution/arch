@@ -30,7 +30,7 @@ public abstract class RequestHandlerAsync<TRequest> : MediatR.IRequestHandler<TR
 }
 
 /// <summary>
-/// Defines an asynchronous handler for a request.
+/// Defines an asynchronous handler for a request with a response.
 /// </summary>
 /// <typeparam name="TRequest">The type of request being handled</typeparam>
 /// <typeparam name="TResponse">The type of response from the handler</typeparam>

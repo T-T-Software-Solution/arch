@@ -4,6 +4,7 @@ using Shopping.Shared;
 using Shopping.Shared.DbContexts;
 using Shopping.Shared.Interceptors;
 using System.Reflection;
+using TTSS.Core;
 using TTSS.Core.Web;
 using TTSS.Infra.Data.Sql;
 
@@ -11,12 +12,15 @@ namespace Shopping.WebApi;
 
 public sealed class PlaygroundWebInitializer : WebInitializerBase
 {
+    private string DbConnectionString => Configuration?.GetConnectionString("DefaultConnection")
+        ?? throw new InvalidOperationException("Connection string is not found.");
+
     public override void RegisterServices(IServiceCollection services)
     {
         var assemblies = new[]
         {
-            typeof(MappingProfileRegistrar).Assembly,
             Assembly.GetExecutingAssembly(),
+            typeof(MappingProfileRegistrar).Assembly,
         };
 
         services
@@ -30,7 +34,8 @@ public sealed class PlaygroundWebInitializer : WebInitializerBase
                 ClientId = "40D4C23A-0B90-4B1A-8D4E-4F0BE4E23D4B",
                 ClientSecret = "the$ecr3T",
                 ProviderName = "shopping-idp",
-            });
+            })
+            .RegisterRemoteRequest(DbConnectionString, assemblies);
 
         // Optional for setting up Swagger's authentication.
         services
@@ -58,10 +63,8 @@ public sealed class PlaygroundWebInitializer : WebInitializerBase
     {
         base.RegisterDatabases(services);
 
-        var dbConnection = Configuration?.GetConnectionString("DefaultConnection");
-
         services
-            .SetupSqlDatabase(it => it.UseNpgsql(dbConnection).UseOpenIddict())
+            .SetupSqlDatabase(it => it.UseNpgsql(DbConnectionString).UseOpenIddict())
                 .AddDbContext<ShoppingDbContext>()
             .Build(cfg => cfg.Register<AuditInterceptor>());
     }

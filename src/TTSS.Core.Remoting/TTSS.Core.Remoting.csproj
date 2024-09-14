@@ -1,0 +1,37 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <RootNamespace>TTSS</RootNamespace>
+    <GenerateDocumentationFile>True</GenerateDocumentationFile>
+    <Authors>T-T-Software-Solution</Authors>
+    <Company>T-T-Software-Solution</Company>
+    <Version>1.0.0</Version>
+    <Description>TTSS framework for supporting remote communication services.</Description>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageProjectUrl>https://github.com/T-T-Software-Solution/arch</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/T-T-Software-Solution/arch.git</RepositoryUrl> 
+    <RepositoryType>git</RepositoryType> 
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="..\README.md">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="MassTransit" Version="8.2.5" />
+    <PackageReference Include="MassTransit.SqlTransport.PostgreSQL" Version="8.2.5" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\TTSS.Core\TTSS.Core.csproj" />
+    <ProjectReference Include="..\TTSS.Infra.Sql\TTSS.Infra.Sql.csproj" />
+  </ItemGroup>
+
+</Project>

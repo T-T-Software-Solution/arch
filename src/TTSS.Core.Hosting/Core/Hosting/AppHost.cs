@@ -1,5 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
+using System.Runtime.CompilerServices;
 using TTSS.Core.Messaging;
 
 namespace TTSS.Core.Hosting;
@@ -39,6 +41,22 @@ public sealed class AppHost(IHost host)
     /// </summary>
     public Task RunAsync()
         => host.RunAsync();
+
+    /// <summary>
+    /// Gets a logger instance.
+    /// </summary>
+    /// <typeparam name="TCategoryName">The category name</typeparam>
+    /// <returns>Returns the logger instance</returns>
+    public ILogger<TCategoryName> GetLogger<TCategoryName>()
+        => ScopedServiceProvider.GetRequiredService<ILogger<TCategoryName>>();
+
+    /// <summary>
+    /// Gets a logger instance.
+    /// </summary>
+    /// <param name="callerName">The caller name</param>
+    /// <returns>Returns the logger instance</returns>
+    public ILogger GetLogger([CallerMemberName] string? callerName = default)
+        => ScopedServiceProvider.GetRequiredService<ILoggerFactory>().CreateLogger(callerName);
 
     #endregion
 }

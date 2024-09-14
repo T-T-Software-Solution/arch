@@ -45,7 +45,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TTSS.Core.Web.Identity", "T
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Shopping.BackgroundTasks", "..\playgrounds\Shopping.BackgroundTasks\Shopping.BackgroundTasks.csproj", "{AE1CDB72-8864-47A8-8F5D-0E0CCB7D2629}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TTSS.Core.Hosting", "TTSS.Core.Hosting\TTSS.Core.Hosting.csproj", "{66DA32D9-001F-4DF9-8112-8ADFA6B4894D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TTSS.Core.Hosting", "TTSS.Core.Hosting\TTSS.Core.Hosting.csproj", "{66DA32D9-001F-4DF9-8112-8ADFA6B4894D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TTSS.Core.Remoting", "TTSS.Core.Remoting\TTSS.Core.Remoting.csproj", "{494FF195-F8D8-4D1B-B2BE-2E730FDAC8EE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -133,6 +135,10 @@ Global
 		{66DA32D9-001F-4DF9-8112-8ADFA6B4894D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{66DA32D9-001F-4DF9-8112-8ADFA6B4894D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{66DA32D9-001F-4DF9-8112-8ADFA6B4894D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{494FF195-F8D8-4D1B-B2BE-2E730FDAC8EE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{494FF195-F8D8-4D1B-B2BE-2E730FDAC8EE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{494FF195-F8D8-4D1B-B2BE-2E730FDAC8EE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{494FF195-F8D8-4D1B-B2BE-2E730FDAC8EE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

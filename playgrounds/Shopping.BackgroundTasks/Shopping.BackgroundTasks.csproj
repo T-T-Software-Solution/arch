@@ -17,11 +17,12 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.Extensions.Hosting" Version="8.0.0" />
+    <PackageReference Include="MassTransit.SqlTransport.PostgreSQL" Version="8.2.5" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\TTSS.Core.Hosting\TTSS.Core.Hosting.csproj" />
+    <ProjectReference Include="..\..\src\TTSS.Core.Remoting\TTSS.Core.Remoting.csproj" />
     <ProjectReference Include="..\Shopping.Shared\Shopping.Shared.csproj" />
   </ItemGroup>
 

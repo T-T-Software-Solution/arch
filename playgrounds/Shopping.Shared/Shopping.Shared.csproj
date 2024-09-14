@@ -11,6 +11,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\src\TTSS.Core.Remoting\TTSS.Core.Remoting.csproj" />
     <ProjectReference Include="..\..\src\TTSS.Core\TTSS.Core.csproj" />
     <ProjectReference Include="..\..\src\TTSS.Infra.Sql\TTSS.Infra.Sql.csproj" />
   </ItemGroup>

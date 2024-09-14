@@ -39,5 +39,6 @@ public static class ModuleInitializer
             .RegisterSecurityModule()
             .AddAutoMapper(assemblies)
             .RegisterMessagingModule(assemblies, pipelines?.ToArray() ?? [])
-            .AddScoped<ICorrelationContext, TContext>();
+            .AddScoped<ICorrelationContext, TContext>()
+            .AddScoped<Lazy<IServiceProvider>>(pvd => new(pvd));
 }
