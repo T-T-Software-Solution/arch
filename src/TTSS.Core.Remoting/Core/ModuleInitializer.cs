@@ -23,7 +23,15 @@ public static class ModuleInitializer
                 busCfg.AddConsumers([Assembly.GetExecutingAssembly(), .. assemblies]);
                 busCfg.UsingPostgres((busContext, factoryCfg) =>
                 {
-                    factoryCfg.UseConsumeFilter(typeof(CorrelationPipelineFilter<>), busContext);
+                    var consumeFilters = new[]
+                    {
+                        typeof(CorrelationPipelineFilter<>),
+                        typeof(UserIdentityPipelineFilter<>),
+                    };
+                    foreach (var item in consumeFilters)
+                    {
+                        factoryCfg.UseConsumeFilter(item, busContext);
+                    }
                     factoryCfg.UseMessageRetry(c => c.Intervals(TimeSpan.FromSeconds(2), TimeSpan.FromSeconds(5), TimeSpan.FromSeconds(10)));
                     factoryCfg.ConfigureEndpoints(busContext, new RequestingModelName());
                 });

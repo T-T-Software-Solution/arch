@@ -12,6 +12,12 @@ namespace TTSS.Core.Messaging;
 /// <param name="correlationContext">Correlation context</param>
 internal sealed class RemoteMessagingHub(Lazy<IServiceProvider> provider, ICorrelationContext correlationContext) : IRemoteMessagingHub
 {
+    #region Fields
+
+    internal const string UserReferenceHeader = "X-User-Ref";
+
+    #endregion
+
     #region Properties
 
     private IServiceProvider ServiceProvider => provider?.Value ?? throw new InvalidOperationException("The service provider is not available");
@@ -53,6 +59,11 @@ internal sealed class RemoteMessagingHub(Lazy<IServiceProvider> provider, ICorre
 
     private void SetCorrelationContext(SendContext remoteContext)
     {
+        if (false == string.IsNullOrWhiteSpace(correlationContext.CurrentUserId))
+        {
+            remoteContext.Headers.Set(UserReferenceHeader, correlationContext.CurrentUserId);
+        }
+
         if (false == remoteContext.InitiatorId.HasValue
             && false == string.IsNullOrWhiteSpace(correlationContext.CorrelationId))
         {
