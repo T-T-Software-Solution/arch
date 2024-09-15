@@ -9,4 +9,4 @@ public interface IRequesting : Models.IRequest, MediatR.IRequest;
 /// Contract for a request message with a response.
 /// </summary>
 /// <typeparam name="TResponse">Response type</typeparam>
-public interface IRequesting<out TResponse> : Models.IRequest, MediatR.IRequest<TResponse>;
+public interface IRequesting<out TResponse> : Models.IRequest<TResponse>, MediatR.IRequest<TResponse>;

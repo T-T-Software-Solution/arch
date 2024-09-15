@@ -20,7 +20,6 @@ public static class ModuleInitializer
     public static SqlSetup SetupSqlDatabase(this IServiceCollection target, Action<DbContextOptionsBuilder> dbContextConfig)
     {
         target.AddScoped<SqlDbContextFactory>();
-        target.AddScoped<Lazy<IServiceProvider>>(pvd => new Lazy<IServiceProvider>(() => pvd));
         return new(target, new(), dbContextConfig);
     }
 

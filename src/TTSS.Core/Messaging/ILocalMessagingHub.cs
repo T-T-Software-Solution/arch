@@ -1,38 +1,36 @@
-﻿using TTSS.Core.Models;
-
-namespace TTSS.Core.Messaging;
+﻿namespace TTSS.Core.Messaging;
 
 /// <summary>
-/// Defines the contract for a messaging hub.
+/// Defines a local messaging hub to encapsulate request/response and publishing interaction patterns.
 /// </summary>
-public interface IMessagingHub
+public interface ILocalMessagingHub
 {
     /// <summary>
-    /// Publishes a message to all subscribers.
+    /// Asynchronously send a notification to multiple handlers.
     /// </summary>
     /// <typeparam name="TPublication">Publication type</typeparam>
-    /// <param name="request">Notification request</param>
+    /// <param name="publication">Notification object</param>
     /// <param name="cancellationToken">Optional cancellation token</param>
     /// <returns>A task that represents the publish operation</returns>
-    Task PublishAsync<TPublication>(TPublication request, CancellationToken cancellationToken = default)
-        where TPublication : IPublish;
+    Task PublishAsync<TPublication>(TPublication publication, CancellationToken cancellationToken = default)
+        where TPublication : IPublication;
 
     /// <summary>
-    /// Sends a message to a single handler.
+    /// Asynchronously send an object request to a single handler.
     /// </summary>
     /// <typeparam name="TRequest">Request type</typeparam>
     /// <param name="request">Request object</param>
     /// <param name="cancellationToken">Optional cancellation token</param>
-    /// <returns>The task which is completed once the Send is acknowledged by the broker</returns>
+    /// <returns>A task that represents the send operation. The task result contains the type erased handler response</returns>
     Task SendAsync<TRequest>(TRequest request, CancellationToken cancellationToken = default)
-        where TRequest : class, IRequest;
+        where TRequest : IRequesting;
 
     /// <summary>
-    /// Sends a message to a single handler with a response.
+    /// Asynchronously send a request to a single handler with response.
     /// </summary>
     /// <typeparam name="TResponse">Response type</typeparam>
     /// <param name="request">Request object</param>
     /// <param name="cancellationToken">Optional cancellation token</param>
-    /// <returns>Response from the handler</returns>
+    /// <returns>A task that represents the send operation. The task result contains the handler response</returns>
     Task<TResponse> SendAsync<TResponse>(IRequesting<TResponse> request, CancellationToken cancellationToken = default);
 }

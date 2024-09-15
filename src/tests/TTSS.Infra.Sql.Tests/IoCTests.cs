@@ -2,8 +2,8 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using System.Reflection;
+using TTSS.Core;
 using TTSS.Core.Models;
-using TTSS.Core.Services;
 using TTSS.Infra.Data.Sql.DbContexte;
 using TTSS.Infra.Data.Sql.Interceptors;
 
@@ -20,9 +20,7 @@ public class IoCTests : CommonTestCases
         _connection = new SqliteConnection(connBuilder.ConnectionString);
 
         services
-            .AddAutoMapper(Assembly.GetExecutingAssembly())
-            .AddSingleton<IMappingStrategy, AutoMapperMappingStrategy>()
-            .AddSingleton<IDateTimeService>(DateTimeService)
+            .RegisterTTSSCore([Assembly.GetExecutingAssembly()])
             .AddScoped<ICorrelationContext, CorrelationContext>(_ => Context)
             .SetupSqlDatabase(it => it.UseSqlite(_connection, opt => opt.MigrationsAssembly(Assembly.GetExecutingAssembly().FullName)))
                 .AddDbContext<FruitDbContext>()

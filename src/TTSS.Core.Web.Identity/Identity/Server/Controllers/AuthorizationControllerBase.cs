@@ -9,7 +9,7 @@ using OpenIddict.Abstractions;
 using OpenIddict.Server.AspNetCore;
 using System.Diagnostics.CodeAnalysis;
 using System.Security.Claims;
-using System.Text;
+using TTSS.Core.Services;
 using TTSS.Core.Web.Identity.Server.Configurations;
 using static OpenIddict.Abstractions.OpenIddictConstants;
 
@@ -141,14 +141,8 @@ public abstract class AuthorizationControllerBase<TUser>(IOptions<IdentityServer
                 return;
             }
 
-            var uri = new Uri(request.RedirectUri);
-            var builder = new StringBuilder($"{uri.Scheme}://{uri.Host}");
-            if (uri.IsDefaultPort == false)
-            {
-                builder.Append($":{uri.Port}");
-            }
-            builder.Append('/');
-            var audienceClaim = new Claim(Claims.Audience, builder.ToString())
+            var baseUri = new Uri(request.RedirectUri).GetBaseUri();
+            var audienceClaim = new Claim(Claims.Audience, baseUri)
                 .SetDestinations(Destinations.AccessToken);
             claims.Add(audienceClaim);
         }

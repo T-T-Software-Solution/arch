@@ -352,11 +352,11 @@
       <FileName>Messaging\IHttpRequesting.cs</FileName>
     </TypeIdentifier>
   </Interface>
-  <Interface Name="TTSS.Core.Messaging.IMessagingHub">
-    <Position X="0.5" Y="9.5" Width="2.75" />
+  <Interface Name="TTSS.Core.Messaging.ILocalMessagingHub">
+    <Position X="4.25" Y="9.5" Width="3.25" />
     <TypeIdentifier>
       <HashCode>AARAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
-      <FileName>Messaging\IMessagingHub.cs</FileName>
+      <FileName>Messaging\ILocalMessagingHub.cs</FileName>
     </TypeIdentifier>
   </Interface>
   <Interface Name="TTSS.Core.Messaging.IPipelineBehaviorBase&lt;TRequest, TResponse&gt;" Collapsed="true">
@@ -385,6 +385,20 @@
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Messaging\IRequesting.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="TTSS.Core.Messaging.IMessagingHub">
+    <Position X="0.5" Y="9.5" Width="3.25" />
+    <TypeIdentifier>
+      <HashCode>AARAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Messaging\IMessagingHub.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="TTSS.Core.Messaging.IRemoteMessagingHub">
+    <Position X="7.75" Y="9.5" Width="3.25" />
+    <TypeIdentifier>
+      <HashCode>AARAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Messaging\IRemoteMessagingHub.cs</FileName>
     </TypeIdentifier>
   </Interface>
   <Font Name="Segoe UI" Size="9" />

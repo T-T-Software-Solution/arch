@@ -1,6 +1,8 @@
-﻿namespace TTSS.Core.Messaging;
+﻿using TTSS.Core.Models;
+
+namespace TTSS.Core.Messaging;
 
 /// <summary>
-/// Marker interface to represent a publication message.
+/// Contract for a publication message.
 /// </summary>
-public interface IPublication : MediatR.INotification;
+public interface IPublication : IPublish, MediatR.INotification;
