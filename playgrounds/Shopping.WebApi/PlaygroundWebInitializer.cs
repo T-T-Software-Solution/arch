@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using MassTransit;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using Shopping.Shared;
 using Shopping.Shared.DbContexts;
@@ -24,6 +25,10 @@ public sealed class PlaygroundWebInitializer : WebInitializerBase
         };
 
         services
+           .AddOptions<SqlTransportOptions>()
+           .Configure(option => option.ConnectionString = DbConnectionString);
+
+        services
             .RegisterTTSSCoreHttp(assemblies)
             .RegisterIdentityClient<ShoppingDbContext>(new()
             {
@@ -35,7 +40,8 @@ public sealed class PlaygroundWebInitializer : WebInitializerBase
                 ClientSecret = "the$ecr3T",
                 ProviderName = "shopping-idp",
             })
-            .RegisterRemoteRequest(DbConnectionString, assemblies);
+            .AddPostgresMigrationHostedService()
+            .RegisterRemoteRequest(assemblies, (bus, configure) => bus.UsingPostgres(configure));
 
         // Optional for setting up Swagger's authentication.
         services

@@ -7,36 +7,43 @@ using TTSS.Core.Messaging.Pipelines;
 
 namespace TTSS.Core;
 
+/// <summary>
+/// Helper extension methods for register remote messaging module.
+/// </summary>
 public static class ModuleInitializer
 {
-    public static IServiceCollection RegisterRemoteRequest(this IServiceCollection target, string connectionString, IEnumerable<Assembly> assemblies)
+    /// <summary>
+    /// Register remote messaging module.
+    /// </summary>
+    /// <param name="target">The service collection</param>
+    /// <param name="assemblies">Related assemblies</param>
+    /// <param name="busConfigure">Bus configuration</param>
+    /// <returns>The service collection</returns>
+    public static IServiceCollection RegisterRemoteRequest(this IServiceCollection target, IEnumerable<Assembly> assemblies, Action<IBusRegistrationConfigurator, Action<IBusRegistrationContext, ISqlBusFactoryConfigurator>> busConfigure)
     {
         target
-            .AddOptions<SqlTransportOptions>()
-            .Configure(option => option.ConnectionString = connectionString);
-
-        target
             .AddScoped<IRemoteMessagingHub, RemoteMessagingHub>()
-            .AddPostgresMigrationHostedService()
             .AddMassTransit(busCfg =>
             {
                 busCfg.AddConsumers([Assembly.GetExecutingAssembly(), .. assemblies]);
-                busCfg.UsingPostgres((busContext, factoryCfg) =>
-                {
-                    var consumeFilters = new[]
-                    {
-                        typeof(CorrelationPipelineFilter<>),
-                        typeof(UserIdentityPipelineFilter<>),
-                    };
-                    foreach (var item in consumeFilters)
-                    {
-                        factoryCfg.UseConsumeFilter(item, busContext);
-                    }
-                    factoryCfg.UseMessageRetry(c => c.Intervals(TimeSpan.FromSeconds(2), TimeSpan.FromSeconds(5), TimeSpan.FromSeconds(10)));
-                    factoryCfg.ConfigureEndpoints(busContext, new RequestingModelName());
-                });
+                busConfigure(busCfg, ConfigureBus);
             });
         return target;
+    }
+
+    private static void ConfigureBus(IBusRegistrationContext busContext, ISqlBusFactoryConfigurator factoryCfg)
+    {
+        var consumeFilters = new[]
+        {
+            typeof(CorrelationPipelineFilter<>),
+            typeof(UserIdentityPipelineFilter<>),
+        };
+        foreach (var item in consumeFilters)
+        {
+            factoryCfg.UseConsumeFilter(item, busContext);
+        }
+        factoryCfg.UseMessageRetry(cfg => cfg.Intervals(TimeSpan.FromSeconds(2), TimeSpan.FromSeconds(5), TimeSpan.FromSeconds(10)));
+        factoryCfg.ConfigureEndpoints(busContext, new RequestingModelName());
     }
 }
 

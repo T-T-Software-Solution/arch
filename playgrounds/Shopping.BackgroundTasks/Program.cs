@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using MassTransit;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -22,10 +23,15 @@ var app = await TTSSBuilder.BuildAsync(args, builder =>
     var dbConnection = builder.Configuration?.GetConnectionString("DefaultConnection")
         ?? throw new InvalidOperationException("Connection string is not found.");
 
+    builder.Services
+            .AddOptions<SqlTransportOptions>()
+            .Configure(option => option.ConnectionString = dbConnection);
+
     // Register services
     builder.Services
         .RegisterTTSSCore(assemblies)
-        .RegisterRemoteRequest(dbConnection, assemblies);
+        .AddPostgresMigrationHostedService()
+        .RegisterRemoteRequest(assemblies, (bus, configure) => bus.UsingPostgres(configure));
 
     // Register databases
     builder.Services
