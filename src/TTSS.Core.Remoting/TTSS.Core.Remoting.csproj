@@ -26,11 +26,8 @@
 
   <ItemGroup>
     <PackageReference Include="MassTransit" Version="8.2.5" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\TTSS.Core\TTSS.Core.csproj" />
-    <ProjectReference Include="..\TTSS.Infra.Sql\TTSS.Infra.Sql.csproj" />
+    <PackageReference Include="TTSS.Core" Version="2.0.1" />
+    <PackageReference Include="TTSS.Infra.Sql" Version="2.0.1" />
   </ItemGroup>
 
 </Project>

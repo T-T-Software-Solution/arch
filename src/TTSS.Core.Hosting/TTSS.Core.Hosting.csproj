@@ -26,10 +26,7 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="8.0.0" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\TTSS.Core\TTSS.Core.csproj" />
+    <PackageReference Include="TTSS.Core" Version="2.0.1" />
   </ItemGroup>
 
 </Project>
