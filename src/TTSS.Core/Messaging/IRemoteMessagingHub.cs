@@ -13,7 +13,7 @@ public interface IRemoteMessagingHub
     /// <param name="cancellationToken">Optional cancellation token</param>
     /// <returns>A task that represents the publish operation</returns>
     Task PublishAsync<TPublication>(TPublication publication, CancellationToken cancellationToken = default)
-        where TPublication : class;
+        where TPublication : IRemotePublication;
 
     /// <summary>
     /// Asynchronously send an object request to a single remote handler.

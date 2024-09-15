@@ -2,6 +2,10 @@
 
 namespace TTSS.Core.Messaging;
 
+/// <summary>
+/// Defines the messaging hub to publish and send messages.
+/// </summary>
+/// <param name="provider">The service provider.</param>
 internal sealed class MessagingHub(Lazy<IServiceProvider> provider) : IMessagingHub
 {
     #region Properties
@@ -14,11 +18,21 @@ internal sealed class MessagingHub(Lazy<IServiceProvider> provider) : IMessaging
 
     #region Methods
 
-    Task IMessagingHub.PublishAsync<TPublication>(TPublication publication, CancellationToken cancellationToken)
+    Task IMessagingHub.PublishAsync<TPublication>(TPublication request, CancellationToken cancellationToken)
     {
-        // TODO: Implement the method for remote publication
-        ArgumentNullException.ThrowIfNull(publication);
-        return LocalHub.PublishAsync(publication, cancellationToken);
+        ArgumentNullException.ThrowIfNull(request);
+        if (request is IRemotePublication remoteRequest)
+        {
+            return RemoteHub.PublishAsync(remoteRequest, cancellationToken);
+        }
+        else if (request is IPublication localRequest)
+        {
+            return LocalHub.PublishAsync(localRequest, cancellationToken);
+        }
+        else
+        {
+            throw new NotSupportedException($"The request type {request.GetType().Name} is not supported");
+        }
     }
 
     Task IMessagingHub.SendAsync<TRequest>(TRequest request, CancellationToken cancellationToken)
@@ -47,11 +61,6 @@ internal sealed class MessagingHub(Lazy<IServiceProvider> provider) : IMessaging
     Task<TResponse> IMessagingHub.SendAsync<TRequest, TResponse>(TRequest request, TimeSpan timeout, Uri? destinationAddress, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(request);
-        if (request is not IRemoteRequesting<TResponse>)
-        {
-            throw new NotSupportedException($"The request type {request.GetType().Name} is not supported");
-        }
-
         return RemoteHub.SendAsync<TRequest, TResponse>(request, timeout, destinationAddress, cancellationToken);
     }
 }

@@ -31,7 +31,6 @@ internal sealed class LocalMessagingHub(Lazy<IServiceProvider> provider) : ILoca
     }
 
     Task<TResponse> ILocalMessagingHub.SendAsync<TResponse>(IRequesting<TResponse> request, CancellationToken cancellationToken)
-        where TResponse : class
     {
         ArgumentNullException.ThrowIfNull(request);
         var mediator = ServiceProvider.GetRequiredService<MediatR.IMediator>();

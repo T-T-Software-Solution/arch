@@ -3,8 +3,13 @@
 /// <summary>
 /// Defines an asynchronous handler for a remote request.
 /// </summary>
+public abstract class RemoteRequestHandlerAsync;
+
+/// <summary>
+/// Defines an asynchronous handler for a remote request.
+/// </summary>
 /// <typeparam name="TRequest">The type of request being handled</typeparam>
-public abstract class RemoteRequestHandlerAsync<TRequest> : IRemoteRequestHandler,
+public abstract class RemoteRequestHandlerAsync<TRequest> : RemoteRequestHandlerAsync,
     MassTransit.IConsumer<TRequest>
     where TRequest : class, IRemoteRequesting
 {
@@ -33,7 +38,7 @@ public abstract class RemoteRequestHandlerAsync<TRequest> : IRemoteRequestHandle
 /// </summary>
 /// <typeparam name="TRequest">The type of request being handled</typeparam>
 /// <typeparam name="TResponse">The type of response from the handler</typeparam>
-public abstract class RemoteRequestHandlerAsync<TRequest, TResponse> : IRemoteRequestHandler,
+public abstract class RemoteRequestHandlerAsync<TRequest, TResponse> : RemoteRequestHandlerAsync,
     MassTransit.IConsumer<TRequest>
     where TRequest : class, IRemoteRequesting<TResponse>
     where TResponse : class

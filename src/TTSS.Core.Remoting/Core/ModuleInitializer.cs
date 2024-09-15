@@ -12,7 +12,7 @@ public static class ModuleInitializer
     {
         target
             .AddOptions<SqlTransportOptions>()
-            .Configure(option => { option.ConnectionString = connectionString; });
+            .Configure(option => option.ConnectionString = connectionString);
 
         target
             .AddScoped<IRemoteMessagingHub, RemoteMessagingHub>()
@@ -35,7 +35,7 @@ file sealed class RequestingModelName : DefaultEndpointNameFormatter
     public override string Consumer<TRequest>()
     {
         var requestingType = typeof(TRequest).BaseType;
-        if (requestingType?.IsAssignableTo(typeof(IRemoteRequestHandler)) ?? false)
+        if (requestingType?.IsAssignableTo(typeof(RemoteRequestHandlerAsync)) ?? false)
         {
             var requestingName = requestingType.GetGenericArguments().First().Name;
             return requestingName;
