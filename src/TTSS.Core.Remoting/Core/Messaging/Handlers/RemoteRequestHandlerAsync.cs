@@ -13,6 +13,15 @@ public abstract class RemoteRequestHandlerAsync<TRequest> : RemoteRequestHandler
     MassTransit.IConsumer<TRequest>
     where TRequest : class, IRemoteRequesting
 {
+    #region Properties
+
+    /// <summary>
+    /// Consumer context.
+    /// </summary>
+    protected MassTransit.ConsumeContext<TRequest> RemoteContext { get; private set; } = null!;
+
+    #endregion
+
     #region Methods
 
     /// <summary>
@@ -20,7 +29,10 @@ public abstract class RemoteRequestHandlerAsync<TRequest> : RemoteRequestHandler
     /// interface to allow access to details surrounding the inbound message, including headers.
     /// </summary>
     Task MassTransit.IConsumer<TRequest>.Consume(MassTransit.ConsumeContext<TRequest> context)
-        => HandleAsync(context.Message, context.CancellationToken);
+    {
+        RemoteContext = context;
+        return HandleAsync(context.Message, context.CancellationToken);
+    }
 
     /// <summary>
     /// Handles a request.
@@ -43,6 +55,15 @@ public abstract class RemoteRequestHandlerAsync<TRequest, TResponse> : RemoteReq
     where TRequest : class, IRemoteRequesting<TResponse>
     where TResponse : class
 {
+    #region Properties
+
+    /// <summary>
+    /// Consumer context.
+    /// </summary>
+    protected MassTransit.ConsumeContext<TRequest> RemoteContext { get; private set; } = null!;
+
+    #endregion
+
     #region Methods
 
     /// <summary>
@@ -51,6 +72,7 @@ public abstract class RemoteRequestHandlerAsync<TRequest, TResponse> : RemoteReq
     /// </summary>
     async Task MassTransit.IConsumer<TRequest>.Consume(MassTransit.ConsumeContext<TRequest> context)
     {
+        RemoteContext = context;
         var response = await HandleAsync(context.Message, context.CancellationToken);
         await context.RespondAsync(response);
     }

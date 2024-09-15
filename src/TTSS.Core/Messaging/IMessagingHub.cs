@@ -35,21 +35,4 @@ public interface IMessagingHub
     /// <param name="cancellationToken">Optional cancellation token</param>
     /// <returns>Response from the handler</returns>
     Task<TResponse> SendAsync<TResponse>(IRequesting<TResponse> request, CancellationToken cancellationToken = default);
-
-    /// <summary>
-    /// Sends a remote message to a single remote handler with a response.
-    /// </summary>
-    /// <typeparam name="TRequest">Request type</typeparam>
-    /// <typeparam name="TResponse">Response type</typeparam>
-    /// <param name="request">Request object</param>
-    /// <param name="timeout">Maximum time to wait for a response</param>
-    /// <param name="destinationAddress">Specific service address</param>
-    /// <param name="cancellationToken">Optional cancellation token</param>
-    /// <returns>Response from the handler</returns>
-    Task<TResponse> SendAsync<TRequest, TResponse>(TRequest request,
-        TimeSpan timeout = default,
-        Uri? destinationAddress = default,
-        CancellationToken cancellationToken = default)
-        where TRequest : class, IRemoteRequesting<TResponse>
-        where TResponse : class;
 }

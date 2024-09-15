@@ -6,7 +6,7 @@ using TTSS.Core.Web.Controllers;
 
 namespace Shopping.WebApi.Biz.Learns;
 
-public sealed class Learns(IMessagingHub hub, IRemoteMessagingHub remoteHub) : ApiControllerBase
+public sealed class Learns(IMessagingHub hub) : ApiControllerBase
 {
     [HttpGet("/Local/1/OneWay/{input}")]
     public Task OneWay(string input)
@@ -26,9 +26,9 @@ public sealed class Learns(IMessagingHub hub, IRemoteMessagingHub remoteHub) : A
 
     [HttpPost("/Remote/1/Greeting/{message}")]
     public Task SendGreeting(string message)
-        => remoteHub.SendAsync(new Greeting { Message = message });
+        => hub.SendAsync(new Greeting { Message = message });
 
     [HttpPost("/Remote/2/Ping")]
     public Task<Pong> SendGreeting([FromQuery] int first, [FromQuery] int second)
-        => remoteHub.SendAsync<Ping, Pong>(new Ping(first, second));
+        => hub.SendAsync<Ping, Pong>(new Ping(first, second));
 }

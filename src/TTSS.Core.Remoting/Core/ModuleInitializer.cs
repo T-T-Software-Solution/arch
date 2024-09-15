@@ -3,6 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 using System.Reflection;
 using TTSS.Core.Messaging;
 using TTSS.Core.Messaging.Handlers;
+using TTSS.Core.Messaging.Pipelines;
 
 namespace TTSS.Core;
 
@@ -22,8 +23,9 @@ public static class ModuleInitializer
                 busCfg.AddConsumers([Assembly.GetExecutingAssembly(), .. assemblies]);
                 busCfg.UsingPostgres((busContext, factoryCfg) =>
                 {
-                    factoryCfg.ConfigureEndpoints(busContext, new RequestingModelName());
+                    factoryCfg.UseConsumeFilter(typeof(CorrelationPipelineFilter<>), busContext);
                     factoryCfg.UseMessageRetry(c => c.Intervals(TimeSpan.FromSeconds(2), TimeSpan.FromSeconds(5), TimeSpan.FromSeconds(10)));
+                    factoryCfg.ConfigureEndpoints(busContext, new RequestingModelName());
                 });
             });
         return target;

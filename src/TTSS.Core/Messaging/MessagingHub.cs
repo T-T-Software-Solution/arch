@@ -58,7 +58,22 @@ internal sealed class MessagingHub(Lazy<IServiceProvider> provider) : IMessaging
         return LocalHub.SendAsync(request, cancellationToken);
     }
 
-    Task<TResponse> IMessagingHub.SendAsync<TRequest, TResponse>(TRequest request, TimeSpan timeout, Uri? destinationAddress, CancellationToken cancellationToken)
+    /// <summary>
+    /// Sends a remote message to a single remote handler with a response.
+    /// </summary>
+    /// <typeparam name="TRequest">Request type</typeparam>
+    /// <typeparam name="TResponse">Response type</typeparam>
+    /// <param name="request">Request object</param>
+    /// <param name="timeout">Maximum time to wait for a response</param>
+    /// <param name="destinationAddress">Specific service address</param>
+    /// <param name="cancellationToken">Optional cancellation token</param>
+    /// <returns>Response from the handler</returns>
+    public Task<TResponse> SendAsync<TRequest, TResponse>(TRequest request,
+        TimeSpan timeout = default,
+        Uri? destinationAddress = default,
+        CancellationToken cancellationToken = default)
+        where TRequest : class, IRemoteRequesting<TResponse>
+        where TResponse : class
     {
         ArgumentNullException.ThrowIfNull(request);
         return RemoteHub.SendAsync<TRequest, TResponse>(request, timeout, destinationAddress, cancellationToken);
