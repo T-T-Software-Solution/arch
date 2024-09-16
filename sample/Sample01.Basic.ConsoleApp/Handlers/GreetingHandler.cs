@@ -3,7 +3,7 @@ using TTSS.Core.Messaging.Handlers;
 
 namespace Sample01.Basic.ConsoleApp.Handlers;
 
-public sealed class GreetingHandler : RequestHandler<Greeting>
+internal sealed class GreetingHandler : RequestHandler<Greeting>
 {
     public override void Handle(Greeting request)
     {

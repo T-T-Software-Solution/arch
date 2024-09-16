@@ -13,9 +13,15 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sample03.Basic.ConsoleApp.P
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sample04.Basic.ConsoleApp.WorkWithDatabase", "Sample04.Basic.ConsoleApp.WorkWithDatabase\Sample04.Basic.ConsoleApp.WorkWithDatabase.csproj", "{93EFBAE6-34BE-418D-A696-54C606CABB46}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sample05.Basic.ConsoleApp.WorkWithCorrelation", "Sample05.Basic.ConsoleApp.WorkWithCorrelation\Sample05.Basic.ConsoleApp.WorkWithCorrelation.csproj", "{C34C18A0-D81F-4916-BD40-D3D7C5FB03A4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sample05.Basic.ConsoleApp.WorkWithCorrelation", "Sample05.Basic.ConsoleApp.WorkWithCorrelation\Sample05.Basic.ConsoleApp.WorkWithCorrelation.csproj", "{C34C18A0-D81F-4916-BD40-D3D7C5FB03A4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sample06.Basic.ConsoleApp.CustomCorrelationContext", "Sample06.Basic.ConsoleApp.CustomCorrelationContext\Sample06.Basic.ConsoleApp.CustomCorrelationContext.csproj", "{31DB0D84-6AC6-438B-BBF3-FED5ED5DED91}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sample06.Basic.ConsoleApp.CustomCorrelationContext", "Sample06.Basic.ConsoleApp.CustomCorrelationContext\Sample06.Basic.ConsoleApp.CustomCorrelationContext.csproj", "{31DB0D84-6AC6-438B-BBF3-FED5ED5DED91}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sample07.Basic.ConsoleApp.ModelMapping", "Sample07.Basic.ConsoleApp.ModelMapping\Sample07.Basic.ConsoleApp.ModelMapping.csproj", "{FB789228-CE35-4DE7-8A2B-2562F974B7CF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sample08.Basic.ConsoleApp.ReferenceOtherProjects", "Sample08.Basic.ConsoleApp.ReferenceOtherProjects\Sample08.Basic.ConsoleApp.ReferenceOtherProjects.csproj", "{F5D973E5-88C0-407F-8B8B-9063C56156ED}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sample09.Basic.ConsoleApp.PublishToMultipleHandlers", "Sample09.Basic.ConsoleApp.PublishToMultipleHandlers\Sample09.Basic.ConsoleApp.PublishToMultipleHandlers.csproj", "{049C8858-DF7D-4372-AF5D-F8E437AFFC23}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -47,6 +53,18 @@ Global
 		{31DB0D84-6AC6-438B-BBF3-FED5ED5DED91}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{31DB0D84-6AC6-438B-BBF3-FED5ED5DED91}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{31DB0D84-6AC6-438B-BBF3-FED5ED5DED91}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FB789228-CE35-4DE7-8A2B-2562F974B7CF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FB789228-CE35-4DE7-8A2B-2562F974B7CF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FB789228-CE35-4DE7-8A2B-2562F974B7CF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FB789228-CE35-4DE7-8A2B-2562F974B7CF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F5D973E5-88C0-407F-8B8B-9063C56156ED}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F5D973E5-88C0-407F-8B8B-9063C56156ED}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F5D973E5-88C0-407F-8B8B-9063C56156ED}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F5D973E5-88C0-407F-8B8B-9063C56156ED}.Release|Any CPU.Build.0 = Release|Any CPU
+		{049C8858-DF7D-4372-AF5D-F8E437AFFC23}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{049C8858-DF7D-4372-AF5D-F8E437AFFC23}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{049C8858-DF7D-4372-AF5D-F8E437AFFC23}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{049C8858-DF7D-4372-AF5D-F8E437AFFC23}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -58,6 +76,9 @@ Global
 		{93EFBAE6-34BE-418D-A696-54C606CABB46} = {2590BE66-9193-447F-8901-2933680A2A1A}
 		{C34C18A0-D81F-4916-BD40-D3D7C5FB03A4} = {2590BE66-9193-447F-8901-2933680A2A1A}
 		{31DB0D84-6AC6-438B-BBF3-FED5ED5DED91} = {2590BE66-9193-447F-8901-2933680A2A1A}
+		{FB789228-CE35-4DE7-8A2B-2562F974B7CF} = {2590BE66-9193-447F-8901-2933680A2A1A}
+		{F5D973E5-88C0-407F-8B8B-9063C56156ED} = {2590BE66-9193-447F-8901-2933680A2A1A}
+		{049C8858-DF7D-4372-AF5D-F8E437AFFC23} = {2590BE66-9193-447F-8901-2933680A2A1A}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {23A02E67-047C-49A3-BFC4-564EDEFDE7B3}

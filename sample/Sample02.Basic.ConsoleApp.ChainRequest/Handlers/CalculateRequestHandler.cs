@@ -4,7 +4,7 @@ using TTSS.Core.Messaging.Handlers;
 
 namespace Sample02.Basic.ConsoleApp.ChainRequest.Handlers;
 
-public sealed class CalculateRequestHandler : RequestHandlerAsync<CalculateRequest, double>
+internal sealed class CalculateRequestHandler : RequestHandlerAsync<CalculateRequest, double>
 {
     private readonly IMessagingHub _hub;
 

@@ -3,6 +3,7 @@ using TTSS.Core.Messaging.Handlers;
 using TTSS.Core.Models;
 
 namespace Sample05.Basic.ConsoleApp.WorkWithCorrelation.Handlers;
+
 public sealed record SecondRequest : IRequesting;
 
 file sealed class Handler(IMessagingHub hub, ICorrelationContext context) : RequestHandlerAsync<SecondRequest>

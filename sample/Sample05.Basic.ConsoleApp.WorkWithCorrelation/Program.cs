@@ -3,7 +3,6 @@ using Sample05.Basic.ConsoleApp.WorkWithCorrelation.Handlers;
 using System.Reflection;
 using TTSS.Core;
 using TTSS.Core.Messaging;
-using TTSS.Core.Models;
 
 // Register TTSS Core
 var services = new ServiceCollection();

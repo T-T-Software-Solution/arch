@@ -3,7 +3,7 @@ using TTSS.Core.Messaging.Handlers;
 
 namespace Sample01.Basic.ConsoleApp.Handlers;
 
-public sealed class PingHandler : RequestHandler<Ping, Pong>
+internal sealed class PingHandler : RequestHandler<Ping, Pong>
 {
     public override Pong Handle(Ping request)
     {
