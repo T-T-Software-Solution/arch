@@ -11,18 +11,30 @@ file sealed class Handler(IRepository<Teacher> teacherRepo, IRepository<Student>
 {
     public override void Handle(ShowPersonnelList request)
     {
+        Console.WriteLine();
         Console.WriteLine("Teachers:");
         var teachers = teacherRepo.Get().ToList();
         foreach (var item in teachers)
         {
             Console.WriteLine($"- {item.FullName},\tSalary: {item.Salary},\tCreated: {item.CreatedDate}");
         }
+        Console.WriteLine();
 
-        Console.WriteLine("Students:");
-        var students = studentRepo.Get().ToList();
-        foreach (var item in students)
+        var allStudents = studentRepo.Get().ToList();
+
+        Console.WriteLine("Active Students:");
+        var activeStudents = allStudents.Where(it => it.DeletedDate is null);
+        foreach (var item in activeStudents)
         {
             Console.WriteLine($"- {item.FullName},\tGPA: {item.GPA},\tAdvisorName: {item.Teacher?.FullName}, Created: {item.CreatedDate}");
+        }
+        Console.WriteLine();
+
+        Console.WriteLine("Deleted Students:");
+        var deletedStudents = allStudents.Where(it => it.DeletedDate is not null);
+        foreach (var item in deletedStudents)
+        {
+            Console.WriteLine($"- {item.FullName},\tGPA: {item.GPA},\tAdvisorName: {item.Teacher?.FullName}, Created: {item.CreatedDate}, Deleted: {item.DeletedDate}");
         }
     }
 }

@@ -2,12 +2,10 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Sample04.Basic.ConsoleApp.WorkWithDatabase.DbContexts;
-using Sample04.Basic.ConsoleApp.WorkWithDatabase.Entities;
 using Sample04.Basic.ConsoleApp.WorkWithDatabase.Students;
 using Sample04.Basic.ConsoleApp.WorkWithDatabase.Universities;
 using System.Reflection;
 using TTSS.Core;
-using TTSS.Core.Data;
 using TTSS.Core.Messaging;
 using TTSS.Infra.Data.Sql;
 
@@ -25,16 +23,17 @@ services
         .AddDbContext<UniversityDbContext>()
     .Build();
 
-// Create new students
+// Create new 8 students
 var provider = services.BuildServiceProvider();
-var studentRepository = provider.GetRequiredService<IRepository<Student>>();
-await studentRepository.InsertAsync(new Student { Id = Guid.NewGuid().ToString(), FullName = "John Doe", GPA = 3.5 });
-await studentRepository.InsertAsync(new Student { Id = Guid.NewGuid().ToString(), FullName = "Jane Doe", GPA = 3.8 });
-await studentRepository.InsertAsync(new Student { Id = Guid.NewGuid().ToString(), FullName = "Jim Doe", GPA = 3.2 });
-
-// Create a new teacher via handler and tie the students to the teacher
 var hub = provider.GetRequiredService<IMessagingHub>();
-await hub.SendAsync(new TeacherCreate { FullName = "Dr.Smith", Salary = 50000 });
+var studentIds = await hub.SendAsync(new StudentCreate(8));
+
+// Delete the last student
+var isSuccess = await hub.SendAsync(new StudentDelete(studentIds.Last()));
+Console.WriteLine($"Is the last student deleted? {isSuccess}");
+
+// Create a new teacher via and tie the students to the teacher
+await hub.SendAsync(new TeacherCreate { FullName = "Dr.Smith", Salary = 50000, StudentIds = studentIds });
 
 // Show the students and teachers
 await hub.SendAsync(new ShowPersonnelList());

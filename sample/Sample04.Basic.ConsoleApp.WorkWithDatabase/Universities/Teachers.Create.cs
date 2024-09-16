@@ -9,13 +9,15 @@ public sealed record TeacherCreate : IRequesting
 {
     public required string FullName { get; init; }
     public double Salary { get; init; }
+    public IEnumerable<string> StudentIds { get; set; } = [];
 }
 
 file sealed class Handler(IRepository<Teacher> teacherRepo, IRepository<Student> studentRepo) : RequestHandlerAsync<TeacherCreate>
 {
     public override async Task HandleAsync(TeacherCreate request, CancellationToken cancellationToken = default)
     {
-        var allStudents = studentRepo.Get(cancellationToken);
+        var allStudents = studentRepo
+            .Get(it => request.StudentIds.Contains(it.Id), cancellationToken);
 
         var entity = new Teacher
         {
