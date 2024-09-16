@@ -9,7 +9,6 @@ using TTSS.Core;
 using TTSS.Core.Messaging;
 using TTSS.Infra.Data.Sql;
 
-
 // Register TTSS Core
 var services = new ServiceCollection();
 services
@@ -44,3 +43,8 @@ Console.WriteLine($"Is the first student deleted? {isSuccess}");
 
 // Show the students and teachers
 await hub.SendAsync(new ShowPersonnelList());
+
+// Key takeaways from this example:
+// 1. Register DbContext in the service collection (Lines 21-23).
+// 2. Use IRequesting<T> to access a database table.
+// 3. CreatedDate, UpdatedDate, and DeletedDate are auto-stamped.

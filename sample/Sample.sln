@@ -9,9 +9,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sample01.Basic.ConsoleApp",
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sample02.Basic.ConsoleApp.ChainRequest", "Sample02.Basic.ConsoleApp.ChainRequest\Sample02.Basic.ConsoleApp.ChainRequest.csproj", "{35818647-CF34-4B61-870E-B57E0DCBA9C5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sample03.Basic.ConsoleApp.ProjectStructure", "Sample03.Basic.ConsoleApp.ProjectStructure\Sample03.Basic.ConsoleApp.ProjectStructure.csproj", "{4EA410F2-9384-466E-8902-AF937E711EAA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sample03.Basic.ConsoleApp.ProjectStructure", "Sample03.Basic.ConsoleApp.ProjectStructure\Sample03.Basic.ConsoleApp.ProjectStructure.csproj", "{4EA410F2-9384-466E-8902-AF937E711EAA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sample04.Basic.ConsoleApp.WorkWithDatabase", "Sample04.Basic.ConsoleApp.WorkWithDatabase\Sample04.Basic.ConsoleApp.WorkWithDatabase.csproj", "{93EFBAE6-34BE-418D-A696-54C606CABB46}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sample04.Basic.ConsoleApp.WorkWithDatabase", "Sample04.Basic.ConsoleApp.WorkWithDatabase\Sample04.Basic.ConsoleApp.WorkWithDatabase.csproj", "{93EFBAE6-34BE-418D-A696-54C606CABB46}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sample05.Basic.ConsoleApp.WorkWithCorrelation", "Sample05.Basic.ConsoleApp.WorkWithCorrelation\Sample05.Basic.ConsoleApp.WorkWithCorrelation.csproj", "{C34C18A0-D81F-4916-BD40-D3D7C5FB03A4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sample06.Basic.ConsoleApp.CustomCorrelationContext", "Sample06.Basic.ConsoleApp.CustomCorrelationContext\Sample06.Basic.ConsoleApp.CustomCorrelationContext.csproj", "{31DB0D84-6AC6-438B-BBF3-FED5ED5DED91}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -35,6 +39,14 @@ Global
 		{93EFBAE6-34BE-418D-A696-54C606CABB46}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{93EFBAE6-34BE-418D-A696-54C606CABB46}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{93EFBAE6-34BE-418D-A696-54C606CABB46}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C34C18A0-D81F-4916-BD40-D3D7C5FB03A4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C34C18A0-D81F-4916-BD40-D3D7C5FB03A4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C34C18A0-D81F-4916-BD40-D3D7C5FB03A4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C34C18A0-D81F-4916-BD40-D3D7C5FB03A4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{31DB0D84-6AC6-438B-BBF3-FED5ED5DED91}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{31DB0D84-6AC6-438B-BBF3-FED5ED5DED91}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{31DB0D84-6AC6-438B-BBF3-FED5ED5DED91}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{31DB0D84-6AC6-438B-BBF3-FED5ED5DED91}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -44,6 +56,8 @@ Global
 		{35818647-CF34-4B61-870E-B57E0DCBA9C5} = {2590BE66-9193-447F-8901-2933680A2A1A}
 		{4EA410F2-9384-466E-8902-AF937E711EAA} = {2590BE66-9193-447F-8901-2933680A2A1A}
 		{93EFBAE6-34BE-418D-A696-54C606CABB46} = {2590BE66-9193-447F-8901-2933680A2A1A}
+		{C34C18A0-D81F-4916-BD40-D3D7C5FB03A4} = {2590BE66-9193-447F-8901-2933680A2A1A}
+		{31DB0D84-6AC6-438B-BBF3-FED5ED5DED91} = {2590BE66-9193-447F-8901-2933680A2A1A}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {23A02E67-047C-49A3-BFC4-564EDEFDE7B3}
