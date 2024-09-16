@@ -37,3 +37,10 @@ await hub.SendAsync(new TeacherCreate { FullName = "Dr.Smith", Salary = 50000, S
 
 // Show the students and teachers
 await hub.SendAsync(new ShowPersonnelList());
+
+// Delete the first student
+isSuccess = await hub.SendAsync(new StudentDelete(studentIds.First(), true));
+Console.WriteLine($"Is the first student deleted? {isSuccess}");
+
+// Show the students and teachers
+await hub.SendAsync(new ShowPersonnelList());

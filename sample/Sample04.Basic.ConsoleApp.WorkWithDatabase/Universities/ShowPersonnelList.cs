@@ -36,5 +36,7 @@ file sealed class Handler(IRepository<Teacher> teacherRepo, IRepository<Student>
         {
             Console.WriteLine($"- {item.FullName},\tGPA: {item.GPA},\tAdvisorName: {item.Teacher?.FullName}, Created: {item.CreatedDate}, Deleted: {item.DeletedDate}");
         }
+        Console.WriteLine(new string('-', 60));
+        Console.WriteLine();
     }
 }
