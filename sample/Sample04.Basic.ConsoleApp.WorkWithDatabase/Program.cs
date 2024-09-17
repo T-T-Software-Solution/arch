@@ -48,3 +48,5 @@ await hub.SendAsync(new ShowPersonnelList());
 // 1. Register DbContext in the service collection (Lines 21-23).
 // 2. Use IRequesting<T> to access a database table.
 // 3. CreatedDate, UpdatedDate, and DeletedDate are auto-stamped.
+// 4. TTSS.Infra.Sql is used with Entity Framework Core.
+// 5. The project must select its own database provider (e.g., Microsoft.EntityFrameworkCore.Sqlite).
