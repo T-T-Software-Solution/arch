@@ -21,3 +21,6 @@ var message = new CalculateRequest
 };
 var response = await hub.SendAsync(message);
 Console.WriteLine(response);
+
+// Key takeaways from this example:
+// 1. Handlers can call other handlers via the MessagingHub.

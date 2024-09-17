@@ -21,3 +21,9 @@ var message = new Calculator
 };
 var response = await hub.SendAsync(message);
 Console.WriteLine(response);
+
+// Key takeaways from this example:
+// 1. The project is organized by modules like Calculators.
+// 2. Each module's content is in the same folder.
+// 3. Messages and handlers are in the same file.
+// 4. Handlers are called via MessagingHub, not directly, so they are file-scoped.

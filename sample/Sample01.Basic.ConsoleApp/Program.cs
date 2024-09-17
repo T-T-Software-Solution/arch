@@ -26,3 +26,8 @@ var message2 = new Ping
 };
 var response = await hub.SendAsync(message2);
 Console.WriteLine(response.Response);
+
+// Key takeaways from this example:
+// 1. In.NET, ServiceCollection is used for dependency injection (DI).
+// 2. TTSS.Core is easily used by calling RegisterTTSSCore at line 9.
+// 3. MessagingHub matches messages with handlers.
