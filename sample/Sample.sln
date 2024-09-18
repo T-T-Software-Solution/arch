@@ -27,15 +27,25 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sample10.Basic.ConsoleApp.L
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "101-Web", "101-Web", "{A70C1F7A-01DB-4464-82B8-1BE91779D289}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sample11.Basic.WebApp.SetupProject", "Sample11.Basic.WebApp.SetupProject\Sample11.Basic.WebApp.SetupProject.csproj", "{98C1992E-04E4-4F39-A8D5-22CEC8B3ACF2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sample11.Basic.WebApp.SetupProject", "Sample11.Basic.WebApp.SetupProject\Sample11.Basic.WebApp.SetupProject.csproj", "{98C1992E-04E4-4F39-A8D5-22CEC8B3ACF2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sample12.Basic.WebApp.ChainRequest", "Sample12.Basic.WebApp.ChainRequest\Sample12.Basic.WebApp.ChainRequest.csproj", "{70B6AE6F-57E2-4837-BADF-786B54603BE1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sample12.Basic.WebApp.ChainRequest", "Sample12.Basic.WebApp.ChainRequest\Sample12.Basic.WebApp.ChainRequest.csproj", "{70B6AE6F-57E2-4837-BADF-786B54603BE1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sample13.Basic.WebApp.ProjectStructure", "Sample13.Basic.WebApp.ProjectStructure\Sample13.Basic.WebApp.ProjectStructure.csproj", "{AF368B55-03AE-480E-AB77-1D24B1069DDA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sample13.Basic.WebApp.ProjectStructure", "Sample13.Basic.WebApp.ProjectStructure\Sample13.Basic.WebApp.ProjectStructure.csproj", "{AF368B55-03AE-480E-AB77-1D24B1069DDA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sample14.Basic.WebApp.WebInitializer", "Sample14.Basic.WebApp.WebInitializer\Sample14.Basic.WebApp.WebInitializer.csproj", "{91C0DF62-DEC5-4FFC-B214-11228D4C20EE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sample14.Basic.WebApp.WebInitializer", "Sample14.Basic.WebApp.WebInitializer\Sample14.Basic.WebApp.WebInitializer.csproj", "{91C0DF62-DEC5-4FFC-B214-11228D4C20EE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sample15.Basic.WebApp.WorkWithDatabase", "Sample15.Basic.WebApp.WorkWithDatabase\Sample15.Basic.WebApp.WorkWithDatabase.csproj", "{CF12A47E-50C8-4699-8958-393D3769F7D9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sample15.Basic.WebApp.WorkWithDatabase", "Sample15.Basic.WebApp.WorkWithDatabase\Sample15.Basic.WebApp.WorkWithDatabase.csproj", "{CF12A47E-50C8-4699-8958-393D3769F7D9}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "102-Cross-Services", "102-Cross-Services", "{CF40514F-5747-4D5A-9FDF-4CAAE3AF025D}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sample16.RemoteRequest.ConsoleApp1", "Sample16.RemoteRequest.ConsoleApp1\Sample16.RemoteRequest.ConsoleApp1.csproj", "{DB5491F9-43C3-45BA-98C4-91F8DA0F88F7}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sample16.RemoteRequest.ConsoleApp2", "Sample16.RemoteRequest.ConsoleApp2\Sample16.RemoteRequest.ConsoleApp2.csproj", "{93B4B691-726A-4313-B671-BD3FA93454F2}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sample16.RemoteRequest.Shared", "Sample16.RemoteRequest.Shared\Sample16.RemoteRequest.Shared.csproj", "{AE4B9CE2-70FA-4192-BFF6-92206303E36D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sample17.RemoteRequest.WebApp", "Sample17.RemoteRequest.WebApp\Sample17.RemoteRequest.WebApp.csproj", "{90E76790-DDD1-4261-B040-665CB0FE8147}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -103,6 +113,22 @@ Global
 		{CF12A47E-50C8-4699-8958-393D3769F7D9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CF12A47E-50C8-4699-8958-393D3769F7D9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CF12A47E-50C8-4699-8958-393D3769F7D9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DB5491F9-43C3-45BA-98C4-91F8DA0F88F7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DB5491F9-43C3-45BA-98C4-91F8DA0F88F7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DB5491F9-43C3-45BA-98C4-91F8DA0F88F7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DB5491F9-43C3-45BA-98C4-91F8DA0F88F7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{93B4B691-726A-4313-B671-BD3FA93454F2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{93B4B691-726A-4313-B671-BD3FA93454F2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{93B4B691-726A-4313-B671-BD3FA93454F2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{93B4B691-726A-4313-B671-BD3FA93454F2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AE4B9CE2-70FA-4192-BFF6-92206303E36D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AE4B9CE2-70FA-4192-BFF6-92206303E36D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AE4B9CE2-70FA-4192-BFF6-92206303E36D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AE4B9CE2-70FA-4192-BFF6-92206303E36D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{90E76790-DDD1-4261-B040-665CB0FE8147}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{90E76790-DDD1-4261-B040-665CB0FE8147}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{90E76790-DDD1-4261-B040-665CB0FE8147}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{90E76790-DDD1-4261-B040-665CB0FE8147}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -123,6 +149,10 @@ Global
 		{AF368B55-03AE-480E-AB77-1D24B1069DDA} = {A70C1F7A-01DB-4464-82B8-1BE91779D289}
 		{91C0DF62-DEC5-4FFC-B214-11228D4C20EE} = {A70C1F7A-01DB-4464-82B8-1BE91779D289}
 		{CF12A47E-50C8-4699-8958-393D3769F7D9} = {A70C1F7A-01DB-4464-82B8-1BE91779D289}
+		{DB5491F9-43C3-45BA-98C4-91F8DA0F88F7} = {CF40514F-5747-4D5A-9FDF-4CAAE3AF025D}
+		{93B4B691-726A-4313-B671-BD3FA93454F2} = {CF40514F-5747-4D5A-9FDF-4CAAE3AF025D}
+		{AE4B9CE2-70FA-4192-BFF6-92206303E36D} = {CF40514F-5747-4D5A-9FDF-4CAAE3AF025D}
+		{90E76790-DDD1-4261-B040-665CB0FE8147} = {CF40514F-5747-4D5A-9FDF-4CAAE3AF025D}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {23A02E67-047C-49A3-BFC4-564EDEFDE7B3}
