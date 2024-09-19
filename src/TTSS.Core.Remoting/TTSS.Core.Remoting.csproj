@@ -8,7 +8,7 @@
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
     <Authors>T-T-Software-Solution</Authors>
     <Company>T-T-Software-Solution</Company>
-    <Version>1.0.1</Version>
+    <Version>1.0.2</Version>
     <Description>TTSS framework for supporting remote communication services.</Description>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
