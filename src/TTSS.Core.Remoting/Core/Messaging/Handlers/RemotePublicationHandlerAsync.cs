@@ -3,8 +3,13 @@
 /// <summary>
 /// Base class for an asynchronous remote publication handler.
 /// </summary>
+public abstract class RemotePublicationHandlerAsync;
+
+/// <summary>
+/// Base class for an asynchronous remote publication handler.
+/// </summary>
 /// <typeparam name="TPublication">The publication type</typeparam>
-public abstract class RemotePublicationHandlerAsync<TPublication> : RemoteRequestHandlerAsync,
+public abstract class RemotePublicationHandlerAsync<TPublication> : RemotePublicationHandlerAsync,
     MassTransit.IConsumer<TPublication>
     where TPublication : class, IRemotePublication
 {
