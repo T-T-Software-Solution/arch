@@ -30,7 +30,7 @@ internal sealed class RemoteMessagingHub(Lazy<IServiceProvider> provider, ICorre
     {
         ArgumentNullException.ThrowIfNull(publication);
         var publisher = ServiceProvider.GetRequiredService<IPublishEndpoint>();
-        return publisher.Publish(publication, cancellationToken);
+        return publisher.Publish(publication, SetCorrelationContext, cancellationToken);
     }
 
     async Task IRemoteMessagingHub.SendAsync<TRequest>(TRequest request, CancellationToken cancellationToken)

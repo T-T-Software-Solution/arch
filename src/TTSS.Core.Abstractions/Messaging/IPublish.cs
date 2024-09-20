@@ -1,4 +1,4 @@
-﻿namespace TTSS.Core.Models;
+﻿namespace TTSS.Core.Messaging;
 
 /// <summary>
 /// Contract for a publish message.

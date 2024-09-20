@@ -2,7 +2,7 @@
 
 namespace Shopping.Shared.Requests;
 
-public sealed record UserRegistered : IRemoteRequesting
+public sealed record UserRegistered : IRemotePublication
 {
     public string Id { get; set; }
     public string? FirstName { get; set; }

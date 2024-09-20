@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using MassTransit;
 using Shopping.Shared.Entities;
 using Shopping.Shared.Entities.ViewModels;
 using Shopping.Shared.Requests;
@@ -21,7 +20,7 @@ public sealed record UsersCreate : IHttpRequesting<CreateUserResult>
     public string? LastName { get; init; }
 }
 
-file sealed class Handler(IRepository<User> repository, IMessagingHub hub, IMapper mapper, IBus bus)
+file sealed class Handler(IRepository<User> repository, IMessagingHub hub, IMapper mapper)
     : HttpRequestHandlerAsync<UsersCreate, CreateUserResult>
 {
     public override async Task<IHttpResponse<CreateUserResult>> HandleAsync(UsersCreate request, CancellationToken cancellationToken = default)
@@ -42,12 +41,12 @@ file sealed class Handler(IRepository<User> repository, IMessagingHub hub, IMapp
         }, cancellationToken);
         var result = new CreateUserResult(vm, token);
 
-        await bus.Publish(new UserRegistered
+        await hub.PublishAsync(new UserRegistered
         {
             Id = entity.Id,
             FirstName = entity.FirstName,
             LastName = entity.LastName,
-        });
+        }, cancellationToken);
 
         return Response(HttpStatusCode.OK, result);
     }

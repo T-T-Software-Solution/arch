@@ -11,7 +11,7 @@ public sealed class PingHandler : RemoteRequestHandlerAsync<Ping, Pong>
         Console.WriteLine($"[RootId: {RemoteContext.InitiatorId} | CurrentId: {RemoteContext.CorrelationId}] ");
         Console.ForegroundColor = ConsoleColor.Green;
         Console.WriteLine($"Received: {request}");
-        Console.ForegroundColor = ConsoleColor.White;
+        Console.ResetColor();
         var response = new Pong(request.First + request.Second);
         return Task.FromResult(response);
     }
