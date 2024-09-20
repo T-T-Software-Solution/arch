@@ -5,6 +5,7 @@ using Moq;
 using TTSS.Core.Messaging.Handlers;
 using TTSS.Core.Messaging.Pipelines;
 using TTSS.Core.Messaging.Subscribers;
+using TTSS.Core.Models;
 using TTSS.Tests;
 
 namespace TTSS.Core.Messaging;
@@ -779,6 +780,155 @@ public abstract class CommonTestCases : IoCTestBase
     #endregion
 
     #region Context
+
+    [Fact]
+    public void Get_CorrelationContext_ShouldWorkAsExpected()
+    {
+        var sut = ServiceProvider.GetRequiredService<ICorrelationContext>();
+        sut.Should().NotBeNull();
+    }
+
+    [Theory]
+    [InlineData(null, null)]
+    [InlineData("", "")]
+    [InlineData(" ", " ")]
+    [InlineData("Hello", "Hello")]
+    [InlineData("hElL0", "hElL0")]
+    public void SetAndGet_String_ValueTo_CorrelationContext_ShouldWorkAsExpected(string value, string expectedValue)
+        => SetAndGetValueTo_CorrelationContext_ShouldWorkAsExpected(value, expectedValue);
+
+    [Theory]
+    [InlineData(0, 0)]
+    [InlineData(100, 100)]
+    [InlineData(-99, -99)]
+    [InlineData(int.MinValue, int.MinValue)]
+    [InlineData(int.MaxValue, int.MaxValue)]
+    public void SetAndGet_Integer_ValueTo_CorrelationContext_ShouldWorkAsExpected(int value, int expectedValue)
+        => SetAndGetValueTo_CorrelationContext_ShouldWorkAsExpected(value, expectedValue);
+
+    [Theory]
+    [InlineData(0, 0)]
+    [InlineData(100, 100)]
+    [InlineData(-99, -99)]
+    [InlineData(long.MinValue, long.MinValue)]
+    [InlineData(long.MaxValue, long.MaxValue)]
+    public void SetAndGet_Long_ValueTo_CorrelationContext_ShouldWorkAsExpected(long value, long expectedValue)
+        => SetAndGetValueTo_CorrelationContext_ShouldWorkAsExpected(value, expectedValue);
+
+    [Theory]
+    [InlineData(0, 0)]
+    [InlineData(100, 100)]
+    [InlineData(ulong.MinValue, ulong.MinValue)]
+    [InlineData(ulong.MaxValue, ulong.MaxValue)]
+    public void SetAndGet_UnsignedLong_ValueTo_CorrelationContext_ShouldWorkAsExpected(ulong value, ulong expectedValue)
+        => SetAndGetValueTo_CorrelationContext_ShouldWorkAsExpected(value, expectedValue);
+
+    public sealed record Test(int id, string value);
+
+    [Fact]
+    public void SetAndGet_Object_ValueTo_CorrelationContext_ShouldWorkAsExpected()
+    {
+        var value = new Test(123, "Hello");
+        var expectedValue = new Test(123, "Hello");
+        SetAndGetValueTo_CorrelationContext_ShouldWorkAsExpected(value, expectedValue);
+    }
+
+    private void SetAndGetValueTo_CorrelationContext_ShouldWorkAsExpected<T>(T value, T expectedValue)
+    {
+        var sut = ServiceProvider.GetRequiredService<ICorrelationContext>();
+        sut.Set(value);
+        sut.Get<T>().Should().Be(expectedValue);
+    }
+
+    [Fact]
+    public void GetValueFrom_CorrelationContext_WhenKeyNotExisting_ThenAnExceptionMustBeThrow()
+    {
+        var sut = ServiceProvider.GetRequiredService<ICorrelationContext>();
+        var act = () =>
+        {
+            sut.Get<string>("UNKNOWN");
+            return Task.CompletedTask;
+        };
+        act.Should().ThrowAsync<ArgumentNullException>();
+    }
+
+    [Fact]
+    public void TryGetValueFrom_CorrelationContext_WhenKeyNotExisting_DefaultKey_ThenTheResultShouldBeFalse()
+    {
+        var sut = ServiceProvider.GetRequiredService<ICorrelationContext>();
+        var actual = sut.TryGetValue<string>(out var value);
+        actual.Should().BeFalse();
+        value.Should().BeNull();
+    }
+
+    [Fact]
+    public void TryGetValueFrom_CorrelationContext_WhenKeyNotExisting_SpecificKey_ThenTheResultShouldBeFalse()
+    {
+        var sut = ServiceProvider.GetRequiredService<ICorrelationContext>();
+        var actual = sut.TryGetValue<string>("UNKNOWN", out var value);
+        actual.Should().BeFalse();
+        value.Should().BeNull();
+    }
+
+    [Fact]
+    public void TryGetValueFrom_CorrelationContext_WhenKeyIsExisting_ThenItMustWorkAsExpected()
+    {
+        var sut = ServiceProvider.GetRequiredService<ICorrelationContext>();
+        sut.Set("Hello", "TheKey");
+        var actual = sut.TryGetValue<string>("TheKey", out var value);
+        actual.Should().BeTrue();
+        value.Should().Be("Hello");
+    }
+
+    [Theory]
+    [InlineData(null, null)]
+    [InlineData("", "")]
+    [InlineData(" ", " ")]
+    [InlineData("Hello", "Hello")]
+    [InlineData("hElL0", "hElL0")]
+    public void SetAndGet_String_ValueTo_CorrelationContext_WithSpecificKey_ShouldWorkAsExpected(string value, string expectedValue)
+        => SetAndGetValueTo_CorrelationContext_WithSpecificKey_ShouldWorkAsExpected(value, expectedValue, "TheKey");
+
+    [Theory]
+    [InlineData(0, 0)]
+    [InlineData(100, 100)]
+    [InlineData(-99, -99)]
+    [InlineData(int.MinValue, int.MinValue)]
+    [InlineData(int.MaxValue, int.MaxValue)]
+    public void SetAndGet_Integer_ValueTo_CorrelationContext_WithSpecificKey_ShouldWorkAsExpected(int value, int expectedValue)
+        => SetAndGetValueTo_CorrelationContext_WithSpecificKey_ShouldWorkAsExpected(value, expectedValue, "TheKey");
+
+    [Theory]
+    [InlineData(0, 0)]
+    [InlineData(100, 100)]
+    [InlineData(-99, -99)]
+    [InlineData(long.MinValue, long.MinValue)]
+    [InlineData(long.MaxValue, long.MaxValue)]
+    public void SetAndGet_Long_ValueTo_CorrelationContext_WithSpecificKey_ShouldWorkAsExpected(long value, long expectedValue)
+        => SetAndGetValueTo_CorrelationContext_WithSpecificKey_ShouldWorkAsExpected(value, expectedValue, "TheKey");
+
+    [Theory]
+    [InlineData(0, 0)]
+    [InlineData(100, 100)]
+    [InlineData(ulong.MinValue, ulong.MinValue)]
+    [InlineData(ulong.MaxValue, ulong.MaxValue)]
+    public void SetAndGet_UnsignedLong_ValueTo_CorrelationContext_WithSpecificKey_ShouldWorkAsExpected(ulong value, ulong expectedValue)
+        => SetAndGetValueTo_CorrelationContext_WithSpecificKey_ShouldWorkAsExpected(value, expectedValue, "TheKey");
+
+    [Fact]
+    public void SetAndGet_Object_ValueTo_CorrelationContext_WithSpecificKey_ShouldWorkAsExpected()
+    {
+        var value = new Test(123, "Hello");
+        var expectedValue = new Test(123, "Hello");
+        SetAndGetValueTo_CorrelationContext_WithSpecificKey_ShouldWorkAsExpected(value, expectedValue, "TheKey");
+    }
+
+    private void SetAndGetValueTo_CorrelationContext_WithSpecificKey_ShouldWorkAsExpected<T>(T value, T expectedValue, string key)
+    {
+        var sut = ServiceProvider.GetRequiredService<ICorrelationContext>();
+        sut.Set(value, key);
+        sut.Get<T>(key).Should().Be(expectedValue);
+    }
 
     [Fact]
     public async Task SendAMessageWithContextThruMultipleHandlers_ThenTheContextMustBeTheSameObjectAcrossThoseHandlers()
