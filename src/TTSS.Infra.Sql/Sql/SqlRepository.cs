@@ -104,16 +104,16 @@ public class SqlRepository<TEntity, TKey> : ISqlRepository<TEntity, TKey>
         => new SqlQueryResult<TEntity>(Queryable.Where(filter), MappingStrategy, cancellationToken);
 
     PagingSet<TEntity> IQueryRepository<TEntity, TKey>.GetPaging(int pageNo, int pageSize)
-        => PagingHelper.GetPaging(this, pageNo, pageSize);
+        => PagingFacade.GetPaging(this, pageNo, pageSize);
 
     PagingSet<TEntity> IQueryRepository<TEntity, TKey>.GetPaging(int pageNo, int pageSize, Expression<Func<TEntity, bool>> filter)
-        => PagingHelper.GetPaging(this, pageNo, pageSize, filter);
+        => PagingFacade.GetPaging(this, pageNo, pageSize, filter);
 
     PagingSet<TEntity> IQueryRepository<TEntity, TKey>.GetPaging(int pageNo, int pageSize, Action<IPagingRepository<TEntity>> decorate)
-        => PagingHelper.GetPaging(this, pageNo, pageSize, decorate: decorate);
+        => PagingFacade.GetPaging(this, pageNo, pageSize, decorate: decorate);
 
     PagingSet<TEntity> IQueryRepository<TEntity, TKey>.GetPaging(int pageNo, int pageSize, Expression<Func<TEntity, bool>> filter, Action<IPagingRepository<TEntity>> decorate)
-        => PagingHelper.GetPaging(this, pageNo, pageSize, filter, decorate);
+        => PagingFacade.GetPaging(this, pageNo, pageSize, filter, decorate);
 
     /// <summary>
     /// Convert to queryable.

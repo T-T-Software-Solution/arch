@@ -388,15 +388,15 @@ public abstract class CommonTestCases : IoCTestBase, IDisposable
 
     [Fact]
     public async Task GetPaging_WhenDataAreLessThanPageSize()
-        => await ValidatePagingResult(3, 5, 1, 1, 1, false, false, 1, 3);
+        => await ValidatePagingResult(3, 5, 1, 1, 1, false, false, 1, 3, 1);
 
     [Fact]
     public async Task GetPaging_WhenDataAreEqualWithPageSize()
-        => await ValidatePagingResult(5, 5, 1, 1, 1, false, false, 1, 5);
+        => await ValidatePagingResult(5, 5, 1, 1, 1, false, false, 1, 5, 1);
 
     [Fact]
     public async Task GetPaging_WhenDataAreMoreThanPageSize()
-        => await ValidatePagingResult(7, 5, 1, 1, 2, false, true, 2, 5);
+        => await ValidatePagingResult(7, 5, 1, 1, 2, false, true, 2, 5, 1);
 
     #endregion
 
@@ -404,15 +404,15 @@ public abstract class CommonTestCases : IoCTestBase, IDisposable
 
     [Fact]
     public async Task GetPaging_WithTheSecondPage_ThatHasLessThanPageSize()
-       => await ValidatePagingResult(7, 5, 2, 1, 2, true, false, 2, 2);
+       => await ValidatePagingResult(7, 5, 2, 1, 2, true, false, 2, 2, 6);
 
     [Fact]
     public async Task GetPaging_WithTheSecondPage_ThatHasEqualWithPageSize()
-        => await ValidatePagingResult(10, 5, 2, 1, 2, true, false, 2, 5);
+        => await ValidatePagingResult(10, 5, 2, 1, 2, true, false, 2, 5, 6);
 
     [Fact]
     public async Task GetPaging_WithTheSecondPage_ThatHasMoreThanPageSize()
-        => await ValidatePagingResult(13, 5, 2, 1, 3, true, true, 3, 5);
+        => await ValidatePagingResult(13, 5, 2, 1, 3, true, true, 3, 5, 6);
 
     #endregion
 
@@ -420,28 +420,72 @@ public abstract class CommonTestCases : IoCTestBase, IDisposable
 
     [Fact]
     public async Task GetPaging_WithTheThirdPage_ThatHasLessThanPageSize()
-        => await ValidatePagingResult(13, 5, 3, 2, 3, true, false, 3, 3);
+        => await ValidatePagingResult(13, 5, 3, 2, 3, true, false, 3, 3, 11);
 
     [Fact]
     public async Task GetPaging_WithTheThirdPage_ThatHasEqualWithPageSize()
-        => await ValidatePagingResult(15, 5, 3, 2, 3, true, false, 3, 5);
+        => await ValidatePagingResult(15, 5, 3, 2, 3, true, false, 3, 5, 11);
 
     [Fact]
     public async Task GetPaging_WithTheThirdPage_ThatHasMoreThanPageSize()
-        => await ValidatePagingResult(30, 5, 3, 2, 4, true, true, 6, 5);
+        => await ValidatePagingResult(30, 5, 3, 2, 4, true, true, 6, 5, 11);
+
+    #endregion
+
+    #region Paging helper
+
+    [Fact]
+    public async Task GetPagingFromFacade_TheResultMustBeTheSameWithGetNativePaging()
+    {
+        var sut = ServiceProvider.GetRequiredService<IRepository<Person>>();
+        var records = Enumerable
+            .Range(1, 10)
+            .Select(it => Fixture.Build<Person>().With(it => it.Id, it.ToString()).Create())
+            .ToList();
+
+        var getPageNo = 2;
+        var pageSize = 3;
+        var pagingRepository = sut.Get().ToPaging(totalCount: true, pageSize);
+        var pagingSet = pagingRepository.GetPage(getPageNo);
+
+        var actual = await sut.GetPaging(getPageNo, pageSize).ExecuteAsync();
+        actual.CurrentPage.Should().Be(pagingSet.CurrentPage);
+        actual.PreviousPage.Should().Be(pagingSet.PreviousPage);
+        actual.NextPage.Should().Be(pagingSet.NextPage);
+        actual.HasPreviousPage.Should().Be(pagingSet.HasPreviousPage);
+        actual.HasNextPage.Should().Be(pagingSet.HasNextPage);
+        actual.TotalCount.Should().Be(pagingSet.TotalCount);
+        actual.PageCount.Should().Be(pagingSet.PageCount);
+        actual.Contents.Should().BeEquivalentTo(await pagingSet.GetDataAsync());
+
+        var paging = await pagingSet.ExecuteAsync();
+        actual.CurrentPage.Should().Be(paging.CurrentPage);
+        actual.PreviousPage.Should().Be(paging.PreviousPage);
+        actual.NextPage.Should().Be(paging.NextPage);
+        actual.HasPreviousPage.Should().Be(paging.HasPreviousPage);
+        actual.HasNextPage.Should().Be(paging.HasNextPage);
+        actual.TotalCount.Should().Be(paging.TotalCount);
+        actual.PageCount.Should().Be(paging.PageCount);
+        actual.Contents.Should().BeEquivalentTo(paging.Contents);
+    }
 
     #endregion
 
     private async Task ValidatePagingResult(int contents, int pageSize, int getPageNo,
         int expectedPrevPage, int expectedNextPage,
         bool expectedHasPrevPage, bool expectedHasNextPage,
-        int expectedPageCount, int expectedDataElements)
+        int expectedPageCount, int expectedDataElements,
+        int expectedStartContentId = 0)
     {
         var sut = ServiceProvider.GetService<IRepository<Person>>();
         var records = Enumerable
             .Range(1, contents)
-            .Select(it => Fixture.Create<Person>());
-        await sut.InsertBulkAsync(records);
+            .Select(it => Fixture.Build<Person>().With(it => it.Id, it.ToString()).Create())
+            .ToList();
+        foreach (var item in records)
+        {
+            await sut.InsertAsync(item);
+        }
 
         var repository = sut.Get().ToPaging(totalCount: true, pageSize);
         var pagingSet = repository.GetPage(getPageNo);
@@ -464,6 +508,13 @@ public abstract class CommonTestCases : IoCTestBase, IDisposable
         paging.PageCount.Should().Be(expectedPageCount);
         paging.Contents.Should().HaveCount(expectedDataElements);
         paging.Contents.Should().BeEquivalentTo((await pagingSet.GetDataAsync()).ToList());
+
+        var contentIds = paging.Contents.Select(it => it.Id).ToArray();
+        var endedContentId = expectedStartContentId + expectedDataElements;
+        for (int id = expectedStartContentId; id < endedContentId; id++)
+        {
+            contentIds.Should().Contain(id.ToString());
+        }
     }
 
     #endregion

@@ -5,7 +5,7 @@ namespace TTSS.Core.Data;
 /// <summary>
 /// Paging helper.
 /// </summary>
-public static class PagingHelper
+public static class PagingFacade
 {
     /// <summary>
     /// Get paged set.
@@ -26,7 +26,6 @@ public static class PagingHelper
         where TEntity : class, IDbModel<TKey>
         where TKey : notnull
     {
-        pageNo--;
         const int MinimumPageNo = 0;
         if (pageNo < MinimumPageNo)
         {
