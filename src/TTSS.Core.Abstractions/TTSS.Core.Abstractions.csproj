@@ -8,7 +8,7 @@
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
     <Authors>T-T-Software-Solution</Authors>
     <Company>T-T-Software-Solution</Company>
-    <Version>2.0.1</Version>
+    <Version>2.0.2</Version>
     <Description>Abstractions for dependency injection.</Description>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
