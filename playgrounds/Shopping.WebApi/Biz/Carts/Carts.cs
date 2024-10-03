@@ -19,8 +19,11 @@ public sealed class Carts(IMessagingHub hub) : ApiControllerBase
        => hub.SendAsync(new CartsGet(id)).ToActionResultAsync();
 
     [HttpGet]
-    public Task<ActionResult<Paging<CartVm>>> List([FromQuery] int pageNo = 1, [FromQuery] int pageSize = 30, [FromQuery] string? keyword = default)
-        => hub.SendAsync(new CartsList { PageNo = pageNo, PageSize = pageSize, Keyword = keyword }).ToActionResultAsync();
+    public Task<ActionResult<Paging<CartVm>>> List([FromQuery] int pageNo = 1,
+        [FromQuery] int pageSize = 30,
+        [FromQuery] IEnumerable<string>? sort = default,
+        [FromQuery] Dictionary<string, string>? filter = default)
+        => hub.SendAsync(new CartsList { PageNo = pageNo, PageSize = pageSize, Sort = sort, Filter = filter }).ToActionResultAsync();
 
     [Authorize]
     [HttpPut("{id}")]

@@ -16,7 +16,19 @@ public interface IPagingRequest
     int PageSize { get; init; }
 
     /// <summary>
-    /// Keyword for search.
+    /// Sort fields.
+    /// Default is ascending.
     /// </summary>
-    string? Keyword { get; init; }
+    /// <example>
+    /// [ "name", "age:asc", "year:desc" ]
+    /// </example>
+    IEnumerable<string>? Sort { get; init; }
+
+    /// <summary>
+    /// Filter fields by specific values.
+    /// </summary>
+    /// <example>
+    /// [ {"name","John"}, {"age","30"} ]
+    /// </example>
+    Dictionary<string, string>? Filter { get; init; }
 }
