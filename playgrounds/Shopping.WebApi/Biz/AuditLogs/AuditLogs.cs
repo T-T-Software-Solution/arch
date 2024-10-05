@@ -9,6 +9,9 @@ namespace Shopping.WebApi.Biz.AuditLogs;
 public sealed class AuditLogs(IMessagingHub hub) : ApiControllerBase
 {
     [HttpGet]
-    public Task<ActionResult<Paging<AuditLogVm>>> Get([FromQuery] int pageNo = 1, [FromQuery] int pageSize = 30, [FromQuery] string? keyword = default)
-        => hub.SendAsync(new AuditLogsList { PageNo = pageNo, PageSize = pageSize, Keyword = keyword }).ToActionResultAsync();
+    public Task<ActionResult<Paging<AuditLogVm>>> Get([FromQuery] int pageNo = 1,
+        [FromQuery] int pageSize = 30,
+        [FromQuery] IEnumerable<string>? sort = default,
+        [FromQuery] Dictionary<string, string>? filter = default)
+        => hub.SendAsync(new AuditLogsList { PageNo = pageNo, PageSize = pageSize, Sort = sort, Filter = filter }).ToActionResultAsync();
 }

@@ -1,8 +1,8 @@
 ﻿using Shopping.Shared.Entities;
 using Shopping.Shared.Entities.ViewModels;
-using System.Linq.Expressions;
 using System.Net;
 using TTSS.Core.Data;
+using TTSS.Core.Facades;
 using TTSS.Core.Messaging;
 using TTSS.Core.Messaging.Handlers;
 using TTSS.Core.Models;
@@ -13,7 +13,8 @@ public sealed record AuditLogsList : IHttpRequesting<Paging<AuditLogVm>>, IPagin
 {
     public required int PageNo { get; init; }
     public required int PageSize { get; init; }
-    public string? Keyword { get; init; }
+    public IEnumerable<string>? Sort { get; init; }
+    public Dictionary<string, string>? Filter { get; init; }
 }
 
 file sealed class Handler(IRepository<AuditLog> repository)
@@ -21,16 +22,13 @@ file sealed class Handler(IRepository<AuditLog> repository)
 {
     public override async Task<IHttpResponse<Paging<AuditLogVm>>> HandleAsync(AuditLogsList request, CancellationToken cancellationToken = default)
     {
-        Expression<Func<AuditLog, bool>> filter = it => string.IsNullOrEmpty(request.Keyword)
-            || (null != it.Description && it.Description.Contains(request.Keyword));
+        var (order, filter) = request.ToExpressions<AuditLog>();
 
         var paging = await repository
             .ExcludeDeleted()
-            .GetPaging(request.PageNo, request.PageSize, filter, Ordering)
+            .GetPaging(request.PageNo, request.PageSize, filter, order)
             .ExecuteAsync<AuditLogVm>();
         return Response(HttpStatusCode.OK, paging);
 
     }
-    static void Ordering(IPagingRepository<AuditLog> page)
-        => page.OrderByDescending(it => it.CreatedDate);
 }
