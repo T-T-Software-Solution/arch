@@ -27,7 +27,7 @@ public static class RequestFacade
     private const char SortSplitter = ':';
     private static readonly string[] OrderBys = [Ascending, Descending];
     private static readonly MethodInfo ToLowerMethod = typeof(string).GetMethod("ToLower", Type.EmptyTypes)!;
-    private static readonly MethodInfo ContainsMethod = typeof(string).GetMethod("Contains", [typeof(string), typeof(StringComparison)])!;
+    private static readonly MethodInfo ContainsMethod = typeof(string).GetMethod("Contains", [typeof(string)])!;
 
     #endregion
 
@@ -108,7 +108,7 @@ public static class RequestFacade
         }
 
         var parameter = Expression.Parameter(typeof(TEntity));
-        Expression expression = Expression.Constant(true);
+        Expression? expression = null;
         var qry = from property in typeof(TEntity).GetProperties()
                   from filter in target.Filter
                   where false == string.IsNullOrWhiteSpace(filter.Key)
@@ -139,12 +139,15 @@ public static class RequestFacade
             {
                 var propertyToLower = Expression.Call(targetProperty, ToLowerMethod);
                 var constantToLower = Expression.Call(targetValue, ToLowerMethod);
-                comparison = Expression.Call(propertyToLower, ContainsMethod, constantToLower,
-                    Expression.Constant(StringComparison.OrdinalIgnoreCase));
+                comparison = Expression.Call(propertyToLower, ContainsMethod, constantToLower);
             }
 
-            expression = Expression.AndAlso(expression, comparison);
+            expression = expression is null
+                ? comparison
+                : Expression.AndAlso(expression, comparison);
         }
+
+        expression ??= Expression.Constant(true);
         return Expression.Lambda<Func<TEntity, bool>>(expression, parameter);
     }
 
