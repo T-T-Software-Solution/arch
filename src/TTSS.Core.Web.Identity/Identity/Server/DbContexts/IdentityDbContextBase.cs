@@ -10,9 +10,13 @@ namespace TTSS.Core.Web.Identity.Server.DbContexts;
 /// Identity database context.
 /// </summary>
 /// <typeparam name="TUser">The type of the user objects</typeparam>
-public abstract class IdentityDbContextBase<TUser>(DbContextOptions options)
-    : IdentityDbContext<TUser>(options), IDbWarmup
-    where TUser : IdentityUser
+/// <typeparam name="TRole">The type of the role objects</typeparam>
+/// <typeparam name="TKey">The type of the primary key for the user and role objects</typeparam>
+public abstract class IdentityDbContextBase<TUser, TRole, TKey>(DbContextOptions options)
+    : IdentityDbContext<TUser, TRole, TKey>(options), IDbWarmup
+    where TUser : IdentityUser<TKey>
+    where TRole : IdentityRole<TKey>
+    where TKey : IEquatable<TKey>
 {
     #region Fields
 
@@ -58,6 +62,24 @@ public abstract class IdentityDbContextBase<TUser>(DbContextOptions options)
 
     #endregion
 }
+
+/// <summary>
+/// Identity database context.
+/// </summary>
+/// <typeparam name="TUser">The type of the user objects</typeparam>
+public abstract class IdentityDbContextBase<TUser>(DbContextOptions options)
+    : IdentityDbContextBase<TUser, IdentityRole, string>(options)
+    where TUser : IdentityUser;
+
+/// <summary>
+/// Identity database context.
+/// </summary>
+/// <typeparam name="TUser">The type of the user objects</typeparam>
+/// <typeparam name="TRole">The type of the user role objects</typeparam>
+public abstract class IdentityDbContextBase<TUser, TRole>(DbContextOptions options)
+    : IdentityDbContextBase<TUser, TRole, string>(options)
+    where TUser : IdentityUser
+    where TRole : IdentityRole;
 
 /// <summary>
 /// Identity database context.

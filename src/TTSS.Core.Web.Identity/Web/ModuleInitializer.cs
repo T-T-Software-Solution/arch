@@ -43,6 +43,21 @@ public static class ModuleInitializer
     public static IServiceCollection RegisterIdentityServer<TIdentityDbContext, TIdentityUser>(this IServiceCollection target, IdentityServerOptions? options = default)
         where TIdentityDbContext : DbContext, IDbWarmup
         where TIdentityUser : class
+        => RegisterIdentityServer<TIdentityDbContext, TIdentityUser, IdentityRole>(target, options);
+
+    /// <summary>
+    /// Add the identity server modules.
+    /// </summary>
+    /// <typeparam name="TIdentityDbContext">The identity database context</typeparam>
+    /// <typeparam name="TIdentityUser">The type representing a User in the system</typeparam>
+    /// <typeparam name="TIdentityRole">The type representing a Role in the system</typeparam>
+    /// <param name="target">The service collection</param>
+    /// <param name="options">The identity configuration options</param>
+    /// <returns>The service collection</returns>
+    public static IServiceCollection RegisterIdentityServer<TIdentityDbContext, TIdentityUser, TIdentityRole>(this IServiceCollection target, IdentityServerOptions? options = default)
+        where TIdentityDbContext : DbContext, IDbWarmup
+        where TIdentityUser : class
+        where TIdentityRole : class
     {
         target
             .AddMvc();
@@ -71,7 +86,7 @@ public static class ModuleInitializer
         }
 
         var identityBuilder = target
-            .AddIdentity<TIdentityUser, IdentityRole>(cfg =>
+            .AddIdentity<TIdentityUser, TIdentityRole>(cfg =>
             {
                 if (options?.IsDevelopmentEnabled ?? false)
                 {
