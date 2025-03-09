@@ -151,6 +151,40 @@ public static class RequestFacade
         return Expression.Lambda<Func<TEntity, bool>>(expression, parameter);
     }
 
+    /// <summary>
+    /// Combine two expressions with AND operator.
+    /// </summary>
+    /// <typeparam name="TEntity">Entity type</typeparam>
+    /// <param name="expr1">First expression</param>
+    /// <param name="expr2">Second expression</param>
+    /// <returns>Filter expression</returns>
+    public static Expression<Func<TEntity, bool>> And<TEntity>(this Expression<Func<TEntity, bool>> expr1, Expression<Func<TEntity, bool>> expr2)
+        where TEntity : class
+    {
+        CombineExpressions(expr1, expr2, out var parameter, out var left, out var right);
+        return Expression.Lambda<Func<TEntity, bool>>(Expression.AndAlso(left, right), parameter);
+    }
+
+    /// <summary>
+    /// Combine two expressions with OR operator.
+    /// </summary>
+    /// <typeparam name="TEntity">Entity type</typeparam>
+    /// <param name="expr1">First expression</param>
+    /// <param name="expr2">Second expression</param>
+    /// <returns>Filter expression</returns>
+    public static Expression<Func<TEntity, bool>> Or<TEntity>(this Expression<Func<TEntity, bool>> expr1, Expression<Func<TEntity, bool>> expr2)
+    {
+        CombineExpressions(expr1, expr2, out var parameter, out var left, out var right);
+        return Expression.Lambda<Func<TEntity, bool>>(Expression.OrElse(left, right), parameter);
+    }
+
+    private static void CombineExpressions<TEntity>(Expression<Func<TEntity, bool>> expr1, Expression<Func<TEntity, bool>> expr2, out ParameterExpression parameter, out Expression left, out Expression right)
+    {
+        parameter = Expression.Parameter(typeof(TEntity));
+        left = new ReplaceExpressionVisitor(expr1.Parameters.First(), parameter).Visit(expr1.Body)!;
+        right = new ReplaceExpressionVisitor(expr2.Parameters.First(), parameter).Visit(expr2.Body)!;
+    }
+
     private static object? ConvertFilterValue(string value, Type targetType)
     {
         if (targetType == typeof(string))
@@ -168,4 +202,16 @@ public static class RequestFacade
     }
 
     #endregion
+
+    private class ReplaceExpressionVisitor(Expression oldValue, Expression newValue) : ExpressionVisitor
+    {
+        public override Expression? Visit(Expression? node)
+        {
+            if (node == oldValue)
+            {
+                return newValue;
+            }
+            return base.Visit(node);
+        }
+    }
 }
