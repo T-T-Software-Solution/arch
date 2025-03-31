@@ -8,7 +8,7 @@
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
     <Authors>T-T-Software-Solution</Authors>
     <Company>T-T-Software-Solution</Company>
-    <Version>2.0.3</Version>
+    <Version>2.0.4</Version>
     <Description>Defines the primary functionality of the TTSS framework for integration into .NET projects.</Description>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
