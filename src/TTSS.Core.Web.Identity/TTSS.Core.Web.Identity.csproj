@@ -14,8 +14,8 @@
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageProjectUrl>https://github.com/T-T-Software-Solution/arch</PackageProjectUrl>
-    <RepositoryUrl>https://github.com/T-T-Software-Solution/arch.git</RepositoryUrl> 
-    <RepositoryType>git</RepositoryType> 
+    <RepositoryUrl>https://github.com/T-T-Software-Solution/arch.git</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
   </PropertyGroup>
 
   <ItemGroup>
@@ -28,9 +28,11 @@
   <ItemGroup>
     <PackageReference Include="IdentityModel" Version="7.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.8" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="8.0.8" />
     <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="8.0.8" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="8.0.8" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="8.0.8" />
+    <PackageReference Include="Microsoft.Identity.Web" Version="3.2.1" />
     <PackageReference Include="OpenIddict" Version="5.8.0" />
     <PackageReference Include="OpenIddict.AspNetCore" Version="5.8.0" />
     <PackageReference Include="OpenIddict.EntityFrameworkCore" Version="5.8.0" />

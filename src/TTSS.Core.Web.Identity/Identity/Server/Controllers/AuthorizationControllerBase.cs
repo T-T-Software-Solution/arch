@@ -212,6 +212,22 @@ public abstract class AuthorizationControllerBase<TUser>(IOptions<IdentityServer
 
         if (User?.Identity?.IsAuthenticated == true)
         {
+            // Check if user logged in via external provider
+            var externalScheme = User.FindFirstValue("external_scheme");
+
+            if (!string.IsNullOrEmpty(externalScheme))
+            {
+                // Federated sign-out: redirect to external provider's logout endpoint
+                await signInManager.SignOutAsync();
+                await HttpContext.SignOutAsync();
+
+                return SignOut(
+                    new AuthenticationProperties { RedirectUri = returnUrl },
+                    externalScheme,
+                    OpenIddictServerAspNetCoreDefaults.AuthenticationScheme);
+            }
+
+            // Local sign-out only
             await signInManager.SignOutAsync();
             await HttpContext.SignOutAsync();
         }
@@ -225,6 +241,24 @@ public abstract class AuthorizationControllerBase<TUser>(IOptions<IdentityServer
 
         return SignOut(new AuthenticationProperties { RedirectUri = returnUrl },
             OpenIddictServerAspNetCoreDefaults.AuthenticationScheme);
+    }
+
+    /// <summary>
+    /// Get available external authentication providers.
+    /// </summary>
+    /// <returns>List of external authentication schemes</returns>
+    [HttpGet("~/connect/external-providers")]
+    [Produces("application/json")]
+    public async Task<IActionResult> GetExternalProviders()
+    {
+        var schemes = await signInManager.GetExternalAuthenticationSchemesAsync();
+        var providers = schemes.Select(scheme => new
+        {
+            Name = scheme.Name,
+            DisplayName = scheme.DisplayName ?? scheme.Name
+        });
+
+        return Ok(providers);
     }
 
     /// <summary>

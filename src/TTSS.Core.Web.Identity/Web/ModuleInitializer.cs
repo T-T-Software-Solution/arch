@@ -1,8 +1,13 @@
-﻿using IdentityModel.Client;
+﻿using System.Security.Claims;
+using IdentityModel.Client;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authentication.OAuth.Claims;
+using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Identity.Web;
 using Microsoft.IdentityModel.Tokens;
 using OpenIddict.Abstractions;
 using OpenIddict.Client;
@@ -27,10 +32,14 @@ public static class ModuleInitializer
     /// <typeparam name="TIdentityDbContext">The identity database context</typeparam>
     /// <param name="target">The service collection</param>
     /// <param name="options">The identity configuration options</param>
+    /// <param name="entraIdOptions">Optional Entra ID external authentication configuration</param>
     /// <returns>The service collection</returns>
-    public static IServiceCollection RegisterIdentityServer<TIdentityDbContext>(this IServiceCollection target, IdentityServerOptions? options = default)
+    public static IServiceCollection RegisterIdentityServer<TIdentityDbContext>(
+        this IServiceCollection target,
+        IdentityServerOptions? options = default,
+        EntraIdOptions? entraIdOptions = default)
         where TIdentityDbContext : DbContext, IDbWarmup
-        => RegisterIdentityServer<TIdentityDbContext, IdentityUser>(target, options);
+        => RegisterIdentityServer<TIdentityDbContext, IdentityUser>(target, options, entraIdOptions);
 
     /// <summary>
     /// Add the identity server modules.
@@ -39,11 +48,15 @@ public static class ModuleInitializer
     /// <typeparam name="TIdentityUser">The type representing a User in the system</typeparam>
     /// <param name="target">The service collection</param>
     /// <param name="options">The identity configuration options</param>
+    /// <param name="entraIdOptions">Optional Entra ID external authentication configuration</param>
     /// <returns>The service collection</returns>
-    public static IServiceCollection RegisterIdentityServer<TIdentityDbContext, TIdentityUser>(this IServiceCollection target, IdentityServerOptions? options = default)
+    public static IServiceCollection RegisterIdentityServer<TIdentityDbContext, TIdentityUser>(
+        this IServiceCollection target,
+        IdentityServerOptions? options = default,
+        EntraIdOptions? entraIdOptions = default)
         where TIdentityDbContext : DbContext, IDbWarmup
         where TIdentityUser : class
-        => RegisterIdentityServer<TIdentityDbContext, TIdentityUser, IdentityRole>(target, options);
+        => RegisterIdentityServer<TIdentityDbContext, TIdentityUser, IdentityRole>(target, options, entraIdOptions);
 
     /// <summary>
     /// Add the identity server modules.
@@ -53,8 +66,12 @@ public static class ModuleInitializer
     /// <typeparam name="TIdentityRole">The type representing a Role in the system</typeparam>
     /// <param name="target">The service collection</param>
     /// <param name="options">The identity configuration options</param>
+    /// <param name="entraIdOptions">Optional Entra ID external authentication configuration</param>
     /// <returns>The service collection</returns>
-    public static IServiceCollection RegisterIdentityServer<TIdentityDbContext, TIdentityUser, TIdentityRole>(this IServiceCollection target, IdentityServerOptions? options = default)
+    public static IServiceCollection RegisterIdentityServer<TIdentityDbContext, TIdentityUser, TIdentityRole>(
+        this IServiceCollection target,
+        IdentityServerOptions? options = default,
+        EntraIdOptions? entraIdOptions = default)
         where TIdentityDbContext : DbContext, IDbWarmup
         where TIdentityUser : class
         where TIdentityRole : class
@@ -168,7 +185,63 @@ public static class ModuleInitializer
                 options?.OpenIddictValidationBuilder?.Invoke(cfg);
             });
 
+        // Configure Entra ID external authentication if enabled
+        if (entraIdOptions?.Enabled == true)
+        {
+            ConfigureEntraIdAuthentication(target, entraIdOptions);
+        }
+
         return target;
+    }
+
+    /// <summary>
+    /// Configure Entra ID (Azure AD) as an external authentication provider.
+    /// </summary>
+    /// <param name="services">The service collection</param>
+    /// <param name="options">Entra ID configuration options</param>
+    private static void ConfigureEntraIdAuthentication(IServiceCollection services, EntraIdOptions options)
+    {
+        if (string.IsNullOrWhiteSpace(options.TenantId))
+            throw new InvalidOperationException("Entra ID TenantId is required when Entra ID is enabled.");
+        if (string.IsNullOrWhiteSpace(options.ClientId))
+            throw new InvalidOperationException("Entra ID ClientId is required when Entra ID is enabled.");
+        if (string.IsNullOrWhiteSpace(options.ClientSecret))
+            throw new InvalidOperationException("Entra ID ClientSecret is required when Entra ID is enabled.");
+
+        services.AddAuthentication()
+            .AddOpenIdConnect("EntraId", "Microsoft Entra ID", oidcOptions =>
+            {
+                oidcOptions.Authority = options.GetAuthority();
+                oidcOptions.ClientId = options.ClientId;
+                oidcOptions.ClientSecret = options.ClientSecret;
+                oidcOptions.ResponseType = "code";
+                oidcOptions.CallbackPath = options.CallbackPath;
+                oidcOptions.SignedOutCallbackPath = options.SignedOutCallbackPath;
+                oidcOptions.RemoteSignOutPath = options.RemoteSignOutPath;
+
+                // Required scopes for user information
+                oidcOptions.Scope.Clear();
+                oidcOptions.Scope.Add("openid");
+                oidcOptions.Scope.Add("profile");
+                oidcOptions.Scope.Add("email");
+
+                // Save tokens to retrieve user info
+                oidcOptions.SaveTokens = true;
+                oidcOptions.GetClaimsFromUserInfoEndpoint = true;
+
+                // Map claims from Entra ID to standard claims
+                oidcOptions.ClaimActions.MapJsonKey(ClaimTypes.NameIdentifier, "sub");
+                oidcOptions.ClaimActions.MapJsonKey(ClaimTypes.Name, "name");
+                oidcOptions.ClaimActions.MapJsonKey(ClaimTypes.Email, "email");
+                oidcOptions.ClaimActions.MapJsonKey(ClaimTypes.GivenName, "given_name");
+                oidcOptions.ClaimActions.MapJsonKey(ClaimTypes.Surname, "family_name");
+
+                // Use Identity.External scheme to allow our controller to handle user creation
+                oidcOptions.SignInScheme = IdentityConstants.ExternalScheme;
+
+                // Allow custom configuration
+                options.ConfigureOptions?.Invoke(oidcOptions);
+            });
     }
 
     /// <summary>
