@@ -90,7 +90,7 @@ public abstract class ExternalAuthenticationControllerBase<TUser>(
         }
 
         // Add external login to the user
-        var addLoginResult = await userManager.AddLoginAsync(user, info);
+        var addLoginResult = await userManager.AddLoginAsync(user!, info);
         if (!addLoginResult.Succeeded)
         {
             var errors = string.Join(", ", addLoginResult.Errors.Select(e => e.Description));
@@ -99,10 +99,10 @@ public abstract class ExternalAuthenticationControllerBase<TUser>(
 
         // Add claim to track external authentication scheme for federated sign-out
         var externalSchemeClaim = new Claim("external_scheme", info.LoginProvider);
-        await userManager.AddClaimAsync(user, externalSchemeClaim);
+        await userManager.AddClaimAsync(user!, externalSchemeClaim);
 
         // Sign in the user
-        await signInManager.SignInAsync(user, isPersistent: false, info.LoginProvider);
+        await signInManager.SignInAsync(user!, isPersistent: false, info.LoginProvider);
 
         return LocalRedirect(returnUrl);
     }

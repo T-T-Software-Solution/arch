@@ -98,7 +98,8 @@ public abstract class AuthorizationControllerBase<TUser>(IOptions<IdentityServer
             return BadRequest(ModelState);
         }
 
-        var result = await HttpContext.AuthenticateAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+        // Check if user is authenticated (Identity.Application is the default scheme from AddIdentity)
+        var result = await HttpContext.AuthenticateAsync(IdentityConstants.ApplicationScheme);
         if (false == (User?.Identity?.IsAuthenticated ?? false) || false == result.Succeeded || string.IsNullOrWhiteSpace(result.Principal?.Identity?.Name))
         {
             var querystring = QueryString.Create(Request.HasFormContentType ? [.. Request.Form] : Request.Query.ToList());
@@ -109,7 +110,7 @@ public abstract class AuthorizationControllerBase<TUser>(IOptions<IdentityServer
                 RedirectUri = $"{Request.PathBase}{Request.Path}{querystring}",
                 ExpiresUtc = expiry,
             };
-            return Challenge(properties, CookieAuthenticationDefaults.AuthenticationScheme);
+            return Challenge(properties, IdentityConstants.ApplicationScheme);
         }
 
         var userId = User.GetClaim(Claims.Subject)!;
