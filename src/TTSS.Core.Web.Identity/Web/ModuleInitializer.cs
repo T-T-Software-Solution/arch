@@ -250,6 +250,9 @@ public static class ModuleInitializer
                 // Use Identity.External scheme to allow our controller to handle user creation
                 oidcOptions.SignInScheme = IdentityConstants.ExternalScheme;
 
+                // Configure sign-out scheme to enable federated sign-out
+                oidcOptions.SignOutScheme = IdentityConstants.ApplicationScheme;
+
                 // Ensure proper redirect after Entra ID authentication
                 oidcOptions.Events = new Microsoft.AspNetCore.Authentication.OpenIdConnect.OpenIdConnectEvents
                 {

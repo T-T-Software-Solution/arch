@@ -213,19 +213,33 @@ public abstract class AuthorizationControllerBase<TUser>(IOptions<IdentityServer
 
         if (User?.Identity?.IsAuthenticated == true)
         {
-            // Check if user logged in via external provider
-            var externalScheme = User.FindFirstValue("external_scheme");
+            // Check if user logged in via external provider (Entra ID, etc.)
+            var user = await userManager.GetUserAsync(User);
+            string? externalScheme = null;
+
+            if (user != null)
+            {
+                var externalLogins = await userManager.GetLoginsAsync(user);
+                var externalLogin = externalLogins.FirstOrDefault(login =>
+                    login.LoginProvider == "EntraId" ||
+                    login.LoginProvider.Contains("OpenIdConnect", StringComparison.OrdinalIgnoreCase));
+
+                if (externalLogin != null)
+                {
+                    externalScheme = externalLogin.LoginProvider;
+                }
+            }
 
             if (!string.IsNullOrEmpty(externalScheme))
             {
-                // Federated sign-out: redirect to external provider's logout endpoint
+                // Federated sign-out: sign out from local application first
                 await signInManager.SignOutAsync();
-                await HttpContext.SignOutAsync();
 
+                // Then redirect to external provider's logout endpoint
+                // This will sign out from the external provider and return to the specified redirect URI
                 return SignOut(
-                    new AuthenticationProperties { RedirectUri = returnUrl },
-                    externalScheme,
-                    OpenIddictServerAspNetCoreDefaults.AuthenticationScheme);
+                    new AuthenticationProperties { RedirectUri = returnUrl ?? "/" },
+                    externalScheme);
             }
 
             // Local sign-out only
