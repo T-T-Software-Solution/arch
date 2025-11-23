@@ -9,13 +9,13 @@
     <IsPackable>true</IsPackable>
     <Authors>T-T-Software-Solution</Authors>
     <Company>T-T-Software-Solution</Company>
-    <Version>1.0.1</Version>
+    <Version>1.0.2</Version>
     <Description>Enables seamless integration of the TTSS framework with ASP.NET With identity services.</Description>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageProjectUrl>https://github.com/T-T-Software-Solution/arch</PackageProjectUrl>
-    <RepositoryUrl>https://github.com/T-T-Software-Solution/arch.git</RepositoryUrl> 
-    <RepositoryType>git</RepositoryType> 
+    <RepositoryUrl>https://github.com/T-T-Software-Solution/arch.git</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
   </PropertyGroup>
 
   <ItemGroup>
@@ -28,9 +28,11 @@
   <ItemGroup>
     <PackageReference Include="IdentityModel" Version="7.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.8" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="8.0.8" />
     <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="8.0.8" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="8.0.8" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="8.0.8" />
+    <PackageReference Include="Microsoft.Identity.Web" Version="3.2.1" />
     <PackageReference Include="OpenIddict" Version="5.8.0" />
     <PackageReference Include="OpenIddict.AspNetCore" Version="5.8.0" />
     <PackageReference Include="OpenIddict.EntityFrameworkCore" Version="5.8.0" />
