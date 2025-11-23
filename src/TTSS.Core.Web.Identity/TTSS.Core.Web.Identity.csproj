@@ -9,7 +9,7 @@
     <IsPackable>true</IsPackable>
     <Authors>T-T-Software-Solution</Authors>
     <Company>T-T-Software-Solution</Company>
-    <Version>1.0.1</Version>
+    <Version>1.0.2</Version>
     <Description>Enables seamless integration of the TTSS framework with ASP.NET With identity services.</Description>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
