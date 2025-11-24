@@ -65,7 +65,7 @@ public abstract class ExternalAuthenticationControllerBase<TUser>(
         }
 
         // If the user does not have an account, create one
-        var email = info.Principal.FindFirstValue(ClaimTypes.Email);
+        var email = GetEmailFromClaims(info.Principal);
         if (string.IsNullOrEmpty(email))
         {
             return await HandleExternalLoginError("Email claim not received from external provider.", returnUrl);
@@ -115,8 +115,8 @@ public abstract class ExternalAuthenticationControllerBase<TUser>(
     /// <returns>The created user</returns>
     protected virtual Task<TUser> CreateExternalUserAsync(ExternalLoginInfo info)
     {
-        var email = info.Principal.FindFirstValue(ClaimTypes.Email) ?? string.Empty;
-        var name = info.Principal.FindFirstValue(ClaimTypes.Name) ?? email;
+        var email = GetEmailFromClaims(info.Principal);
+        var name = GetDisplayNameFromClaims(info.Principal, email);
 
         var user = new TUser
         {
@@ -172,6 +172,43 @@ public abstract class ExternalAuthenticationControllerBase<TUser>(
         // Default: redirect to login page with error
         var loginUrl = $"/identity/account/login?error={Uri.EscapeDataString(error)}&returnUrl={Uri.EscapeDataString(returnUrl)}";
         return Task.FromResult<IActionResult>(Redirect(loginUrl));
+    }
+
+    /// <summary>
+    /// Extracts email from claims with fallback logic.
+    /// Tries multiple claim types as different providers use different claim types.
+    /// Note: Azure AD may send multiple claims with the same name, so we need to be careful about the order.
+    /// </summary>
+    /// <param name="principal">The claims principal</param>
+    /// <returns>Email address or empty string if not found</returns>
+    private static string GetEmailFromClaims(ClaimsPrincipal principal)
+    {
+        return principal.FindFirstValue(ClaimTypes.Email)
+            ?? principal.FindFirstValue("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress")
+            ?? principal.FindFirstValue(ClaimTypes.Upn) // User Principal Name (UPN) - typically user@domain format
+            ?? principal.FindFirstValue("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/upn")
+            ?? principal.FindFirstValue("preferred_username")
+            ?? principal.Claims.FirstOrDefault(c =>
+                c.Type == "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name" &&
+                c.Value.Contains("@"))?.Value // Get the name claim that contains @ (email format)
+            ?? principal.FindFirstValue(ClaimTypes.Name) // Last resort: use display name
+            ?? string.Empty;
+    }
+
+    /// <summary>
+    /// Extracts display name from claims with fallback logic.
+    /// Prefers the name claim that does NOT contain @ (display name format over email format).
+    /// </summary>
+    /// <param name="principal">The claims principal</param>
+    /// <param name="fallbackEmail">Fallback email to use if no display name found</param>
+    /// <returns>Display name</returns>
+    private static string GetDisplayNameFromClaims(ClaimsPrincipal principal, string fallbackEmail)
+    {
+        return principal.Claims.FirstOrDefault(c =>
+                c.Type == "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name" &&
+                !c.Value.Contains("@"))?.Value
+            ?? principal.FindFirstValue(ClaimTypes.Name)
+            ?? fallbackEmail;
     }
 }
 
