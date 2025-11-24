@@ -86,15 +86,6 @@ public static class ModuleInitializer
                 cfg.ClaimsIdentity.EmailClaimType = Claims.Email;
                 cfg.ClaimsIdentity.UserNameClaimType = Claims.Name;
                 cfg.ClaimsIdentity.UserIdClaimType = Claims.Subject;
-            })
-            .AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-            .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme, cfg =>
-            {
-                cfg.LoginPath = "/identity/account/login";
-                cfg.LogoutPath = "/identity/account/logout";
-                cfg.AccessDeniedPath = "/identity/account/accessdenied";
-                cfg.ExpireTimeSpan = IdentityServerOptions.GetDuration(options?.RefreshTokenLifetime, TimeSpan.FromHours(IdentityServerOptions.DefaultRefreshTokenLifetime));
-                options?.CookieAuthenticationOptions?.Invoke(cfg);
             });
 
         if (options?.IsDevelopmentEnabled ?? false)
@@ -120,6 +111,26 @@ public static class ModuleInitializer
             .AddDefaultTokenProviders();
 
         options?.IdentityBuilder?.Invoke(identityBuilder);
+
+        // Configure Identity.Application cookie (used for authenticated users)
+        // This is the primary authentication cookie used by ASP.NET Core Identity
+        target.ConfigureApplicationCookie(cfg =>
+        {
+            cfg.LoginPath = "/identity/account/login";
+            cfg.LogoutPath = "/identity/account/logout";
+            cfg.AccessDeniedPath = "/identity/account/accessdenied";
+            cfg.Cookie.SameSite = SameSiteMode.Lax; // Allow cookies during OAuth redirects
+            cfg.Cookie.SecurePolicy = CookieSecurePolicy.SameAsRequest; // Allow HTTP in development
+            cfg.ExpireTimeSpan = IdentityServerOptions.GetDuration(options?.RefreshTokenLifetime, TimeSpan.FromHours(IdentityServerOptions.DefaultRefreshTokenLifetime));
+            options?.CookieAuthenticationOptions?.Invoke(cfg); // Allow custom configuration
+        });
+
+        // Configure external authentication cookie (used during external login flow)
+        target.ConfigureExternalCookie(cfg =>
+        {
+            cfg.Cookie.SameSite = SameSiteMode.Lax;
+            cfg.Cookie.SecurePolicy = CookieSecurePolicy.SameAsRequest;
+        });
 
         target
             .AddOpenIddict()
@@ -238,6 +249,20 @@ public static class ModuleInitializer
 
                 // Use Identity.External scheme to allow our controller to handle user creation
                 oidcOptions.SignInScheme = IdentityConstants.ExternalScheme;
+
+                // Configure sign-out scheme to enable federated sign-out
+                oidcOptions.SignOutScheme = IdentityConstants.ApplicationScheme;
+
+                // Ensure proper redirect after Entra ID authentication
+                oidcOptions.Events = new Microsoft.AspNetCore.Authentication.OpenIdConnect.OpenIdConnectEvents
+                {
+                    OnRemoteFailure = context =>
+                    {
+                        context.Response.Redirect("/identity/account/login?error=" + Uri.EscapeDataString(context.Failure?.Message ?? "External authentication failed"));
+                        context.HandleResponse();
+                        return Task.CompletedTask;
+                    }
+                };
 
                 // Allow custom configuration
                 options.ConfigureOptions?.Invoke(oidcOptions);
