@@ -65,7 +65,7 @@ public abstract class ExternalAuthenticationControllerBase<TUser>(
         }
 
         // If the user does not have an account, create one
-        var email = info.Principal.FindFirstValue(ClaimTypes.Email);
+        var email = GetEmailFromClaims(info.Principal);
         if (string.IsNullOrEmpty(email))
         {
             return await HandleExternalLoginError("Email claim not received from external provider.", returnUrl);
@@ -115,8 +115,8 @@ public abstract class ExternalAuthenticationControllerBase<TUser>(
     /// <returns>The created user</returns>
     protected virtual Task<TUser> CreateExternalUserAsync(ExternalLoginInfo info)
     {
-        var email = info.Principal.FindFirstValue(ClaimTypes.Email) ?? string.Empty;
-        var name = info.Principal.FindFirstValue(ClaimTypes.Name) ?? email;
+        var email = GetEmailFromClaims(info.Principal);
+        var name = GetDisplayNameFromClaims(info.Principal, email);
 
         var user = new TUser
         {
@@ -172,6 +172,91 @@ public abstract class ExternalAuthenticationControllerBase<TUser>(
         // Default: redirect to login page with error
         var loginUrl = $"/identity/account/login?error={Uri.EscapeDataString(error)}&returnUrl={Uri.EscapeDataString(returnUrl)}";
         return Task.FromResult<IActionResult>(Redirect(loginUrl));
+    }
+
+    /// <summary>
+    /// Extracts email from claims with fallback logic.
+    /// Tries multiple claim types as different providers use different claim types.
+    /// Note: Azure AD may send multiple claims with the same name, so we need to be careful about the order.
+    /// </summary>
+    /// <param name="principal">The claims principal</param>
+    /// <returns>Email address or empty string if not found</returns>
+    private static string GetEmailFromClaims(ClaimsPrincipal principal)
+    {
+        // Try direct email claims first
+        var email = principal.FindFirstValue(ClaimTypes.Email)
+            ?? principal.FindFirstValue("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress");
+
+        if (!string.IsNullOrEmpty(email))
+            return email;
+
+        // Try UPN but only if it looks like a valid public email domain
+        var upn = principal.FindFirstValue(ClaimTypes.Upn)
+            ?? principal.FindFirstValue("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/upn");
+
+        if (IsValidEmailFormat(upn))
+            return upn!;
+
+        // Try preferred_username
+        var preferredUsername = principal.FindFirstValue("preferred_username");
+        if (IsValidEmailFormat(preferredUsername))
+            return preferredUsername!;
+
+        // Try name claim that looks like email
+        var nameAsEmail = principal.Claims.FirstOrDefault(c =>
+            c.Type == "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name" &&
+            IsValidEmailFormat(c.Value))?.Value;
+
+        if (!string.IsNullOrEmpty(nameAsEmail))
+            return nameAsEmail;
+
+        return string.Empty;
+    }
+
+    /// <summary>
+    /// Checks if a string is a valid email format with a public domain.
+    /// Rejects internal AD domains like .local, .internal, .lan, .corp, .ad, etc.
+    /// </summary>
+    /// <param name="value">The value to check</param>
+    /// <returns>True if valid email format with public domain</returns>
+    private static bool IsValidEmailFormat(string? value)
+    {
+        if (string.IsNullOrWhiteSpace(value) || !value.Contains('@'))
+            return false;
+
+        var domain = value.Split('@').LastOrDefault()?.ToLowerInvariant();
+        if (string.IsNullOrEmpty(domain))
+            return false;
+
+        // Reject common internal AD domain suffixes
+        string[] internalDomainSuffixes = [".local", ".internal", ".lan", ".corp", ".ad", ".intranet", ".private"];
+        foreach (var suffix in internalDomainSuffixes)
+        {
+            if (domain.EndsWith(suffix, StringComparison.OrdinalIgnoreCase))
+                return false;
+        }
+
+        // Reject if domain has no TLD (e.g., "company" without .com, .co.th, etc.)
+        if (!domain.Contains('.'))
+            return false;
+
+        return true;
+    }
+
+    /// <summary>
+    /// Extracts display name from claims with fallback logic.
+    /// Prefers the name claim that does NOT contain @ (display name format over email format).
+    /// </summary>
+    /// <param name="principal">The claims principal</param>
+    /// <param name="fallbackEmail">Fallback email to use if no display name found</param>
+    /// <returns>Display name</returns>
+    private static string GetDisplayNameFromClaims(ClaimsPrincipal principal, string fallbackEmail)
+    {
+        return principal.Claims.FirstOrDefault(c =>
+                c.Type == "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name" &&
+                !c.Value.Contains("@"))?.Value
+            ?? principal.FindFirstValue(ClaimTypes.Name)
+            ?? fallbackEmail;
     }
 }
 
