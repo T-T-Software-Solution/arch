@@ -183,16 +183,64 @@ public abstract class ExternalAuthenticationControllerBase<TUser>(
     /// <returns>Email address or empty string if not found</returns>
     private static string GetEmailFromClaims(ClaimsPrincipal principal)
     {
-        return principal.FindFirstValue(ClaimTypes.Email)
-            ?? principal.FindFirstValue("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress")
-            ?? principal.FindFirstValue(ClaimTypes.Upn) // User Principal Name (UPN) - typically user@domain format
-            ?? principal.FindFirstValue("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/upn")
-            ?? principal.FindFirstValue("preferred_username")
-            ?? principal.Claims.FirstOrDefault(c =>
-                c.Type == "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name" &&
-                c.Value.Contains("@"))?.Value // Get the name claim that contains @ (email format)
-            ?? principal.FindFirstValue(ClaimTypes.Name) // Last resort: use display name
-            ?? string.Empty;
+        // Try direct email claims first
+        var email = principal.FindFirstValue(ClaimTypes.Email)
+            ?? principal.FindFirstValue("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress");
+
+        if (!string.IsNullOrEmpty(email))
+            return email;
+
+        // Try UPN but only if it looks like a valid public email domain
+        var upn = principal.FindFirstValue(ClaimTypes.Upn)
+            ?? principal.FindFirstValue("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/upn");
+
+        if (IsValidEmailFormat(upn))
+            return upn!;
+
+        // Try preferred_username
+        var preferredUsername = principal.FindFirstValue("preferred_username");
+        if (IsValidEmailFormat(preferredUsername))
+            return preferredUsername!;
+
+        // Try name claim that looks like email
+        var nameAsEmail = principal.Claims.FirstOrDefault(c =>
+            c.Type == "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name" &&
+            IsValidEmailFormat(c.Value))?.Value;
+
+        if (!string.IsNullOrEmpty(nameAsEmail))
+            return nameAsEmail;
+
+        return string.Empty;
+    }
+
+    /// <summary>
+    /// Checks if a string is a valid email format with a public domain.
+    /// Rejects internal AD domains like .local, .internal, .lan, .corp, .ad, etc.
+    /// </summary>
+    /// <param name="value">The value to check</param>
+    /// <returns>True if valid email format with public domain</returns>
+    private static bool IsValidEmailFormat(string? value)
+    {
+        if (string.IsNullOrWhiteSpace(value) || !value.Contains('@'))
+            return false;
+
+        var domain = value.Split('@').LastOrDefault()?.ToLowerInvariant();
+        if (string.IsNullOrEmpty(domain))
+            return false;
+
+        // Reject common internal AD domain suffixes
+        string[] internalDomainSuffixes = [".local", ".internal", ".lan", ".corp", ".ad", ".intranet", ".private"];
+        foreach (var suffix in internalDomainSuffixes)
+        {
+            if (domain.EndsWith(suffix, StringComparison.OrdinalIgnoreCase))
+                return false;
+        }
+
+        // Reject if domain has no TLD (e.g., "company" without .com, .co.th, etc.)
+        if (!domain.Contains('.'))
+            return false;
+
+        return true;
     }
 
     /// <summary>
