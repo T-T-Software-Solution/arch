@@ -5,6 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Mongo2Go;
 using MongoDB.Driver;
 using TTSS.Core.Data;
+using TTSS.Core.Models;
 using TTSS.Infra.Data.MongoDB.Documents;
 using TTSS.Tests;
 
@@ -515,6 +516,43 @@ public abstract class CommonTestCases : IoCTestBase, IDisposable
         {
             contentIds.Should().Contain(id.ToString());
         }
+    }
+
+    #region Get paging with OrderNo
+
+    [Fact]
+    public async Task GetPaging_WithOrderNo_WhenFirstPage_ThenShouldStartAtOne()
+        => await ValidatePagingResultWithOrderNo(13, 5, 1, [1, 2, 3, 4, 5]);
+
+    [Fact]
+    public async Task GetPaging_WithOrderNo_WhenSecondPage_ThenShouldContinueFromPreviousPage()
+        => await ValidatePagingResultWithOrderNo(13, 5, 2, [6, 7, 8, 9, 10]);
+
+    [Fact]
+    public async Task GetPaging_WithOrderNo_WhenThirdPage_ThenShouldContinueFromPreviousPage()
+        => await ValidatePagingResultWithOrderNo(13, 5, 3, [11, 12, 13]);
+    
+    #endregion
+
+    private async Task ValidatePagingResultWithOrderNo(int contents, int pageSize, int getPageNo, int[] expectedOrderNumbers)
+    {
+        var sut = ServiceProvider.GetService<IRepository<OrderablePerson>>();
+        var records = Enumerable
+            .Range(1, contents)
+            .Select(it => Fixture.Build<OrderablePerson>().With(it => it.Id, it.ToString()).Create())
+            .ToList();
+        foreach (var item in records)
+        {
+            await sut.InsertAsync(item);
+        }
+
+        var repository = sut.Get().ToPaging(totalCount: true, pageSize);
+        var pagingSet = repository.GetPage(getPageNo);
+        var paging = await pagingSet.ExecuteAsync();
+
+        paging.Contents.Should().HaveCount(expectedOrderNumbers.Length);
+        var actualOrderNumbers = paging.Contents.Cast<IHaveOrderNumber>().Select(it => it.OrderNo).ToArray();
+        actualOrderNumbers.Should().BeEquivalentTo(expectedOrderNumbers);
     }
 
     #endregion

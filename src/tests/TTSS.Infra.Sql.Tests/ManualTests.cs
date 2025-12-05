@@ -8,6 +8,7 @@ using TTSS.Core.Models;
 using TTSS.Core.Services;
 using TTSS.Infra.Data.Sql;
 using TTSS.Infra.Data.Sql.DbContexte;
+using TTSS.Infra.Data.Sql.DbModels;
 using TTSS.Infra.Data.Sql.Interceptors;
 
 namespace TTSS.Infra.Data.Sql;
@@ -26,6 +27,7 @@ public class ManualTests : CommonTestCases
             .SetupDatabase<FruitDbContext>()
                 .RegisterCollection<Apple>()
                 .RegisterCollection<Banana>()
+                .RegisterCollection<OrderableFruit>()
             .SetupDatabase<SchoolDbContext>()
                 .RegisterCollection<Student>()
                 .RegisterCollection<Teacher>()
@@ -54,6 +56,7 @@ public class ManualTests : CommonTestCases
         var sensitivitySpaceStation = new Lazy<SqlRepository<SensitivitySpaceStation>>(() => new SqlRepository<SensitivitySpaceStation>(store, contextFactory, mappingStrategy));
         var maintenanceLog = new Lazy<SqlRepository<MaintenanceLog>>(() => new SqlRepository<MaintenanceLog>(store, contextFactory, mappingStrategy));
         var seriousLog = new Lazy<SqlRepository<SeriousLog>>(() => new SqlRepository<SeriousLog>(store, contextFactory, mappingStrategy));
+        var orderableFruit = new Lazy<SqlRepository<OrderableFruit>>(() => new SqlRepository<OrderableFruit>(store, contextFactory, mappingStrategy));
 
         var connBuilder = new SqliteConnectionStringBuilder { DataSource = ":memory:" };
         _connection = new SqliteConnection(connBuilder.ConnectionString);
@@ -76,6 +79,7 @@ public class ManualTests : CommonTestCases
                 .AddScoped<IRepository<Banana, string>>(_ => banana.Value)
                 .AddScoped<ISqlRepository<Banana>>(_ => banana.Value)
                 .AddScoped<ISqlRepository<Banana, string>>(_ => banana.Value)
+                .AddScoped<IRepository<OrderableFruit>>(_ => orderableFruit.Value)
             .AddDbContext<SchoolDbContext>(it => it.UseSqlite(_connection, opt => opt.MigrationsAssembly(assemblyName)))
                 .AddScoped<IRepository<Teacher>>(_ => teacher.Value)
                 .AddScoped<IRepository<Teacher, string>>(_ => teacher.Value)

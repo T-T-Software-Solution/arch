@@ -2,6 +2,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using System.Reflection;
 using TTSS.Core.Data.Models;
+using TTSS.Core.Models;
 using TTSS.Core.Services;
 using TTSS.Tests;
 
@@ -11,6 +12,7 @@ public abstract class InMemoryRepositoryCommonTestCases : IoCTestBase
 {
     private IRepository<BasicDbModel> BasicSut => ServiceProvider.GetRequiredService<IRepository<BasicDbModel>>();
     private IRepository<CustomPrimaryKeyDbModel, int> CustomSut => ServiceProvider.GetRequiredService<IRepository<CustomPrimaryKeyDbModel, int>>();
+    private IRepository<OrderableDbModel, int> OrderableSut => ServiceProvider.GetRequiredService<IRepository<OrderableDbModel, int>>();
 
     protected override void RegisterServices(IServiceCollection services)
     {
@@ -529,6 +531,42 @@ public abstract class InMemoryRepositoryCommonTestCases : IoCTestBase
     }
 
     #endregion
+
+    #region Get paging with OrderNo
+
+    [Fact]
+    public async Task GetPaging_WithOrderNo_WhenFirstPage_ThenShouldStartAtOne()
+        => await ValidatePagingResultWithOrderNo(13, 5, 1, [1, 2, 3, 4, 5]);
+
+    [Fact]
+    public async Task GetPaging_WithOrderNo_WhenSecondPage_ThenShouldContinueFromPreviousPage()
+        => await ValidatePagingResultWithOrderNo(13, 5, 2, [6, 7, 8, 9, 10]);
+
+    [Fact]
+    public async Task GetPaging_WithOrderNo_WhenThirdPage_ThenShouldContinueFromPreviousPage()
+        => await ValidatePagingResultWithOrderNo(13, 5, 3, [11, 12, 13]);
+
+    #endregion
+
+    private async Task ValidatePagingResultWithOrderNo(int contents, int pageSize, int getPageNo, int[] expectedOrderNumbers)
+    {
+        var sut = OrderableSut;
+        var records = Enumerable.Range(1, contents)
+            .Select(it => new OrderableDbModel { Id = it, Name = it.ToString() })
+            .ToList();
+        foreach (var item in records)
+        {
+            await sut.InsertAsync(item);
+        }
+
+        var repository = sut.Get().ToPaging(totalCount: true, pageSize);
+        var pagingSet = repository.GetPage(getPageNo);
+        var paging = await pagingSet.ExecuteAsync();
+
+        paging.Contents.Should().HaveCount(expectedOrderNumbers.Length);
+        var actualOrderNumbers = paging.Contents.Cast<IHaveOrderNumber>().Select(it => it.OrderNo).ToArray();
+        actualOrderNumbers.Should().BeEquivalentTo(expectedOrderNumbers);
+    }
 
     private async Task ValidatePagingResult(int contents, int pageSize, int getPageNo,
         int expectedPrevPage, int expectedNextPage,
