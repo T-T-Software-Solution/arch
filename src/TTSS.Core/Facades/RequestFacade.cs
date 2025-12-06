@@ -72,11 +72,23 @@ public static class RequestFacade
 
         return pagingRepository =>
         {
+            var isFirst = true;
             foreach (var item in sorts)
             {
-                Func<Expression<Func<TEntity, object>>, IPagingRepository<TEntity>> func = item.IsAscending
-                    ? pagingRepository.OrderBy
-                    : pagingRepository.OrderByDescending;
+                Func<Expression<Func<TEntity, object>>, IPagingRepository<TEntity>> func;
+                if (isFirst)
+                {
+                    func = item.IsAscending
+                        ? pagingRepository.OrderBy
+                        : pagingRepository.OrderByDescending;
+                    isFirst = false;
+                }
+                else
+                {
+                    func = item.IsAscending
+                        ? pagingRepository.ThenBy
+                        : pagingRepository.ThenByDescending;
+                }
                 func(GetSelectorExpression(item.Field));
             }
         };
