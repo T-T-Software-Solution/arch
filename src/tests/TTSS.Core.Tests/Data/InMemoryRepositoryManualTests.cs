@@ -21,5 +21,8 @@ public class InMemoryRepositoryManualTests : InMemoryRepositoryCommonTestCases
 
         var orderableRepository = new InMemoryRepository<OrderableDbModel, int>(mappingStrategy, it => it.Id);
         services.AddSingleton<IRepository<OrderableDbModel, int>>(_ => orderableRepository);
+
+        var sortableRepository = new InMemoryRepository<SortableFruit>(mappingStrategy, it => it.Id);
+        services.AddSingleton<IRepository<SortableFruit>>(_ => sortableRepository);
     }
 }

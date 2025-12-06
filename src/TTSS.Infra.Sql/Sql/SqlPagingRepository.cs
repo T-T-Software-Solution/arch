@@ -49,13 +49,17 @@ internal sealed class SqlPagingRepository<TEntity> : IPagingRepository<TEntity>
 
     public IPagingRepository<TEntity> ThenBy(Expression<Func<TEntity, object>> keySelector)
     {
-        _findResult = _findResult.Order().ThenBy(keySelector);
+        _findResult = _findResult is IOrderedQueryable<TEntity> ordered
+            ? ordered.ThenBy(keySelector)
+            : _findResult.OrderBy(keySelector);
         return this;
     }
 
     public IPagingRepository<TEntity> ThenByDescending(Expression<Func<TEntity, object>> keySelector)
     {
-        _findResult = _findResult.Order().ThenByDescending(keySelector);
+        _findResult = _findResult is IOrderedQueryable<TEntity> ordered
+            ? ordered.ThenByDescending(keySelector)
+            : _findResult.OrderByDescending(keySelector);
         return this;
     }
 

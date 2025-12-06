@@ -21,6 +21,7 @@ public class IoCTests : CommonTestCases
                 .AddDbContext<TestDbContext>()
                 .AddDbContext<SimplestTestDbContext>()
                 .AddDbContext<OrderablePersonDbContext>()
+                .AddDbContext<SortableFruitDbContext>()
             .Build();
     }
 
