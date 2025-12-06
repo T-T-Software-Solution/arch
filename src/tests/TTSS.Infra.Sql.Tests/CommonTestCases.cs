@@ -695,13 +695,13 @@ public abstract class CommonTestCases : IoCTestBase, IDisposable
                     Value = astronautOriginalName,
                     Remark = "Name of the astronaut",
                 },
-                new SqlUpdatePropertyInfo
-                {
-                    ColumnName = "Size",
-                    NewValue = astronaut.Size.ToString(),
-                    Value = astronautOriginalSize.ToString(),
-                    Remark = "Size of the astronaut",
-                }]);
+            new SqlUpdatePropertyInfo
+            {
+                ColumnName = "Size",
+                NewValue = astronaut.Size.ToString(),
+                Value = astronautOriginalSize.ToString(),
+                Remark = "Size of the astronaut",
+            }]);
         UpdationEvents.Last().entity.Should().BeEquivalentTo(spaceship);
         UpdationEvents.Last().properties.Should().BeEquivalentTo([
                 new SqlUpdatePropertyInfo
@@ -862,12 +862,12 @@ public abstract class CommonTestCases : IoCTestBase, IDisposable
                     Value = maintenanceLog.Id,
                     Remark = null,
                 },
-                new SqlPropertyInfo
-                {
-                    ColumnName = "Attempt",
-                    Value = "5",
-                    Remark = null,
-                }]);
+            new SqlPropertyInfo
+            {
+                ColumnName = "Attempt",
+                Value = "5",
+                Remark = null,
+            }]);
 
         maintenanceLog.CreatedDate.Should().BeCloseTo(CurrentTime, TimeSpan.FromSeconds(1));
         maintenanceLog.LastUpdatedDate.Should().BeNull();
@@ -908,12 +908,12 @@ public abstract class CommonTestCases : IoCTestBase, IDisposable
                     Value = seriousLog.Id,
                     Remark = null,
                 },
-                new SqlPropertyInfo
-                {
-                    ColumnName = "Attempt",
-                    Value = "5",
-                    Remark = null,
-                }]);
+            new SqlPropertyInfo
+            {
+                ColumnName = "Attempt",
+                Value = "5",
+                Remark = null,
+            }]);
 
         seriousLog.CreatedDate.Should().BeCloseTo(CurrentTime, TimeSpan.FromSeconds(1));
         seriousLog.LastUpdatedDate.Should().BeNull();

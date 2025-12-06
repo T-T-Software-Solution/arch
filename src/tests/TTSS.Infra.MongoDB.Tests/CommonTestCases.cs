@@ -531,7 +531,7 @@ public abstract class CommonTestCases : IoCTestBase, IDisposable
     [Fact]
     public async Task GetPaging_WithOrderNo_WhenThirdPage_ThenShouldContinueFromPreviousPage()
         => await ValidatePagingResultWithOrderNo(13, 5, 3, [11, 12, 13]);
-    
+
     #endregion
 
     private async Task ValidatePagingResultWithOrderNo(int contents, int pageSize, int getPageNo, int[] expectedOrderNumbers)

@@ -17,5 +17,6 @@ public sealed class Tokens(IMessagingHub hub) : ApiControllerBase
     public string? Get()
         => string.Join(", ", [
             $"ID:{HttpContext.User.Identity?.Name}",
-            $"DisplayName:{HttpContext.User.Claims.FirstOrDefault(it=>it.Type == ClaimTypes.GivenName)?.Value}", ]);
+            $"DisplayName:{HttpContext.User.Claims.FirstOrDefault(it => it.Type == ClaimTypes.GivenName)?.Value}",
+        ]);
 }

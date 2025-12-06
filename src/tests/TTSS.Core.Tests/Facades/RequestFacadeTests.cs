@@ -7,10 +7,10 @@ public class RequestFacadeTests
 {
     private readonly Student[] _students =
     [
-        new (){ Age = 25, Id = "S1", Name = "John", IsMale = true, GPA = 123.4, Type = StudentType.Regular },
-        new (){ Age = 30, Id = "S2", Name = "Mary", IsMale = true, GPA = 002.0, Type = StudentType.Regular },
-        new (){ Age = 27, Id = "S3", Name = "Jane", IsMale = false, GPA = 3.01, Type = StudentType.Exchange },
-        new (){ Age = -9, Id = "S4", Name = "Dojo", IsMale = false, GPA = -1.3, Type = StudentType.Exchange },
+        new() { Age = 25, Id = "S1", Name = "John", IsMale = true, GPA = 123.4, Type = StudentType.Regular },
+        new() { Age = 30, Id = "S2", Name = "Mary", IsMale = true, GPA = 002.0, Type = StudentType.Regular },
+        new() { Age = 27, Id = "S3", Name = "Jane", IsMale = false, GPA = 3.01, Type = StudentType.Exchange },
+        new() { Age = -9, Id = "S4", Name = "Dojo", IsMale = false, GPA = -1.3, Type = StudentType.Exchange },
     ];
 
     [Theory]
