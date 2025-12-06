@@ -18,5 +18,8 @@ public class InMemoryRepositoryManualTests : InMemoryRepositoryCommonTestCases
 
         var customPrimaryKeyRepository = new InMemoryRepository<CustomPrimaryKeyDbModel, int>(mappingStrategy, it => it.Id);
         services.AddSingleton<IRepository<CustomPrimaryKeyDbModel, int>>(_ => customPrimaryKeyRepository);
+
+        var orderableRepository = new InMemoryRepository<OrderableDbModel, int>(mappingStrategy, it => it.Id);
+        services.AddSingleton<IRepository<OrderableDbModel, int>>(_ => orderableRepository);
     }
 }

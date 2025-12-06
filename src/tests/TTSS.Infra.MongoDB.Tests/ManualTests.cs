@@ -19,6 +19,7 @@ public class ManualTests : CommonTestCases
             .SetupDatabase(Guid.NewGuid().ToString(), ConnectionString)
                 .RegisterCollection<Person>()
                 .RegisterCollection<Student>()
+                .RegisterCollection<OrderablePerson>()
             .Build();
 
         var config = new Mapper(new MapperConfiguration(cfg => { }));
@@ -27,6 +28,7 @@ public class ManualTests : CommonTestCases
         var studentRepository = new MongoDbRepository<Student>(store, _mappingStrategy);
         var personPrimitiveRepository = new MongoDbRepository<Person, string>(store, _mappingStrategy, it => it.Id);
         var studentPrimitiveRepository = new MongoDbRepository<Student, string>(store, _mappingStrategy, it => it.Id);
+        var orderablePersonRepository = new MongoDbRepository<OrderablePerson>(store, _mappingStrategy);
         services
             .AddSingleton<IRepository<Person>>(personRepository)
             .AddSingleton<IRepository<Student>>(studentRepository)
@@ -35,7 +37,8 @@ public class ManualTests : CommonTestCases
             .AddSingleton<IMongoDbRepository<Person>>(personRepository)
             .AddSingleton<IMongoDbRepository<Student>>(studentRepository)
             .AddSingleton<IMongoDbRepository<Person, string>>(personPrimitiveRepository)
-            .AddSingleton<IMongoDbRepository<Student, string>>(studentPrimitiveRepository);
+            .AddSingleton<IMongoDbRepository<Student, string>>(studentPrimitiveRepository)
+            .AddSingleton<IRepository<OrderablePerson>>(orderablePersonRepository);
     }
 
     #region Insert

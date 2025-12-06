@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using TTSS.Infra.Data.Sql.DbModels;
 using TTSS.Infra.Data.Sql.Models;
 
 namespace TTSS.Infra.Data.Sql.DbContexte;
@@ -7,6 +8,7 @@ internal class FruitDbContext(DbContextOptions<FruitDbContext> options) : DbCont
 {
     public DbSet<Apple> Apple { get; set; }
     public DbSet<Banana> Banana { get; set; }
+    public DbSet<OrderableFruit> OrderableFruit { get; set; }
 }
 
 internal abstract class FruitBase : SqlModelBase

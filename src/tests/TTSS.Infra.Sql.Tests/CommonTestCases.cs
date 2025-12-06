@@ -4,6 +4,7 @@ using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using TTSS.Core.Data;
+using TTSS.Core.Models;
 using TTSS.Infra.Data.Sql.Contexts;
 using TTSS.Infra.Data.Sql.DbContexte;
 using TTSS.Infra.Data.Sql.DbModels;
@@ -694,13 +695,13 @@ public abstract class CommonTestCases : IoCTestBase, IDisposable
                     Value = astronautOriginalName,
                     Remark = "Name of the astronaut",
                 },
-                new SqlUpdatePropertyInfo
-                {
-                    ColumnName = "Size",
-                    NewValue = astronaut.Size.ToString(),
-                    Value = astronautOriginalSize.ToString(),
-                    Remark = "Size of the astronaut",
-                }]);
+            new SqlUpdatePropertyInfo
+            {
+                ColumnName = "Size",
+                NewValue = astronaut.Size.ToString(),
+                Value = astronautOriginalSize.ToString(),
+                Remark = "Size of the astronaut",
+            }]);
         UpdationEvents.Last().entity.Should().BeEquivalentTo(spaceship);
         UpdationEvents.Last().properties.Should().BeEquivalentTo([
                 new SqlUpdatePropertyInfo
@@ -861,12 +862,12 @@ public abstract class CommonTestCases : IoCTestBase, IDisposable
                     Value = maintenanceLog.Id,
                     Remark = null,
                 },
-                new SqlPropertyInfo
-                {
-                    ColumnName = "Attempt",
-                    Value = "5",
-                    Remark = null,
-                }]);
+            new SqlPropertyInfo
+            {
+                ColumnName = "Attempt",
+                Value = "5",
+                Remark = null,
+            }]);
 
         maintenanceLog.CreatedDate.Should().BeCloseTo(CurrentTime, TimeSpan.FromSeconds(1));
         maintenanceLog.LastUpdatedDate.Should().BeNull();
@@ -907,12 +908,12 @@ public abstract class CommonTestCases : IoCTestBase, IDisposable
                     Value = seriousLog.Id,
                     Remark = null,
                 },
-                new SqlPropertyInfo
-                {
-                    ColumnName = "Attempt",
-                    Value = "5",
-                    Remark = null,
-                }]);
+            new SqlPropertyInfo
+            {
+                ColumnName = "Attempt",
+                Value = "5",
+                Remark = null,
+            }]);
 
         seriousLog.CreatedDate.Should().BeCloseTo(CurrentTime, TimeSpan.FromSeconds(1));
         seriousLog.LastUpdatedDate.Should().BeNull();
@@ -1363,6 +1364,43 @@ public abstract class CommonTestCases : IoCTestBase, IDisposable
         {
             contentIds.Should().Contain(id.ToString());
         }
+    }
+
+    #endregion
+
+    #region Get paging with OrderNo
+
+    [Fact]
+    public async Task GetPaging_WithOrderNo_WhenFirstPage_ThenShouldStartAtOne()
+        => await ValidatePagingResultWithOrderNo(13, 5, 1, [1, 2, 3, 4, 5]);
+
+    [Fact]
+    public async Task GetPaging_WithOrderNo_WhenSecondPage_ThenShouldContinueFromPreviousPage()
+        => await ValidatePagingResultWithOrderNo(13, 5, 2, [6, 7, 8, 9, 10]);
+
+    [Fact]
+    public async Task GetPaging_WithOrderNo_WhenThirdPage_ThenShouldContinueFromPreviousPage()
+        => await ValidatePagingResultWithOrderNo(13, 5, 3, [11, 12, 13]);
+
+    private async Task ValidatePagingResultWithOrderNo(int contents, int pageSize, int getPageNo, int[] expectedOrderNumbers)
+    {
+        var sut = ServiceProvider.GetService<IRepository<OrderableFruit>>();
+        var records = Enumerable
+            .Range(1, contents)
+            .Select(it => Fixture.Build<OrderableFruit>().With(it => it.Id, it.ToString()).Create())
+            .ToList();
+        foreach (var item in records)
+        {
+            await sut.InsertAsync(item);
+        }
+
+        var repository = sut.Get().ToPaging(totalCount: true, pageSize);
+        var pagingSet = repository.GetPage(getPageNo);
+        var paging = await pagingSet.ExecuteAsync();
+
+        paging.Contents.Should().HaveCount(expectedOrderNumbers.Length);
+        var actualOrderNumbers = paging.Contents.Cast<IHaveOrderNumber>().Select(it => it.OrderNo).ToArray();
+        actualOrderNumbers.Should().BeEquivalentTo(expectedOrderNumbers);
     }
 
     #endregion
