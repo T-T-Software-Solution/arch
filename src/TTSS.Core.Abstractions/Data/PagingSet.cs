@@ -117,7 +117,7 @@ public sealed class PagingSet<TEntity>(Task<IEnumerable<TEntity>> resultTask, in
 
         if (typeof(TData).IsAssignableTo(typeof(IHaveOrderNumber)))
         {
-            var itemNumber = currentPage * pageSize;
+            var itemNumber = (currentPage - 1) * pageSize;
             var orderableQry = contents
                 .Where(it => it is IHaveOrderNumber)
                 .Cast<IHaveOrderNumber>();

@@ -29,7 +29,7 @@ internal sealed class CreateTokenHandler : RequestHandler<CreateToken, string>
             signingCredentials: SigningCreds,
             expires: DateTime.UtcNow.AddDays(1),
             subject: new([
-                new (ClaimTypes.Name, request.UserId),
-                new (ClaimTypes.GivenName, request.FullName ?? "Undefined"),
+                new(ClaimTypes.Name, request.UserId),
+                new(ClaimTypes.GivenName, request.FullName ?? "Undefined"),
             ])));
 }

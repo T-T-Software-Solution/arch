@@ -20,6 +20,8 @@ public class IoCTests : CommonTestCases
             .SetupMongoDatabase(Guid.NewGuid().ToString(), ConnectionString)
                 .AddDbContext<TestDbContext>()
                 .AddDbContext<SimplestTestDbContext>()
+                .AddDbContext<OrderablePersonDbContext>()
+                .AddDbContext<SortableFruitDbContext>()
             .Build();
     }
 
