@@ -52,13 +52,17 @@ internal sealed class MongoDbPagingRepository<TEntity> : IPagingRepository<TEnti
 
     public IPagingRepository<TEntity> ThenBy(Expression<Func<TEntity, object>> keySelector)
     {
-        _findResult = _findResult.SortBy(keySelector);
+        _findResult = _findResult is IOrderedFindFluent<TEntity, TEntity> ordered
+            ? ordered.ThenBy(keySelector)
+            : _findResult.SortBy(keySelector);
         return this;
     }
 
     public IPagingRepository<TEntity> ThenByDescending(Expression<Func<TEntity, object>> keySelector)
     {
-        _findResult = _findResult.SortByDescending(keySelector);
+        _findResult = _findResult is IOrderedFindFluent<TEntity, TEntity> ordered
+            ? ordered.ThenByDescending(keySelector)
+            : _findResult.SortByDescending(keySelector);
         return this;
     }
 

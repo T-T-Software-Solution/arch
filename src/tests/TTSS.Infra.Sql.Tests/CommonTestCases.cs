@@ -1368,6 +1368,148 @@ public abstract class CommonTestCases : IoCTestBase, IDisposable
 
     #endregion
 
+    #region Get paging with multiple sort
+
+    [Fact(DisplayName = "ดึงข้อมูลแบบ paging โดยเรียงตาม field เดียว ระบบสามารถเรียงลำดับข้อมูลได้ถูกต้อง")]
+    public async Task GetPaging_WithSingleSort_ThenShouldSortCorrectly()
+    {
+        var sut = ServiceProvider.GetRequiredService<IRepository<Apple>>();
+        await sut.InsertAsync(new Apple { Id = "1", Name = "Honeycrisp", Price = 30 });
+        await sut.InsertAsync(new Apple { Id = "2", Name = "Fuji", Price = 20 });
+        await sut.InsertAsync(new Apple { Id = "3", Name = "Gala", Price = 10 });
+
+        var repository = sut.Get().ToPaging(totalCount: true, pageSize: 10);
+        repository.OrderBy(x => x.Name);
+        var paging = await repository.GetPage(1).ExecuteAsync();
+
+        paging.Contents.Should().HaveCount(3);
+        paging.Contents.Select(x => x.Name).Should().ContainInOrder("Fuji", "Gala", "Honeycrisp");
+    }
+
+    [Fact(DisplayName = "ดึงข้อมูลแบบ paging โดยเรียงตาม 2 fields ระบบสามารถเรียงลำดับข้อมูลได้ถูกต้อง")]
+    public async Task GetPaging_WithMultipleSort_TwoFields_ThenShouldSortCorrectly()
+    {
+        var sut = ServiceProvider.GetRequiredService<IRepository<Apple>>();
+        await sut.InsertAsync(new Apple { Id = "1", Name = "Fuji", Price = 30 });
+        await sut.InsertAsync(new Apple { Id = "2", Name = "Fuji", Price = 10 });
+        await sut.InsertAsync(new Apple { Id = "3", Name = "Gala", Price = 20 });
+        await sut.InsertAsync(new Apple { Id = "4", Name = "Fuji", Price = 20 });
+
+        var repository = sut.Get().ToPaging(totalCount: true, pageSize: 10);
+        repository.OrderBy(x => x.Name).ThenBy(x => x.Price);
+        var paging = await repository.GetPage(1).ExecuteAsync();
+
+        paging.Contents.Should().HaveCount(4);
+        var contents = paging.Contents.ToList();
+        contents[0].Name.Should().Be("Fuji");
+        contents[0].Price.Should().Be(10);
+        contents[1].Name.Should().Be("Fuji");
+        contents[1].Price.Should().Be(20);
+        contents[2].Name.Should().Be("Fuji");
+        contents[2].Price.Should().Be(30);
+        contents[3].Name.Should().Be("Gala");
+        contents[3].Price.Should().Be(20);
+    }
+
+    [Fact(DisplayName = "ดึงข้อมูลแบบ paging โดยเรียงตาม 2 fields แบบ descending ระบบสามารถเรียงลำดับข้อมูลได้ถูกต้อง")]
+    public async Task GetPaging_WithMultipleSort_TwoFieldsDescending_ThenShouldSortCorrectly()
+    {
+        var sut = ServiceProvider.GetRequiredService<IRepository<Apple>>();
+        await sut.InsertAsync(new Apple { Id = "1", Name = "Fuji", Price = 30 });
+        await sut.InsertAsync(new Apple { Id = "2", Name = "Fuji", Price = 10 });
+        await sut.InsertAsync(new Apple { Id = "3", Name = "Gala", Price = 20 });
+        await sut.InsertAsync(new Apple { Id = "4", Name = "Fuji", Price = 20 });
+
+        var repository = sut.Get().ToPaging(totalCount: true, pageSize: 10);
+        repository.OrderByDescending(x => x.Name).ThenByDescending(x => x.Price);
+        var paging = await repository.GetPage(1).ExecuteAsync();
+
+        paging.Contents.Should().HaveCount(4);
+        var contents = paging.Contents.ToList();
+        contents[0].Name.Should().Be("Gala");
+        contents[0].Price.Should().Be(20);
+        contents[1].Name.Should().Be("Fuji");
+        contents[1].Price.Should().Be(30);
+        contents[2].Name.Should().Be("Fuji");
+        contents[2].Price.Should().Be(20);
+        contents[3].Name.Should().Be("Fuji");
+        contents[3].Price.Should().Be(10);
+    }
+
+    [Fact(DisplayName = "ดึงข้อมูลแบบ paging โดยเรียงตาม field แรก ascending และ field ที่สอง descending ระบบสามารถเรียงลำดับข้อมูลได้ถูกต้อง")]
+    public async Task GetPaging_WithMultipleSort_MixedDirection_ThenShouldSortCorrectly()
+    {
+        var sut = ServiceProvider.GetRequiredService<IRepository<Apple>>();
+        await sut.InsertAsync(new Apple { Id = "1", Name = "Fuji", Price = 30 });
+        await sut.InsertAsync(new Apple { Id = "2", Name = "Fuji", Price = 10 });
+        await sut.InsertAsync(new Apple { Id = "3", Name = "Gala", Price = 20 });
+        await sut.InsertAsync(new Apple { Id = "4", Name = "Fuji", Price = 20 });
+
+        var repository = sut.Get().ToPaging(totalCount: true, pageSize: 10);
+        repository.OrderBy(x => x.Name).ThenByDescending(x => x.Price);
+        var paging = await repository.GetPage(1).ExecuteAsync();
+
+        paging.Contents.Should().HaveCount(4);
+        var contents = paging.Contents.ToList();
+        contents[0].Name.Should().Be("Fuji");
+        contents[0].Price.Should().Be(30);
+        contents[1].Name.Should().Be("Fuji");
+        contents[1].Price.Should().Be(20);
+        contents[2].Name.Should().Be("Fuji");
+        contents[2].Price.Should().Be(10);
+        contents[3].Name.Should().Be("Gala");
+        contents[3].Price.Should().Be(20);
+    }
+
+    [Fact(DisplayName = "ดึงข้อมูลแบบ paging โดยเรียงตาม 3 fields ระบบสามารถเรียงลำดับข้อมูลได้ถูกต้อง")]
+    public async Task GetPaging_WithMultipleSort_ThreeFields_ThenShouldSortCorrectly()
+    {
+        var sut = ServiceProvider.GetRequiredService<IRepository<Apple>>();
+        await sut.InsertAsync(new Apple { Id = "3", Name = "Fuji", Price = 20 });
+        await sut.InsertAsync(new Apple { Id = "1", Name = "Fuji", Price = 20 });
+        await sut.InsertAsync(new Apple { Id = "2", Name = "Fuji", Price = 20 });
+        await sut.InsertAsync(new Apple { Id = "4", Name = "Gala", Price = 20 });
+
+        var repository = sut.Get().ToPaging(totalCount: true, pageSize: 10);
+        repository.OrderBy(x => x.Name).ThenBy(x => x.Price).ThenBy(x => x.Id);
+        var paging = await repository.GetPage(1).ExecuteAsync();
+
+        paging.Contents.Should().HaveCount(4);
+        var contents = paging.Contents.ToList();
+        contents[0].Id.Should().Be("1");
+        contents[1].Id.Should().Be("2");
+        contents[2].Id.Should().Be("3");
+        contents[3].Id.Should().Be("4");
+    }
+
+    [Fact(DisplayName = "ดึงข้อมูลแบบ paging โดยเรียงหลาย fields พร้อม paging ระบบสามารถแบ่งหน้าและเรียงลำดับได้ถูกต้อง")]
+    public async Task GetPaging_WithMultipleSort_AndPaging_ThenShouldSortAndPageCorrectly()
+    {
+        var sut = ServiceProvider.GetRequiredService<IRepository<Apple>>();
+        await sut.InsertAsync(new Apple { Id = "1", Name = "Fuji", Price = 10 });
+        await sut.InsertAsync(new Apple { Id = "2", Name = "Fuji", Price = 20 });
+        await sut.InsertAsync(new Apple { Id = "3", Name = "Fuji", Price = 30 });
+        await sut.InsertAsync(new Apple { Id = "4", Name = "Gala", Price = 10 });
+        await sut.InsertAsync(new Apple { Id = "5", Name = "Gala", Price = 20 });
+
+        var repository = sut.Get().ToPaging(totalCount: true, pageSize: 2);
+        repository.OrderBy(x => x.Name).ThenBy(x => x.Price);
+
+        var page1 = await repository.GetPage(1).ExecuteAsync();
+        page1.Contents.Should().HaveCount(2);
+        page1.Contents.Select(x => x.Id).Should().ContainInOrder("1", "2");
+
+        var page2 = await repository.GetPage(2).ExecuteAsync();
+        page2.Contents.Should().HaveCount(2);
+        page2.Contents.Select(x => x.Id).Should().ContainInOrder("3", "4");
+
+        var page3 = await repository.GetPage(3).ExecuteAsync();
+        page3.Contents.Should().HaveCount(1);
+        page3.Contents.Select(x => x.Id).Should().ContainInOrder("5");
+    }
+
+    #endregion
+
     #region Get paging with OrderNo
 
     [Fact]

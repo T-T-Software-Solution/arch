@@ -11,5 +11,6 @@ public class InMemoryRepositoryIoCTests : InMemoryRepositoryCommonTestCases
         services.RegisterInMemoryRepository<BasicDbModel>();
         services.RegisterInMemoryRepository<CustomPrimaryKeyDbModel, int>();
         services.RegisterInMemoryRepository<OrderableDbModel, int>();
+        services.RegisterInMemoryRepository<SortableFruit>();
     }
 }
